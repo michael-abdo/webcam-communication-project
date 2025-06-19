@@ -1,0 +1,174 @@
+name: "BehaviorIQ Pro - AI Meeting Analytics Demo"
+description: "9-screenshot capture workflow for AI-powered behavioral analytics platform demo"
+version: "1.0.0"
+
+config:
+  headless: true
+  timeout: 30000
+  viewport:
+    width: 1280
+    height: 720
+
+steps:
+  # Screenshot 1: Homepage/Dashboard
+  - type: navigate
+    description: "Navigate to main dashboard"
+    url: "file:///Users/Mike/Desktop/programming/2_proposals/upwork/021928602520267470909/index.html"
+    waitUntil: "networkidle2"
+    
+  - type: wait
+    description: "Wait for dashboard to fully load and animations to complete"
+    value: 3000
+    
+  - type: screenshot
+    description: "Capture main dashboard with real-time metrics"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 2: Live Analysis Page
+  - type: click
+    description: "Navigate to Live Analysis page"
+    selector: "a[href='analysis.html'], .nav-link:nth-child(2)"
+    
+  - type: wait
+    description: "Wait for live analysis page to load"
+    value: 3000
+    
+  - type: waitForSelector
+    description: "Wait for video grid to appear"
+    selector: ".video-grid, .analysis-grid"
+    timeout: 10000
+    
+  - type: screenshot
+    description: "Capture live meeting analysis interface"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 3: Live Analysis - Video Controls Interaction
+  - type: click
+    description: "Test video controls functionality"
+    selector: ".video-controls .btn:first-child, button[onclick*='toggleAudio']"
+    
+  - type: wait
+    description: "Wait for control interaction feedback"
+    value: 2000
+    
+  - type: screenshot
+    description: "Capture video controls interaction state"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 4: Real-time Metrics Panel
+  - type: assertVisible
+    description: "Verify metrics panel is visible"
+    selector: ".metrics-panel, .metrics-section"
+    
+  - type: wait
+    description: "Allow metrics to update"
+    value: 2000
+    
+  - type: screenshot
+    description: "Capture real-time metrics and AI insights"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 5: Reports Page
+  - type: click
+    description: "Navigate to Reports page"
+    selector: "a[href='reports.html'], .nav-link:nth-child(3)"
+    
+  - type: wait
+    description: "Wait for reports page to load"
+    value: 3000
+    
+  - type: waitForSelector
+    description: "Wait for summary cards to load"
+    selector: ".summary-grid, .summary-card"
+    timeout: 10000
+    
+  - type: screenshot
+    description: "Capture reports dashboard with analytics"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 6: Reports - Session Details
+  - type: click
+    description: "Click on a session to view details"
+    selector: ".sessions-table tr:first-child td:first-child, .sessions-table tbody tr:first-child"
+    
+  - type: wait
+    description: "Wait for session detail interaction"
+    value: 2000
+    
+  - type: screenshot
+    description: "Capture session details interaction"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 7: Settings Page
+  - type: click
+    description: "Navigate to Settings page"
+    selector: "a[href='settings.html'], .nav-link:nth-child(4)"
+    
+  - type: wait
+    description: "Wait for settings page to load"
+    value: 3000
+    
+  - type: waitForSelector
+    description: "Wait for settings layout to render"
+    selector: ".settings-layout, .settings-sidebar"
+    timeout: 10000
+    
+  - type: screenshot
+    description: "Capture main settings interface"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 8: Settings - AI Models Configuration
+  - type: click
+    description: "Navigate to AI Models section"
+    selector: "a[href='#ai-models'], .settings-nav-link:nth-child(2)"
+    
+  - type: wait
+    description: "Wait for AI models section to appear"
+    value: 2000
+    
+  - type: screenshot
+    description: "Capture AI models configuration panel"
+    screenshot:
+      fullPage: true
+
+  # Screenshot 9: Settings - Integrations
+  - type: click
+    description: "Navigate to Integrations section"
+    selector: "a[href='#integrations'], .settings-nav-link:nth-child(3)"
+    
+  - type: wait
+    description: "Wait for integrations section to load"
+    value: 2000
+    
+  - type: assertVisible
+    description: "Verify integration cards are visible"
+    selector: ".integration-grid, .integration-card"
+    
+  - type: screenshot
+    description: "Capture platform integrations setup"
+    screenshot:
+      fullPage: true
+
+  # Final validation
+  - type: assertText
+    description: "Verify we're still on the settings page"
+    selector: "h1, .page-title"
+    expected: "Settings & Configuration"
+    
+  - type: evaluate
+    description: "Capture final page metrics"
+    script: |
+      ({
+        totalPages: 4,
+        currentPage: 'Settings',
+        demoComplete: true,
+        timestamp: new Date().toISOString(),
+        features: ['Dashboard', 'Live Analysis', 'Reports', 'Settings', 'AI Models', 'Integrations']
+      })
