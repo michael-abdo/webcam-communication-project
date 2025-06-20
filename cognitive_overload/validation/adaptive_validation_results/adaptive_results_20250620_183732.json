@@ -1,0 +1,74 @@
+{
+  "configurations_tested": [
+    {
+      "name": "optimal",
+      "config": {
+        "static_image_mode": false,
+        "max_num_faces": 1,
+        "refine_landmarks": true,
+        "min_detection_confidence": 0.7,
+        "min_tracking_confidence": 0.5
+      },
+      "average_detection_rate": 0.25,
+      "success_rate": 0.8
+    },
+    {
+      "name": "low_threshold",
+      "config": {
+        "static_image_mode": false,
+        "max_num_faces": 1,
+        "refine_landmarks": true,
+        "min_detection_confidence": 0.5,
+        "min_tracking_confidence": 0.3
+      },
+      "average_detection_rate": 0.25,
+      "success_rate": 0.8
+    },
+    {
+      "name": "ultra_low_threshold",
+      "config": {
+        "static_image_mode": false,
+        "max_num_faces": 1,
+        "refine_landmarks": true,
+        "min_detection_confidence": 0.3,
+        "min_tracking_confidence": 0.2
+      },
+      "average_detection_rate": 0.25,
+      "success_rate": 0.8
+    },
+    {
+      "name": "static_mode",
+      "config": {
+        "static_image_mode": true,
+        "max_num_faces": 1,
+        "refine_landmarks": true,
+        "min_detection_confidence": 0.5,
+        "min_tracking_confidence": 0.3
+      },
+      "average_detection_rate": 0.25,
+      "success_rate": 0.8
+    },
+    {
+      "name": "high_accuracy",
+      "config": {
+        "static_image_mode": true,
+        "max_num_faces": 1,
+        "refine_landmarks": true,
+        "min_detection_confidence": 0.5,
+        "min_tracking_confidence": 0.3
+      },
+      "average_detection_rate": 0.25,
+      "success_rate": 0.8
+    }
+  ],
+  "best_configuration": {
+    "name": "optimal",
+    "config": {
+      "static_image_mode": false,
+      "max_num_faces": 1,
+      "refine_landmarks": true,
+      "min_detection_confidence": 0.7,
+      "min_tracking_confidence": 0.5
+    }
+  },
+  "improvement_achieved": 

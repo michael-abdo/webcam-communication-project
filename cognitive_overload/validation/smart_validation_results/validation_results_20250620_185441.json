@@ -1,0 +1,17 @@
+{
+  "dataset_info": {},
+  "video_results": [],
+  "aggregate_metrics": {},
+  "timestamp": "2025-06-20T18:54:41.865583",
+  "video_categories": {
+    "real_face_videos": [],
+    "synthetic_face_videos": [],
+    "non_face_videos": [],
+    "corrupted_videos": []
+  },
+  "smart_metrics": {
+    "face_video_count": 0,
+    "average_face_detection_rate": 0.0,
+    "recommendation": "NO_FACE_VIDEOS"
+  }
+}

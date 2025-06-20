@@ -1,0 +1,11 @@
+{
+  "name": "Real and Synthetic Face Validation Dataset",
+  "video_count": 4,
+  "videos": [
+    "synthetic_neutral.mp4",
+    "synthetic_smile.mp4",
+    "synthetic_focused.mp4",
+    "synthetic_tired.mp4"
+  ],
+  "description": "Mixed dataset for validation testing"
+}

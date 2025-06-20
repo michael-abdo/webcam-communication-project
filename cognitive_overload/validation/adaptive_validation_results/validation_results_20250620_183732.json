@@ -1,0 +1,173 @@
+{
+  "dataset_info": {
+    "dataset_path": "../tests/test_videos",
+    "total_videos_found": 11,
+    "videos_processed": 5
+  },
+  "video_results": [
+    {
+      "video_path": "../tests/test_videos/corrupted.mp4",
+      "file_name": "corrupted.mp4",
+      "processing_successful": false,
+      "error": "Cannot open video file: ../tests/test_videos/corrupted.mp4",
+      "metrics": {}
+    },
+    {
+      "video_path": "../tests/test_videos/no_faces.mp4",
+      "file_name": "no_faces.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 10.0,
+        "frame_count": 10,
+        "width": 640,
+        "height": 480,
+        "duration_seconds": 1.0
+      },
+      "processing_metrics": {
+        "processing_time": 0.0517580509185791,
+        "frames_processed": 2,
+        "faces_detected": 0,
+        "detection_rate": 0.0,
+        "fps_achieved": 38.6413314354942
+      },
+      "cognitive_analysis": {
+        "error": "No faces detected for cognitive analysis"
+      }
+    },
+    {
+      "video_path": "../tests/test_videos/realistic_synthetic_face.mp4",
+      "file_name": "realistic_synthetic_face.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.0,
+        "frame_count": 900,
+        "width": 640,
+        "height": 480,
+        "duration_seconds": 30.0
+      },
+      "processing_metrics": {
+        "processing_time": 1.753730058670044,
+        "frames_processed": 60,
+        "faces_detected": 60,
+        "detection_rate": 1.0,
+        "fps_achieved": 34.21279101842019
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 94.07443099500003,
+            "std": 1.4243476753638875,
+            "min": 90.24965373894794,
+            "max": 97.64630049315741,
+            "median": 94.18903338297906
+          },
+          "left_eye_openness": {
+            "mean": 0.14809632553827598,
+            "std": 0.010995833559721994,
+            "min": 0.12612612612612614,
+            "max": 0.18333333333333335,
+            "median": 0.1469298245614035
+          },
+          "right_eye_openness": {
+            "mean": 0.15958566806154525,
+            "std": 0.0143322455728247,
+            "min": 0.13596491228070176,
+            "max": 0.1891891891891892,
+            "median": 0.1597222222222222
+          },
+          "avg_eye_openness": {
+            "mean": 0.15384099679991065,
+            "std": 0.009085575641748814,
+            "min": 0.1377314814814815,
+            "max": 0.17134898055950687,
+            "median": 0.15422062099693679
+          },
+          "mouth_compression": {
+            "mean": 0.005450189577364122,
+            "std": 0.011667506193218685,
+            "min": 0.0,
+            "max": 0.07575757575757576,
+            "median": 0.0
+          },
+          "cognitive_stress_score": {
+            "mean": 0.6333215012242415,
+            "std": 0.006827227927288478,
+            "min": 0.6151144900037591,
+            "max": 0.6463430070659276,
+            "median": 0.6336576748744438
+          }
+        },
+        "frame_count": 60,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "../tests/test_videos/test_10fps.mp4",
+      "file_name": "test_10fps.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 10.0,
+        "frame_count": 20,
+        "width": 640,
+        "height": 480,
+        "duration_seconds": 2.0
+      },
+      "processing_metrics": {
+        "processing_time": 0.07575869560241699,
+        "frames_processed": 4,
+        "faces_detected": 0,
+        "detection_rate": 0.0,
+        "fps_achieved": 52.799219524476406
+      },
+      "cognitive_analysis": {
+        "error": "No faces detected for cognitive analysis"
+      }
+    },
+    {
+      "video_path": "../tests/test_videos/test_1280x720.mp4",
+      "file_name": "test_1280x720.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 15.0,
+        "frame_count": 5,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 0.3333333333333333
+      },
+      "processing_metrics": {
+        "processing_time": 0.04694318771362305,
+        "frames_processed": 1,
+        "faces_detected": 0,
+        "detection_rate": 0.0,
+        "fps_achieved": 21.302345424441576
+      },
+      "cognitive_analysis": {
+        "error": "No faces detected for cognitive analysis"
+      }
+    }
+  ],
+  "aggregate_metrics": {
+    "successful_validations": 4,
+    "failed_validations": 1,
+    "success_rate": 0.8,
+    "total_frames_processed": 67,
+    "total_faces_detected": 60,
+    "average_detection_rate": 0.25,
+    "detection_rate_std": 0.4330127018922193,
+    "min_detection_rate": 0.0,
+    "max_detection_rate": 1.0
+  },
+  "timestamp": "2025-06-20 18:37:30"
+}
