@@ -1,0 +1,11 @@
+{
+  "dataset": "MobiFace",
+  "status": "Manual download required",
+  "url": "https://www.idiap.ch/en/dataset/mobiface",
+  "instructions": [
+    "1. Visit the dataset webpage",
+    "2. Submit research access request",
+    "3. Download videos to this directory when approved",
+    "4. Re-run validation script"
+  ]
+}

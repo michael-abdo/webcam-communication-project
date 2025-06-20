@@ -1,0 +1,2958 @@
+{
+  "dataset_info": {
+    "dataset_path": "./live_face_datasets/selfies_videos_kaggle",
+    "total_videos_found": 40,
+    "videos_processed": 20
+  },
+  "video_results": [
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/3.mp4",
+      "file_name": "3.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.0,
+        "frame_count": 545,
+        "width": 368,
+        "height": 640,
+        "duration_seconds": 18.166666666666668
+      },
+      "processing_metrics": {
+        "processing_time": 0.8868088722229004,
+        "frames_processed": 37,
+        "faces_detected": 37,
+        "detection_rate": 1.0,
+        "fps_achieved": 41.72263174054038
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 113.26225424749049,
+            "std": 1.2890937812372725,
+            "min": 110.59131973170408,
+            "max": 116.08014472768375,
+            "median": 113.24045213615143
+          },
+          "left_eye_openness": {
+            "mean": 0.08900612060566468,
+            "std": 0.020027867618937444,
+            "min": 0.05442176870748299,
+            "max": 0.16071428571428573,
+            "median": 0.0851063829787234
+          },
+          "right_eye_openness": {
+            "mean": 0.13597157283210956,
+            "std": 0.022983376325677048,
+            "min": 0.09552845528455284,
+            "max": 0.18333333333333332,
+            "median": 0.13596491228070176
+          },
+          "avg_eye_openness": {
+            "mean": 0.11248884671888712,
+            "std": 0.011743736197338601,
+            "min": 0.08062968777254492,
+            "max": 0.13726771196283394,
+            "median": 0.11345663265306122
+          },
+          "mouth_compression": {
+            "mean": 0.10483545283804174,
+            "std": 0.06864407083159423,
+            "min": 0.0,
+            "max": 0.2222222222222222,
+            "median": 0.10144927536231885
+          },
+          "cognitive_stress_score": {
+            "mean": 0.550017719322722,
+            "std": 0.02141239703591257,
+            "min": 0.5133473148443577,
+            "max": 0.5877406168455719,
+            "median": 0.5486875278912372
+          }
+        },
+        "frame_count": 37,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/4.mp4",
+      "file_name": "4.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.0,
+        "frame_count": 86,
+        "width": 368,
+        "height": 640,
+        "duration_seconds": 2.8666666666666667
+      },
+      "processing_metrics": {
+        "processing_time": 0.20101451873779297,
+        "frames_processed": 6,
+        "faces_detected": 6,
+        "detection_rate": 1.0,
+        "fps_achieved": 29.84859022957695
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 124.14927089649768,
+            "std": 3.255539259175969,
+            "min": 119.59816052097123,
+            "max": 128.8949960238954,
+            "median": 124.78315210792738
+          },
+          "left_eye_openness": {
+            "mean": 0.1692767447966145,
+            "std": 0.02485696259842279,
+            "min": 0.13405797101449277,
+            "max": 0.20185185185185187,
+            "median": 0.16949969164353992
+          },
+          "right_eye_openness": {
+            "mean": 0.09624017957351293,
+            "std": 0.01845628167062205,
+            "min": 0.057407407407407414,
+            "max": 0.11363636363636363,
+            "median": 0.10092592592592592
+          },
+          "avg_eye_openness": {
+            "mean": 0.1327584621850637,
+            "std": 0.019824553606061508,
+            "min": 0.09573268921095009,
+            "max": 0.15585016835016835,
+            "median": 0.13597678916827854
+          },
+          "mouth_compression": {
+            "mean": 0.1132145912499987,
+            "std": 0.06398574056073027,
+            "min": 0.0,
+            "max": 0.18823529411764706,
+            "median": 0.12709374081692626
+          },
+          "cognitive_stress_score": {
+            "mean": 0.5041780791999869,
+            "std": 0.02495079677919031,
+            "min": 0.4660346991650836,
+            "max": 0.535947806186826,
+            "median": 0.5068603380725933
+          }
+        },
+        "frame_count": 6,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/7.mp4",
+      "file_name": "7.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 29.937440147494474,
+        "frame_count": 446,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 14.897733333333333
+      },
+      "processing_metrics": {
+        "processing_time": 2.7565956115722656,
+        "frames_processed": 32,
+        "faces_detected": 32,
+        "detection_rate": 1.0,
+        "fps_achieved": 11.608521709046878
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 159.01245756668,
+            "std": 4.093847652855403,
+            "min": 140.42976892382896,
+            "max": 164.04109241284633,
+            "median": 159.80800981177384
+          },
+          "left_eye_openness": {
+            "mean": 0.10885096639866684,
+            "std": 0.019418513705760265,
+            "min": 0.07240437158469946,
+            "max": 0.16228070175438597,
+            "median": 0.10804597701149425
+          },
+          "right_eye_openness": {
+            "mean": 0.11198533591631399,
+            "std": 0.015275334299172605,
+            "min": 0.08611111111111111,
+            "max": 0.14242424242424243,
+            "median": 0.11159003831417624
+          },
+          "avg_eye_openness": {
+            "mean": 0.11041815115749042,
+            "std": 0.013828078552023086,
+            "min": 0.0866407822835778,
+            "max": 0.15235247208931418,
+            "median": 0.11047734430807196
+          },
+          "mouth_compression": {
+            "mean": 0.13144653348820207,
+            "std": 0.0747377717184144,
+            "min": 0.0,
+            "max": 0.26126126126126126,
+            "median": 0.14614614614614613
+          },
+          "cognitive_stress_score": {
+            "mean": 0.3893369132291691,
+            "std": 0.026202158606561707,
+            "min": 0.3369362048259574,
+            "max": 0.43248649546934664,
+            "median": 0.3822407393513776
+          }
+        },
+        "frame_count": 32,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/8.mp4",
+      "file_name": "8.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 29.951457981891416,
+        "frame_count": 174,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 5.8094
+      },
+      "processing_metrics": {
+        "processing_time": 0.9777143001556396,
+        "frames_processed": 13,
+        "faces_detected": 13,
+        "detection_rate": 1.0,
+        "fps_achieved": 13.296317746329951
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 163.61237470532217,
+            "std": 6.700177739940408,
+            "min": 145.14268841385015,
+            "max": 171.90346127987075,
+            "median": 162.7034111504734
+          },
+          "left_eye_openness": {
+            "mean": 0.12153784110096331,
+            "std": 0.028179066777814947,
+            "min": 0.0582010582010582,
+            "max": 0.15789473684210525,
+            "median": 0.1278735632183908
+          },
+          "right_eye_openness": {
+            "mean": 0.13481748826200712,
+            "std": 0.02680055234797736,
+            "min": 0.06640625,
+            "max": 0.17514124293785313,
+            "median": 0.13844086021505378
+          },
+          "avg_eye_openness": {
+            "mean": 0.12817766468148523,
+            "std": 0.025310088514584037,
+            "min": 0.0623036541005291,
+            "max": 0.16029789419619928,
+            "median": 0.1320754716981132
+          },
+          "mouth_compression": {
+            "mean": 0.12774992134226357,
+            "std": 0.09129632115040891,
+            "min": 0.008771929824561403,
+            "max": 0.2608695652173913,
+            "median": 0.14018691588785046
+          },
+          "cognitive_stress_score": {
+            "mean": 0.3693162223076766,
+            "std": 0.034778389164754474,
+            "min": 0.31791314981829966,
+            "max": 0.4147314843244762,
+            "median": 0.3709661882755612
+          }
+        },
+        "frame_count": 13,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/3.mp4",
+      "file_name": "3.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 29.836300451164494,
+        "frame_count": 609,
+        "width": 480,
+        "height": 864,
+        "duration_seconds": 20.411377777777776
+      },
+      "processing_metrics": {
+        "processing_time": 1.899254322052002,
+        "frames_processed": 44,
+        "faces_detected": 44,
+        "detection_rate": 1.0,
+        "fps_achieved": 23.166986900659676
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 120.70000008600637,
+            "std": 1.1273368303089606,
+            "min": 118.22047200041115,
+            "max": 123.54189572772468,
+            "median": 120.86430187255868
+          },
+          "left_eye_openness": {
+            "mean": 0.10156543796067648,
+            "std": 0.013670716033779314,
+            "min": 0.06851851851851852,
+            "max": 0.12588652482269505,
+            "median": 0.10144927536231885
+          },
+          "right_eye_openness": {
+            "mean": 0.13443736434418024,
+            "std": 0.014304151515377464,
+            "min": 0.09469696969696971,
+            "max": 0.16296296296296295,
+            "median": 0.1358695652173913
+          },
+          "avg_eye_openness": {
+            "mean": 0.11800140115242837,
+            "std": 0.011304653811320642,
+            "min": 0.08160774410774412,
+            "max": 0.1369949494949495,
+            "median": 0.11922688183095215
+          },
+          "mouth_compression": {
+            "mean": 0.12447439660569654,
+            "std": 0.0798736596925455,
+            "min": 0.0,
+            "max": 0.2967032967032967,
+            "median": 0.13311862587224904
+          },
+          "cognitive_stress_score": {
+            "mean": 0.5168414004606038,
+            "std": 0.027419684465113073,
+            "min": 0.45726693573118843,
+            "max": 0.5695961819963848,
+            "median": 0.5167834209735582
+          }
+        },
+        "frame_count": 44,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/4.mp4",
+      "file_name": "4.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 29.93227920033939,
+        "frame_count": 127,
+        "width": 480,
+        "height": 864,
+        "duration_seconds": 4.242911111111111
+      },
+      "processing_metrics": {
+        "processing_time": 0.2642807960510254,
+        "frames_processed": 10,
+        "faces_detected": 10,
+        "detection_rate": 1.0,
+        "fps_achieved": 37.83854199557229
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 122.15945571155967,
+            "std": 1.0767452138238018,
+            "min": 119.56721958797901,
+            "max": 123.73714074601854,
+            "median": 122.36542334151939
+          },
+          "left_eye_openness": {
+            "mean": 0.09694701408161169,
+            "std": 0.007686957486223837,
+            "min": 0.08514492753623189,
+            "max": 0.1099290780141844,
+            "median": 0.09794685990338164
+          },
+          "right_eye_openness": {
+            "mean": 0.13286517756192825,
+            "std": 0.005568146233013782,
+            "min": 0.12411347517730496,
+            "max": 0.14130434782608695,
+            "median": 0.13296346618357488
+          },
+          "avg_eye_openness": {
+            "mean": 0.11490609582176996,
+            "std": 0.00505113257517252,
+            "min": 0.10835303388494878,
+            "max": 0.12561671292013568,
+            "median": 0.11394550120772948
+          },
+          "mouth_compression": {
+            "mean": 0.09040195064373092,
+            "std": 0.10224244047760114,
+            "min": 0.0,
+            "max": 0.3076923076923077,
+            "median": 0.04862068965517241
+          },
+          "cognitive_stress_score": {
+            "mean": 0.5243657988063009,
+            "std": 0.03441382882795979,
+            "min": 0.4535287452441635,
+            "max": 0.5646068525811329,
+            "median": 0.5349122968687361
+          }
+        },
+        "frame_count": 10,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/7.mp4",
+      "file_name": "7.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 29.996072527328664,
+        "frame_count": 611,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 20.369333333333334
+      },
+      "processing_metrics": {
+        "processing_time": 3.641615867614746,
+        "frames_processed": 44,
+        "faces_detected": 44,
+        "detection_rate": 1.0,
+        "fps_achieved": 12.082548406957581
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 164.18075283499658,
+            "std": 1.5700140089512302,
+            "min": 160.90307641558624,
+            "max": 167.4488578641252,
+            "median": 164.14840180970359
+          },
+          "left_eye_openness": {
+            "mean": 0.09776057424879828,
+            "std": 0.014941671300597495,
+            "min": 0.07258064516129033,
+            "max": 0.134180790960452,
+            "median": 0.09791666666666668
+          },
+          "right_eye_openness": {
+            "mean": 0.10163514124519336,
+            "std": 0.018008180128996888,
+            "min": 0.04487179487179487,
+            "max": 0.12568306010928962,
+            "median": 0.10483870967741936
+          },
+          "avg_eye_openness": {
+            "mean": 0.09969785774699581,
+            "std": 0.012126562168580903,
+            "min": 0.06007030603804797,
+            "max": 0.11434665899721982,
+            "median": 0.1018664272034944
+          },
+          "mouth_compression": {
+            "mean": 0.12919758509926543,
+            "std": 0.08829528002360973,
+            "min": 0.0,
+            "max": 0.304,
+            "median": 0.13761467889908258
+          },
+          "cognitive_stress_score": {
+            "mean": 0.37643234293459094,
+            "std": 0.03131236265777041,
+            "min": 0.31138941965520467,
+            "max": 0.42765705051765,
+            "median": 0.3736469890744992
+          }
+        },
+        "frame_count": 44,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/8.mp4",
+      "file_name": "8.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.009405933202945,
+        "frame_count": 134,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 4.4652666666666665
+      },
+      "processing_metrics": {
+        "processing_time": 1.0485548973083496,
+        "frames_processed": 9,
+        "faces_detected": 9,
+        "detection_rate": 1.0,
+        "fps_achieved": 8.583241586208873
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 161.182422733203,
+            "std": 1.3182234128420458,
+            "min": 159.1336545172014,
+            "max": 163.15894091345407,
+            "median": 161.28905728535958
+          },
+          "left_eye_openness": {
+            "mean": 0.10232118454217982,
+            "std": 0.014159063027742764,
+            "min": 0.08192090395480225,
+            "max": 0.125,
+            "median": 0.10416666666666667
+          },
+          "right_eye_openness": {
+            "mean": 0.08448684837600341,
+            "std": 0.008605617920608818,
+            "min": 0.07344632768361581,
+            "max": 0.09887005649717513,
+            "median": 0.08333333333333334
+          },
+          "avg_eye_openness": {
+            "mean": 0.09340401645909163,
+            "std": 0.00751515246757914,
+            "min": 0.08545197740112995,
+            "max": 0.11193502824858756,
+            "median": 0.09141428174492915
+          },
+          "mouth_compression": {
+            "mean": 0.08440830237205726,
+            "std": 0.09152055145657247,
+            "min": 0.0,
+            "max": 0.21551724137931033,
+            "median": 0.02247191011235955
+          },
+          "cognitive_stress_score": {
+            "mean": 0.40345448461227373,
+            "std": 0.029101964337337288,
+            "min": 0.3607498105131845,
+            "max": 0.4357905388666088,
+            "median": 0.4231158221667532
+          }
+        },
+        "frame_count": 9,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/3.mp4",
+      "file_name": "3.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 59.96151026392962,
+        "frame_count": 2181,
+        "width": 480,
+        "height": 848,
+        "duration_seconds": 36.373333333333335
+      },
+      "processing_metrics": {
+        "processing_time": 3.478968381881714,
+        "frames_processed": 76,
+        "faces_detected": 76,
+        "detection_rate": 1.0,
+        "fps_achieved": 21.84555639993857
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 155.87079600488107,
+            "std": 1.503576495705557,
+            "min": 152.4335920983298,
+            "max": 160.95415496345535,
+            "median": 155.8040698396282
+          },
+          "left_eye_openness": {
+            "mean": 0.13649502929342863,
+            "std": 0.01531083637617766,
+            "min": 0.06481481481481481,
+            "max": 0.16810344827586207,
+            "median": 0.1375
+          },
+          "right_eye_openness": {
+            "mean": 0.13182115587047957,
+            "std": 0.011935378271620181,
+            "min": 0.07083333333333333,
+            "max": 0.15058479532163743,
+            "median": 0.13450292397660818
+          },
+          "avg_eye_openness": {
+            "mean": 0.1341580925819541,
+            "std": 0.01141833286630912,
+            "min": 0.07060185185185185,
+            "max": 0.14823202805376973,
+            "median": 0.13512829566854992
+          },
+          "mouth_compression": {
+            "mean": 0.040473436288883,
+            "std": 0.036495805656386035,
+            "min": 0.0,
+            "max": 0.11009174311926606,
+            "median": 0.02857402031930334
+          },
+          "cognitive_stress_score": {
+            "mean": 0.42222017036011744,
+            "std": 0.01225591352148912,
+            "min": 0.3937530417440878,
+            "max": 0.44347601606100184,
+            "median": 0.42410689745924274
+          }
+        },
+        "frame_count": 76,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/4.mp4",
+      "file_name": "4.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 59.954116747387204,
+        "frame_count": 392,
+        "width": 480,
+        "height": 848,
+        "duration_seconds": 6.538333333333333
+      },
+      "processing_metrics": {
+        "processing_time": 0.5851409435272217,
+        "frames_processed": 14,
+        "faces_detected": 14,
+        "detection_rate": 1.0,
+        "fps_achieved": 23.9258594956767
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 152.75733433087348,
+            "std": 1.4617825165658587,
+            "min": 150.81392508651183,
+            "max": 155.88829333853138,
+            "median": 152.1457693088222
+          },
+          "left_eye_openness": {
+            "mean": 0.1357248778011517,
+            "std": 0.015457611804864345,
+            "min": 0.08333333333333334,
+            "max": 0.1486111111111111,
+            "median": 0.13912835249042146
+          },
+          "right_eye_openness": {
+            "mean": 0.16993720869925388,
+            "std": 0.021224466146486043,
+            "min": 0.10087719298245613,
+            "max": 0.19047619047619047,
+            "median": 0.17481203007518797
+          },
+          "avg_eye_openness": {
+            "mean": 0.15283104325020277,
+            "std": 0.017465946921200574,
+            "min": 0.09210526315789475,
+            "max": 0.16587057010785822,
+            "median": 0.156113388716043
+          },
+          "mouth_compression": {
+            "mean": 0.037925854251480554,
+            "std": 0.029855155594575834,
+            "min": 0.0,
+            "max": 0.09090909090909091,
+            "median": 0.035789473684210524
+          },
+          "cognitive_stress_score": {
+            "mean": 0.4272232530631939,
+            "std": 0.009717549429537132,
+            "min": 0.4106797969119314,
+            "max": 0.4457037117249538,
+            "median": 0.427842820138579
+          }
+        },
+        "frame_count": 14,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/7.mp4",
+      "file_name": "7.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.032825812896153,
+        "frame_count": 914,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 30.433366666666664
+      },
+      "processing_metrics": {
+        "processing_time": 6.315701484680176,
+        "frames_processed": 61,
+        "faces_detected": 61,
+        "detection_rate": 1.0,
+        "fps_achieved": 9.65846789117029
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 189.17234532754148,
+            "std": 2.3325549206256304,
+            "min": 184.95848182767944,
+            "max": 195.07178165998275,
+            "median": 188.77722320237683
+          },
+          "left_eye_openness": {
+            "mean": 0.16242014699492688,
+            "std": 0.011131202358709798,
+            "min": 0.1322222222222222,
+            "max": 0.18504901960784315,
+            "median": 0.1632420091324201
+          },
+          "right_eye_openness": {
+            "mean": 0.12922922838456558,
+            "std": 0.008422166545998576,
+            "min": 0.11187214611872145,
+            "max": 0.14814814814814814,
+            "median": 0.12899543378995432
+          },
+          "avg_eye_openness": {
+            "mean": 0.14582468768974624,
+            "std": 0.00731688959042652,
+            "min": 0.12456018518518518,
+            "max": 0.1597222222222222,
+            "median": 0.14733400402414487
+          },
+          "mouth_compression": {
+            "mean": 0.08955103880887816,
+            "std": 0.05708322652719306,
+            "min": 0.0,
+            "max": 0.19285714285714287,
+            "median": 0.1111111111111111
+          },
+          "cognitive_stress_score": {
+            "mean": 0.29096694007532037,
+            "std": 0.020289966998104984,
+            "min": 0.24470050782023792,
+            "max": 0.3336519936045992,
+            "median": 0.2909000835587546
+          }
+        },
+        "frame_count": 61,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/8.mp4",
+      "file_name": "8.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.060289456944545,
+        "frame_count": 178,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 5.921433333333334
+      },
+      "processing_metrics": {
+        "processing_time": 1.3835432529449463,
+        "frames_processed": 12,
+        "faces_detected": 12,
+        "detection_rate": 1.0,
+        "fps_achieved": 8.673382617028672
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 159.33544684146958,
+            "std": 1.3198660901354207,
+            "min": 155.64163967267885,
+            "max": 160.8161683413704,
+            "median": 159.67828246652516
+          },
+          "left_eye_openness": {
+            "mean": 0.13334884698095656,
+            "std": 0.004488239925270051,
+            "min": 0.125,
+            "max": 0.14124293785310735,
+            "median": 0.13347214877489863
+          },
+          "right_eye_openness": {
+            "mean": 0.1304613386152333,
+            "std": 0.0061206555860032095,
+            "min": 0.11559139784946237,
+            "max": 0.1388888888888889,
+            "median": 0.13086613814470568
+          },
+          "avg_eye_openness": {
+            "mean": 0.13190509279809495,
+            "std": 0.0040669239246577515,
+            "min": 0.1251568100358423,
+            "max": 0.13912429378531074,
+            "median": 0.1321348566308244
+          },
+          "mouth_compression": {
+            "mean": 0.07817412798651284,
+            "std": 0.058019136896315944,
+            "min": 0.0,
+            "max": 0.1623931623931624,
+            "median": 0.08121723460026212
+          },
+          "cognitive_stress_score": {
+            "mean": 0.3988554369335655,
+            "std": 0.01999900539967292,
+            "min": 0.36890238494063227,
+            "max": 0.4314864364959669,
+            "median": 0.39560547154677966
+          }
+        },
+        "frame_count": 12,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/3.mp4",
+      "file_name": "3.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.002005275416867,
+        "frame_count": 1167,
+        "width": 1920,
+        "height": 1080,
+        "duration_seconds": 38.8974
+      },
+      "processing_metrics": {
+        "processing_time": 19.471770763397217,
+        "frames_processed": 78,
+        "faces_detected": 78,
+        "detection_rate": 1.0,
+        "fps_achieved": 4.005799007588123
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 266.16894861434554,
+            "std": 4.321564732713414,
+            "min": 242.65077786811239,
+            "max": 273.5182626443799,
+            "median": 266.3258866789244
+          },
+          "left_eye_openness": {
+            "mean": 6.119382727315419,
+            "std": 2.0849559096959562,
+            "min": 3.5416666666666665,
+            "max": 13.944444444444445,
+            "median": 5.65625
+          },
+          "right_eye_openness": {
+            "mean": 13.649426152551154,
+            "std": 9.226001528344652,
+            "min": 3.2878787878787876,
+            "max": 49.5,
+            "median": 10.05
+          },
+          "avg_eye_openness": {
+            "mean": 9.884404439933284,
+            "std": 4.610196041405129,
+            "min": 5.916666666666666,
+            "max": 28.716666666666665,
+            "median": 8.371875
+          },
+          "mouth_compression": {
+            "mean": 0.14737342337463225,
+            "std": 0.11531894792449293,
+            "min": 0.0,
+            "max": 0.5,
+            "median": 0.12916666666666665
+          },
+          "cognitive_stress_score": {
+            "mean": -3.2311557831504576,
+            "std": 1.5299482905579922,
+            "min": -9.475102533675022,
+            "max": -1.9316633409327528,
+            "median": -2.7048268570734795
+          }
+        },
+        "frame_count": 78,
+        "stress_score_trend": {
+          "increasing": true,
+          "decreasing": false,
+          "stable": false
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/4.mp4",
+      "file_name": "4.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.00200013334222,
+        "frame_count": 245,
+        "width": 1920,
+        "height": 1080,
+        "duration_seconds": 8.166122222222223
+      },
+      "processing_metrics": {
+        "processing_time": 4.166006326675415,
+        "frames_processed": 17,
+        "faces_detected": 17,
+        "detection_rate": 1.0,
+        "fps_achieved": 4.080646707410658
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 266.7785218993845,
+            "std": 5.5917181619898155,
+            "min": 248.52243359503788,
+            "max": 275.10608862764195,
+            "median": 266.9862168727068
+          },
+          "left_eye_openness": {
+            "mean": 23.807598039215684,
+            "std": 17.94772946998152,
+            "min": 0.0,
+            "max": 49.416666666666664,
+            "median": 24.25
+          },
+          "right_eye_openness": {
+            "mean": 6.637656059898707,
+            "std": 4.129677503396573,
+            "min": 2.703125,
+            "max": 22.541666666666668,
+            "median": 5.703703703703704
+          },
+          "avg_eye_openness": {
+            "mean": 15.222627049557198,
+            "std": 9.39457015320155,
+            "min": 2.458333333333333,
+            "max": 27.546875,
+            "median": 14.907407407407408
+          },
+          "mouth_compression": {
+            "mean": 0.16581114963467905,
+            "std": 0.14382333255128046,
+            "min": 0.0,
+            "max": 0.5,
+            "median": 0.14285714285714285
+          },
+          "cognitive_stress_score": {
+            "mean": -5.01874113939524,
+            "std": 3.1282785208178923,
+            "min": -9.08179782563843,
+            "max": -0.7514955491160816,
+            "median": -4.948794473562766
+          }
+        },
+        "frame_count": 17,
+        "stress_score_trend": {
+          "increasing": true,
+          "decreasing": false,
+          "stable": false
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/7.mp4",
+      "file_name": "7.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.033085543850632,
+        "frame_count": 1161,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 38.65736666666667
+      },
+      "processing_metrics": {
+        "processing_time": 9.436503410339355,
+        "frames_processed": 78,
+        "faces_detected": 78,
+        "detection_rate": 1.0,
+        "fps_achieved": 8.265773518879591
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 169.86751512368033,
+            "std": 1.6636762085093755,
+            "min": 165.43772242145988,
+            "max": 174.05217608521875,
+            "median": 169.7254821951644
+          },
+          "left_eye_openness": {
+            "mean": 0.1408063328597505,
+            "std": 0.013820843777503908,
+            "min": 0.0784313725490196,
+            "max": 0.16527777777777777,
+            "median": 0.141331711896228
+          },
+          "right_eye_openness": {
+            "mean": 0.12499431670770449,
+            "std": 0.013800692115928504,
+            "min": 0.06746031746031746,
+            "max": 0.1486111111111111,
+            "median": 0.1270166536559979
+          },
+          "avg_eye_openness": {
+            "mean": 0.1329003247837275,
+            "std": 0.012008700670540863,
+            "min": 0.07294584500466852,
+            "max": 0.14860684417136033,
+            "median": 0.13584082496033845
+          },
+          "mouth_compression": {
+            "mean": 0.10900503589760237,
+            "std": 0.09730640710858554,
+            "min": 0.0,
+            "max": 0.31092436974789917,
+            "median": 0.13206311232627022
+          },
+          "cognitive_stress_score": {
+            "mean": 0.3531398293606223,
+            "std": 0.0336575911496821,
+            "min": 0.2761044730996196,
+            "max": 0.4022518010532827,
+            "median": 0.3451510815819161
+          }
+        },
+        "frame_count": 78,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/8.mp4",
+      "file_name": "8.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 30.091774146438947,
+        "frame_count": 261,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 8.673466666666666
+      },
+      "processing_metrics": {
+        "processing_time": 2.419450521469116,
+        "frames_processed": 18,
+        "faces_detected": 18,
+        "detection_rate": 1.0,
+        "fps_achieved": 7.439705768014718
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 176.9831342411626,
+            "std": 1.1240673947565616,
+            "min": 175.071414000116,
+            "max": 179.26360478357006,
+            "median": 176.8812947144301
+          },
+          "left_eye_openness": {
+            "mean": 0.15322111693962756,
+            "std": 0.006846728122263352,
+            "min": 0.13762626262626262,
+            "max": 0.1721311475409836,
+            "median": 0.15192945075757575
+          },
+          "right_eye_openness": {
+            "mean": 0.12090562266375907,
+            "std": 0.008215683396088908,
+            "min": 0.11069651741293533,
+            "max": 0.13932291666666666,
+            "median": 0.11922530206112295
+          },
+          "avg_eye_openness": {
+            "mean": 0.1370633698016933,
+            "std": 0.005155095829200492,
+            "min": 0.13110583446404342,
+            "max": 0.15101066468253968,
+            "median": 0.136093385133023
+          },
+          "mouth_compression": {
+            "mean": 0.10868344096381788,
+            "std": 0.1173222712813208,
+            "min": 0.0,
+            "max": 0.30985915492957744,
+            "median": 0.01423324150596878
+          },
+          "cognitive_stress_score": {
+            "mean": 0.328140615607621,
+            "std": 0.04093443813163694,
+            "min": 0.258413583763582,
+            "max": 0.36964717459424795,
+            "median": 0.35672259235134174
+          }
+        },
+        "frame_count": 18,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": true,
+          "stable": false
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/3.mp4",
+      "file_name": "3.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 14.860806130258604,
+        "frame_count": 422,
+        "width": 480,
+        "height": 880,
+        "duration_seconds": 28.396844444444447
+      },
+      "processing_metrics": {
+        "processing_time": 1.9551117420196533,
+        "frames_processed": 61,
+        "faces_detected": 61,
+        "detection_rate": 1.0,
+        "fps_achieved": 31.20026272103828
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 126.12131968280362,
+            "std": 2.5411240882696924,
+            "min": 120.68206163303641,
+            "max": 131.01602955363896,
+            "median": 125.8840736550895
+          },
+          "left_eye_openness": {
+            "mean": 0.16971347877154827,
+            "std": 0.03063836699710753,
+            "min": 0.0960144927536232,
+            "max": 0.22291666666666665,
+            "median": 0.16666666666666666
+          },
+          "right_eye_openness": {
+            "mean": 0.1466725925564903,
+            "std": 0.02911767723403246,
+            "min": 0.03804347826086957,
+            "max": 0.19444444444444445,
+            "median": 0.15217391304347827
+          },
+          "avg_eye_openness": {
+            "mean": 0.15819303566401927,
+            "std": 0.025256189490296607,
+            "min": 0.07132670366944188,
+            "max": 0.20232117688513038,
+            "median": 0.15611083621969324
+          },
+          "mouth_compression": {
+            "mean": 0.18686518639796043,
+            "std": 0.1065072424496237,
+            "min": 0.0,
+            "max": 0.46511627906976744,
+            "median": 0.1839080459770115
+          },
+          "cognitive_stress_score": {
+            "mean": 0.4645761937033279,
+            "std": 0.03764941174650548,
+            "min": 0.36773799346582053,
+            "max": 0.5360864021667829,
+            "median": 0.4682123070654529
+          }
+        },
+        "frame_count": 61,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/4.mp4",
+      "file_name": "4.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 13.2231561635785,
+        "frame_count": 62,
+        "width": 480,
+        "height": 880,
+        "duration_seconds": 4.688744444444445
+      },
+      "processing_metrics": {
+        "processing_time": 0.24785137176513672,
+        "frames_processed": 11,
+        "faces_detected": 11,
+        "detection_rate": 1.0,
+        "fps_achieved": 44.38143683313389
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 134.75483332117767,
+            "std": 1.2374409957599846,
+            "min": 132.23085872821062,
+            "max": 136.43005533972345,
+            "median": 134.9988148096123
+          },
+          "left_eye_openness": {
+            "mean": 0.15450833141454673,
+            "std": 0.008636682803416501,
+            "min": 0.139937106918239,
+            "max": 0.16666666666666666,
+            "median": 0.15522875816993464
+          },
+          "right_eye_openness": {
+            "mean": 0.15262088974854932,
+            "std": 0.009345481779946041,
+            "min": 0.135,
+            "max": 0.17,
+            "median": 0.15
+          },
+          "avg_eye_openness": {
+            "mean": 0.15356461058154802,
+            "std": 0.006686742688984237,
+            "min": 0.14309780515979975,
+            "max": 0.16156462585034015,
+            "median": 0.15666666666666668
+          },
+          "mouth_compression": {
+            "mean": 0.12039410005579071,
+            "std": 0.07638770049981122,
+            "min": 0.010416666666666666,
+            "max": 0.23255813953488372,
+            "median": 0.125
+          },
+          "cognitive_stress_score": {
+            "mean": 0.45949765205029486,
+            "std": 0.027025263309424057,
+            "min": 0.4229539091943632,
+            "max": 0.5076096338919137,
+            "median": 0.45323183924531113
+          }
+        },
+        "frame_count": 11,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/7.mp4",
+      "file_name": "7.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 10.024670086541096,
+        "frame_count": 256,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 25.537000000000003
+      },
+      "processing_metrics": {
+        "processing_time": 1.5824427604675293,
+        "frames_processed": 52,
+        "faces_detected": 52,
+        "detection_rate": 1.0,
+        "fps_achieved": 32.860588262059295
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 147.4988634141661,
+            "std": 2.7380339644908203,
+            "min": 142.4724534778566,
+            "max": 155.5750622689896,
+            "median": 147.27429556809804
+          },
+          "left_eye_openness": {
+            "mean": 0.13749020472219767,
+            "std": 0.016611936312345355,
+            "min": 0.0592948717948718,
+            "max": 0.165,
+            "median": 0.139937106918239
+          },
+          "right_eye_openness": {
+            "mean": 0.17716092999587157,
+            "std": 0.019160319423071934,
+            "min": 0.09064327485380118,
+            "max": 0.21296296296296297,
+            "median": 0.1759987188446308
+          },
+          "avg_eye_openness": {
+            "mean": 0.1573255673590346,
+            "std": 0.014924582004609659,
+            "min": 0.07496907332433649,
+            "max": 0.18477272727272728,
+            "median": 0.15871863985071533
+          },
+          "mouth_compression": {
+            "mean": 0.17646765556868976,
+            "std": 0.0704387134585059,
+            "min": 0.009900990099009901,
+            "max": 0.33663366336633666,
+            "median": 0.1738888888888889
+          },
+          "cognitive_stress_score": {
+            "mean": 0.3970727143102048,
+            "std": 0.02217282097965941,
+            "min": 0.33879558124709036,
+            "max": 0.4535210549287048,
+            "median": 0.396073220082767
+          }
+        },
+        "frame_count": 52,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    },
+    {
+      "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/8.mp4",
+      "file_name": "8.mp4",
+      "processing_successful": true,
+      "error": null,
+      "metrics": {},
+      "video_metadata": {
+        "fps": 15.07725148440981,
+        "frame_count": 97,
+        "width": 1280,
+        "height": 720,
+        "duration_seconds": 6.433533333333334
+      },
+      "processing_metrics": {
+        "processing_time": 0.5982546806335449,
+        "frames_processed": 14,
+        "faces_detected": 14,
+        "detection_rate": 1.0,
+        "fps_achieved": 23.40140487521829
+      },
+      "cognitive_analysis": {
+        "metric_statistics": {
+          "brow_furrow_distance": {
+            "mean": 181.9004396305394,
+            "std": 3.7836194975464355,
+            "min": 176.1891029547514,
+            "max": 191.9620795886521,
+            "median": 181.66518923255327
+          },
+          "left_eye_openness": {
+            "mean": 0.09086557614803337,
+            "std": 0.026173302051361064,
+            "min": 0.023284313725490197,
+            "max": 0.13480392156862744,
+            "median": 0.08843325791855204
+          },
+          "right_eye_openness": {
+            "mean": 0.1765505304155705,
+            "std": 0.026469872626110547,
+            "min": 0.09270833333333334,
+            "max": 0.20652173913043478,
+            "median": 0.1787157960199005
+          },
+          "avg_eye_openness": {
+            "mean": 0.13370805328180196,
+            "std": 0.021636316801297906,
+            "min": 0.05799632352941177,
+            "max": 0.14875116713352007,
+            "median": 0.13883616383616385
+          },
+          "mouth_compression": {
+            "mean": 0.11446839982863646,
+            "std": 0.08466266728675104,
+            "min": 0.0,
+            "max": 0.2706766917293233,
+            "median": 0.1136923076923077
+          },
+          "cognitive_stress_score": {
+            "mean": 0.31093971686138927,
+            "std": 0.03187075174028071,
+            "min": 0.24733845013793102,
+            "max": 0.3645259068174953,
+            "median": 0.30701866114448734
+          }
+        },
+        "frame_count": 14,
+        "stress_score_trend": {
+          "increasing": false,
+          "decreasing": false,
+          "stable": true
+        }
+      }
+    }
+  ],
+  "aggregate_metrics": {
+    "successful_validations": 20,
+    "failed_validations": 0,
+    "success_rate": 1.0,
+    "total_frames_processed": 687,
+    "total_faces_detected": 687,
+    "average_detection_rate": 1.0,
+    "detection_rate_std": 0.0,
+    "min_detection_rate": 1.0,
+    "max_detection_rate": 1.0
+  },
+  "timestamp": "2025-06-20T20:07:56.700547",
+  "video_categories": {
+    "real_face_videos": [
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/3.mp4",
+        "file_name": "3.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.0,
+          "frame_count": 545,
+          "width": 368,
+          "height": 640,
+          "duration_seconds": 18.166666666666668
+        },
+        "processing_metrics": {
+          "processing_time": 0.8868088722229004,
+          "frames_processed": 37,
+          "faces_detected": 37,
+          "detection_rate": 1.0,
+          "fps_achieved": 41.72263174054038
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 113.26225424749049,
+              "std": 1.2890937812372725,
+              "min": 110.59131973170408,
+              "max": 116.08014472768375,
+              "median": 113.24045213615143
+            },
+            "left_eye_openness": {
+              "mean": 0.08900612060566468,
+              "std": 0.020027867618937444,
+              "min": 0.05442176870748299,
+              "max": 0.16071428571428573,
+              "median": 0.0851063829787234
+            },
+            "right_eye_openness": {
+              "mean": 0.13597157283210956,
+              "std": 0.022983376325677048,
+              "min": 0.09552845528455284,
+              "max": 0.18333333333333332,
+              "median": 0.13596491228070176
+            },
+            "avg_eye_openness": {
+              "mean": 0.11248884671888712,
+              "std": 0.011743736197338601,
+              "min": 0.08062968777254492,
+              "max": 0.13726771196283394,
+              "median": 0.11345663265306122
+            },
+            "mouth_compression": {
+              "mean": 0.10483545283804174,
+              "std": 0.06864407083159423,
+              "min": 0.0,
+              "max": 0.2222222222222222,
+              "median": 0.10144927536231885
+            },
+            "cognitive_stress_score": {
+              "mean": 0.550017719322722,
+              "std": 0.02141239703591257,
+              "min": 0.5133473148443577,
+              "max": 0.5877406168455719,
+              "median": 0.5486875278912372
+            }
+          },
+          "frame_count": 37,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/4.mp4",
+        "file_name": "4.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.0,
+          "frame_count": 86,
+          "width": 368,
+          "height": 640,
+          "duration_seconds": 2.8666666666666667
+        },
+        "processing_metrics": {
+          "processing_time": 0.20101451873779297,
+          "frames_processed": 6,
+          "faces_detected": 6,
+          "detection_rate": 1.0,
+          "fps_achieved": 29.84859022957695
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 124.14927089649768,
+              "std": 3.255539259175969,
+              "min": 119.59816052097123,
+              "max": 128.8949960238954,
+              "median": 124.78315210792738
+            },
+            "left_eye_openness": {
+              "mean": 0.1692767447966145,
+              "std": 0.02485696259842279,
+              "min": 0.13405797101449277,
+              "max": 0.20185185185185187,
+              "median": 0.16949969164353992
+            },
+            "right_eye_openness": {
+              "mean": 0.09624017957351293,
+              "std": 0.01845628167062205,
+              "min": 0.057407407407407414,
+              "max": 0.11363636363636363,
+              "median": 0.10092592592592592
+            },
+            "avg_eye_openness": {
+              "mean": 0.1327584621850637,
+              "std": 0.019824553606061508,
+              "min": 0.09573268921095009,
+              "max": 0.15585016835016835,
+              "median": 0.13597678916827854
+            },
+            "mouth_compression": {
+              "mean": 0.1132145912499987,
+              "std": 0.06398574056073027,
+              "min": 0.0,
+              "max": 0.18823529411764706,
+              "median": 0.12709374081692626
+            },
+            "cognitive_stress_score": {
+              "mean": 0.5041780791999869,
+              "std": 0.02495079677919031,
+              "min": 0.4660346991650836,
+              "max": 0.535947806186826,
+              "median": 0.5068603380725933
+            }
+          },
+          "frame_count": 6,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/7.mp4",
+        "file_name": "7.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 29.937440147494474,
+          "frame_count": 446,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 14.897733333333333
+        },
+        "processing_metrics": {
+          "processing_time": 2.7565956115722656,
+          "frames_processed": 32,
+          "faces_detected": 32,
+          "detection_rate": 1.0,
+          "fps_achieved": 11.608521709046878
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 159.01245756668,
+              "std": 4.093847652855403,
+              "min": 140.42976892382896,
+              "max": 164.04109241284633,
+              "median": 159.80800981177384
+            },
+            "left_eye_openness": {
+              "mean": 0.10885096639866684,
+              "std": 0.019418513705760265,
+              "min": 0.07240437158469946,
+              "max": 0.16228070175438597,
+              "median": 0.10804597701149425
+            },
+            "right_eye_openness": {
+              "mean": 0.11198533591631399,
+              "std": 0.015275334299172605,
+              "min": 0.08611111111111111,
+              "max": 0.14242424242424243,
+              "median": 0.11159003831417624
+            },
+            "avg_eye_openness": {
+              "mean": 0.11041815115749042,
+              "std": 0.013828078552023086,
+              "min": 0.0866407822835778,
+              "max": 0.15235247208931418,
+              "median": 0.11047734430807196
+            },
+            "mouth_compression": {
+              "mean": 0.13144653348820207,
+              "std": 0.0747377717184144,
+              "min": 0.0,
+              "max": 0.26126126126126126,
+              "median": 0.14614614614614613
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3893369132291691,
+              "std": 0.026202158606561707,
+              "min": 0.3369362048259574,
+              "max": 0.43248649546934664,
+              "median": 0.3822407393513776
+            }
+          },
+          "frame_count": 32,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/1/8.mp4",
+        "file_name": "8.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 29.951457981891416,
+          "frame_count": 174,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 5.8094
+        },
+        "processing_metrics": {
+          "processing_time": 0.9777143001556396,
+          "frames_processed": 13,
+          "faces_detected": 13,
+          "detection_rate": 1.0,
+          "fps_achieved": 13.296317746329951
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 163.61237470532217,
+              "std": 6.700177739940408,
+              "min": 145.14268841385015,
+              "max": 171.90346127987075,
+              "median": 162.7034111504734
+            },
+            "left_eye_openness": {
+              "mean": 0.12153784110096331,
+              "std": 0.028179066777814947,
+              "min": 0.0582010582010582,
+              "max": 0.15789473684210525,
+              "median": 0.1278735632183908
+            },
+            "right_eye_openness": {
+              "mean": 0.13481748826200712,
+              "std": 0.02680055234797736,
+              "min": 0.06640625,
+              "max": 0.17514124293785313,
+              "median": 0.13844086021505378
+            },
+            "avg_eye_openness": {
+              "mean": 0.12817766468148523,
+              "std": 0.025310088514584037,
+              "min": 0.0623036541005291,
+              "max": 0.16029789419619928,
+              "median": 0.1320754716981132
+            },
+            "mouth_compression": {
+              "mean": 0.12774992134226357,
+              "std": 0.09129632115040891,
+              "min": 0.008771929824561403,
+              "max": 0.2608695652173913,
+              "median": 0.14018691588785046
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3693162223076766,
+              "std": 0.034778389164754474,
+              "min": 0.31791314981829966,
+              "max": 0.4147314843244762,
+              "median": 0.3709661882755612
+            }
+          },
+          "frame_count": 13,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/3.mp4",
+        "file_name": "3.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 29.836300451164494,
+          "frame_count": 609,
+          "width": 480,
+          "height": 864,
+          "duration_seconds": 20.411377777777776
+        },
+        "processing_metrics": {
+          "processing_time": 1.899254322052002,
+          "frames_processed": 44,
+          "faces_detected": 44,
+          "detection_rate": 1.0,
+          "fps_achieved": 23.166986900659676
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 120.70000008600637,
+              "std": 1.1273368303089606,
+              "min": 118.22047200041115,
+              "max": 123.54189572772468,
+              "median": 120.86430187255868
+            },
+            "left_eye_openness": {
+              "mean": 0.10156543796067648,
+              "std": 0.013670716033779314,
+              "min": 0.06851851851851852,
+              "max": 0.12588652482269505,
+              "median": 0.10144927536231885
+            },
+            "right_eye_openness": {
+              "mean": 0.13443736434418024,
+              "std": 0.014304151515377464,
+              "min": 0.09469696969696971,
+              "max": 0.16296296296296295,
+              "median": 0.1358695652173913
+            },
+            "avg_eye_openness": {
+              "mean": 0.11800140115242837,
+              "std": 0.011304653811320642,
+              "min": 0.08160774410774412,
+              "max": 0.1369949494949495,
+              "median": 0.11922688183095215
+            },
+            "mouth_compression": {
+              "mean": 0.12447439660569654,
+              "std": 0.0798736596925455,
+              "min": 0.0,
+              "max": 0.2967032967032967,
+              "median": 0.13311862587224904
+            },
+            "cognitive_stress_score": {
+              "mean": 0.5168414004606038,
+              "std": 0.027419684465113073,
+              "min": 0.45726693573118843,
+              "max": 0.5695961819963848,
+              "median": 0.5167834209735582
+            }
+          },
+          "frame_count": 44,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/4.mp4",
+        "file_name": "4.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 29.93227920033939,
+          "frame_count": 127,
+          "width": 480,
+          "height": 864,
+          "duration_seconds": 4.242911111111111
+        },
+        "processing_metrics": {
+          "processing_time": 0.2642807960510254,
+          "frames_processed": 10,
+          "faces_detected": 10,
+          "detection_rate": 1.0,
+          "fps_achieved": 37.83854199557229
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 122.15945571155967,
+              "std": 1.0767452138238018,
+              "min": 119.56721958797901,
+              "max": 123.73714074601854,
+              "median": 122.36542334151939
+            },
+            "left_eye_openness": {
+              "mean": 0.09694701408161169,
+              "std": 0.007686957486223837,
+              "min": 0.08514492753623189,
+              "max": 0.1099290780141844,
+              "median": 0.09794685990338164
+            },
+            "right_eye_openness": {
+              "mean": 0.13286517756192825,
+              "std": 0.005568146233013782,
+              "min": 0.12411347517730496,
+              "max": 0.14130434782608695,
+              "median": 0.13296346618357488
+            },
+            "avg_eye_openness": {
+              "mean": 0.11490609582176996,
+              "std": 0.00505113257517252,
+              "min": 0.10835303388494878,
+              "max": 0.12561671292013568,
+              "median": 0.11394550120772948
+            },
+            "mouth_compression": {
+              "mean": 0.09040195064373092,
+              "std": 0.10224244047760114,
+              "min": 0.0,
+              "max": 0.3076923076923077,
+              "median": 0.04862068965517241
+            },
+            "cognitive_stress_score": {
+              "mean": 0.5243657988063009,
+              "std": 0.03441382882795979,
+              "min": 0.4535287452441635,
+              "max": 0.5646068525811329,
+              "median": 0.5349122968687361
+            }
+          },
+          "frame_count": 10,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/7.mp4",
+        "file_name": "7.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 29.996072527328664,
+          "frame_count": 611,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 20.369333333333334
+        },
+        "processing_metrics": {
+          "processing_time": 3.641615867614746,
+          "frames_processed": 44,
+          "faces_detected": 44,
+          "detection_rate": 1.0,
+          "fps_achieved": 12.082548406957581
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 164.18075283499658,
+              "std": 1.5700140089512302,
+              "min": 160.90307641558624,
+              "max": 167.4488578641252,
+              "median": 164.14840180970359
+            },
+            "left_eye_openness": {
+              "mean": 0.09776057424879828,
+              "std": 0.014941671300597495,
+              "min": 0.07258064516129033,
+              "max": 0.134180790960452,
+              "median": 0.09791666666666668
+            },
+            "right_eye_openness": {
+              "mean": 0.10163514124519336,
+              "std": 0.018008180128996888,
+              "min": 0.04487179487179487,
+              "max": 0.12568306010928962,
+              "median": 0.10483870967741936
+            },
+            "avg_eye_openness": {
+              "mean": 0.09969785774699581,
+              "std": 0.012126562168580903,
+              "min": 0.06007030603804797,
+              "max": 0.11434665899721982,
+              "median": 0.1018664272034944
+            },
+            "mouth_compression": {
+              "mean": 0.12919758509926543,
+              "std": 0.08829528002360973,
+              "min": 0.0,
+              "max": 0.304,
+              "median": 0.13761467889908258
+            },
+            "cognitive_stress_score": {
+              "mean": 0.37643234293459094,
+              "std": 0.03131236265777041,
+              "min": 0.31138941965520467,
+              "max": 0.42765705051765,
+              "median": 0.3736469890744992
+            }
+          },
+          "frame_count": 44,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/10/8.mp4",
+        "file_name": "8.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.009405933202945,
+          "frame_count": 134,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 4.4652666666666665
+        },
+        "processing_metrics": {
+          "processing_time": 1.0485548973083496,
+          "frames_processed": 9,
+          "faces_detected": 9,
+          "detection_rate": 1.0,
+          "fps_achieved": 8.583241586208873
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 161.182422733203,
+              "std": 1.3182234128420458,
+              "min": 159.1336545172014,
+              "max": 163.15894091345407,
+              "median": 161.28905728535958
+            },
+            "left_eye_openness": {
+              "mean": 0.10232118454217982,
+              "std": 0.014159063027742764,
+              "min": 0.08192090395480225,
+              "max": 0.125,
+              "median": 0.10416666666666667
+            },
+            "right_eye_openness": {
+              "mean": 0.08448684837600341,
+              "std": 0.008605617920608818,
+              "min": 0.07344632768361581,
+              "max": 0.09887005649717513,
+              "median": 0.08333333333333334
+            },
+            "avg_eye_openness": {
+              "mean": 0.09340401645909163,
+              "std": 0.00751515246757914,
+              "min": 0.08545197740112995,
+              "max": 0.11193502824858756,
+              "median": 0.09141428174492915
+            },
+            "mouth_compression": {
+              "mean": 0.08440830237205726,
+              "std": 0.09152055145657247,
+              "min": 0.0,
+              "max": 0.21551724137931033,
+              "median": 0.02247191011235955
+            },
+            "cognitive_stress_score": {
+              "mean": 0.40345448461227373,
+              "std": 0.029101964337337288,
+              "min": 0.3607498105131845,
+              "max": 0.4357905388666088,
+              "median": 0.4231158221667532
+            }
+          },
+          "frame_count": 9,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/3.mp4",
+        "file_name": "3.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 59.96151026392962,
+          "frame_count": 2181,
+          "width": 480,
+          "height": 848,
+          "duration_seconds": 36.373333333333335
+        },
+        "processing_metrics": {
+          "processing_time": 3.478968381881714,
+          "frames_processed": 76,
+          "faces_detected": 76,
+          "detection_rate": 1.0,
+          "fps_achieved": 21.84555639993857
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 155.87079600488107,
+              "std": 1.503576495705557,
+              "min": 152.4335920983298,
+              "max": 160.95415496345535,
+              "median": 155.8040698396282
+            },
+            "left_eye_openness": {
+              "mean": 0.13649502929342863,
+              "std": 0.01531083637617766,
+              "min": 0.06481481481481481,
+              "max": 0.16810344827586207,
+              "median": 0.1375
+            },
+            "right_eye_openness": {
+              "mean": 0.13182115587047957,
+              "std": 0.011935378271620181,
+              "min": 0.07083333333333333,
+              "max": 0.15058479532163743,
+              "median": 0.13450292397660818
+            },
+            "avg_eye_openness": {
+              "mean": 0.1341580925819541,
+              "std": 0.01141833286630912,
+              "min": 0.07060185185185185,
+              "max": 0.14823202805376973,
+              "median": 0.13512829566854992
+            },
+            "mouth_compression": {
+              "mean": 0.040473436288883,
+              "std": 0.036495805656386035,
+              "min": 0.0,
+              "max": 0.11009174311926606,
+              "median": 0.02857402031930334
+            },
+            "cognitive_stress_score": {
+              "mean": 0.42222017036011744,
+              "std": 0.01225591352148912,
+              "min": 0.3937530417440878,
+              "max": 0.44347601606100184,
+              "median": 0.42410689745924274
+            }
+          },
+          "frame_count": 76,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/4.mp4",
+        "file_name": "4.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 59.954116747387204,
+          "frame_count": 392,
+          "width": 480,
+          "height": 848,
+          "duration_seconds": 6.538333333333333
+        },
+        "processing_metrics": {
+          "processing_time": 0.5851409435272217,
+          "frames_processed": 14,
+          "faces_detected": 14,
+          "detection_rate": 1.0,
+          "fps_achieved": 23.9258594956767
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 152.75733433087348,
+              "std": 1.4617825165658587,
+              "min": 150.81392508651183,
+              "max": 155.88829333853138,
+              "median": 152.1457693088222
+            },
+            "left_eye_openness": {
+              "mean": 0.1357248778011517,
+              "std": 0.015457611804864345,
+              "min": 0.08333333333333334,
+              "max": 0.1486111111111111,
+              "median": 0.13912835249042146
+            },
+            "right_eye_openness": {
+              "mean": 0.16993720869925388,
+              "std": 0.021224466146486043,
+              "min": 0.10087719298245613,
+              "max": 0.19047619047619047,
+              "median": 0.17481203007518797
+            },
+            "avg_eye_openness": {
+              "mean": 0.15283104325020277,
+              "std": 0.017465946921200574,
+              "min": 0.09210526315789475,
+              "max": 0.16587057010785822,
+              "median": 0.156113388716043
+            },
+            "mouth_compression": {
+              "mean": 0.037925854251480554,
+              "std": 0.029855155594575834,
+              "min": 0.0,
+              "max": 0.09090909090909091,
+              "median": 0.035789473684210524
+            },
+            "cognitive_stress_score": {
+              "mean": 0.4272232530631939,
+              "std": 0.009717549429537132,
+              "min": 0.4106797969119314,
+              "max": 0.4457037117249538,
+              "median": 0.427842820138579
+            }
+          },
+          "frame_count": 14,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/7.mp4",
+        "file_name": "7.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.032825812896153,
+          "frame_count": 914,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 30.433366666666664
+        },
+        "processing_metrics": {
+          "processing_time": 6.315701484680176,
+          "frames_processed": 61,
+          "faces_detected": 61,
+          "detection_rate": 1.0,
+          "fps_achieved": 9.65846789117029
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 189.17234532754148,
+              "std": 2.3325549206256304,
+              "min": 184.95848182767944,
+              "max": 195.07178165998275,
+              "median": 188.77722320237683
+            },
+            "left_eye_openness": {
+              "mean": 0.16242014699492688,
+              "std": 0.011131202358709798,
+              "min": 0.1322222222222222,
+              "max": 0.18504901960784315,
+              "median": 0.1632420091324201
+            },
+            "right_eye_openness": {
+              "mean": 0.12922922838456558,
+              "std": 0.008422166545998576,
+              "min": 0.11187214611872145,
+              "max": 0.14814814814814814,
+              "median": 0.12899543378995432
+            },
+            "avg_eye_openness": {
+              "mean": 0.14582468768974624,
+              "std": 0.00731688959042652,
+              "min": 0.12456018518518518,
+              "max": 0.1597222222222222,
+              "median": 0.14733400402414487
+            },
+            "mouth_compression": {
+              "mean": 0.08955103880887816,
+              "std": 0.05708322652719306,
+              "min": 0.0,
+              "max": 0.19285714285714287,
+              "median": 0.1111111111111111
+            },
+            "cognitive_stress_score": {
+              "mean": 0.29096694007532037,
+              "std": 0.020289966998104984,
+              "min": 0.24470050782023792,
+              "max": 0.3336519936045992,
+              "median": 0.2909000835587546
+            }
+          },
+          "frame_count": 61,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/2/8.mp4",
+        "file_name": "8.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.060289456944545,
+          "frame_count": 178,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 5.921433333333334
+        },
+        "processing_metrics": {
+          "processing_time": 1.3835432529449463,
+          "frames_processed": 12,
+          "faces_detected": 12,
+          "detection_rate": 1.0,
+          "fps_achieved": 8.673382617028672
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 159.33544684146958,
+              "std": 1.3198660901354207,
+              "min": 155.64163967267885,
+              "max": 160.8161683413704,
+              "median": 159.67828246652516
+            },
+            "left_eye_openness": {
+              "mean": 0.13334884698095656,
+              "std": 0.004488239925270051,
+              "min": 0.125,
+              "max": 0.14124293785310735,
+              "median": 0.13347214877489863
+            },
+            "right_eye_openness": {
+              "mean": 0.1304613386152333,
+              "std": 0.0061206555860032095,
+              "min": 0.11559139784946237,
+              "max": 0.1388888888888889,
+              "median": 0.13086613814470568
+            },
+            "avg_eye_openness": {
+              "mean": 0.13190509279809495,
+              "std": 0.0040669239246577515,
+              "min": 0.1251568100358423,
+              "max": 0.13912429378531074,
+              "median": 0.1321348566308244
+            },
+            "mouth_compression": {
+              "mean": 0.07817412798651284,
+              "std": 0.058019136896315944,
+              "min": 0.0,
+              "max": 0.1623931623931624,
+              "median": 0.08121723460026212
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3988554369335655,
+              "std": 0.01999900539967292,
+              "min": 0.36890238494063227,
+              "max": 0.4314864364959669,
+              "median": 0.39560547154677966
+            }
+          },
+          "frame_count": 12,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/3.mp4",
+        "file_name": "3.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.002005275416867,
+          "frame_count": 1167,
+          "width": 1920,
+          "height": 1080,
+          "duration_seconds": 38.8974
+        },
+        "processing_metrics": {
+          "processing_time": 19.471770763397217,
+          "frames_processed": 78,
+          "faces_detected": 78,
+          "detection_rate": 1.0,
+          "fps_achieved": 4.005799007588123
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 266.16894861434554,
+              "std": 4.321564732713414,
+              "min": 242.65077786811239,
+              "max": 273.5182626443799,
+              "median": 266.3258866789244
+            },
+            "left_eye_openness": {
+              "mean": 6.119382727315419,
+              "std": 2.0849559096959562,
+              "min": 3.5416666666666665,
+              "max": 13.944444444444445,
+              "median": 5.65625
+            },
+            "right_eye_openness": {
+              "mean": 13.649426152551154,
+              "std": 9.226001528344652,
+              "min": 3.2878787878787876,
+              "max": 49.5,
+              "median": 10.05
+            },
+            "avg_eye_openness": {
+              "mean": 9.884404439933284,
+              "std": 4.610196041405129,
+              "min": 5.916666666666666,
+              "max": 28.716666666666665,
+              "median": 8.371875
+            },
+            "mouth_compression": {
+              "mean": 0.14737342337463225,
+              "std": 0.11531894792449293,
+              "min": 0.0,
+              "max": 0.5,
+              "median": 0.12916666666666665
+            },
+            "cognitive_stress_score": {
+              "mean": -3.2311557831504576,
+              "std": 1.5299482905579922,
+              "min": -9.475102533675022,
+              "max": -1.9316633409327528,
+              "median": -2.7048268570734795
+            }
+          },
+          "frame_count": 78,
+          "stress_score_trend": {
+            "increasing": true,
+            "decreasing": false,
+            "stable": false
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/4.mp4",
+        "file_name": "4.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.00200013334222,
+          "frame_count": 245,
+          "width": 1920,
+          "height": 1080,
+          "duration_seconds": 8.166122222222223
+        },
+        "processing_metrics": {
+          "processing_time": 4.166006326675415,
+          "frames_processed": 17,
+          "faces_detected": 17,
+          "detection_rate": 1.0,
+          "fps_achieved": 4.080646707410658
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 266.7785218993845,
+              "std": 5.5917181619898155,
+              "min": 248.52243359503788,
+              "max": 275.10608862764195,
+              "median": 266.9862168727068
+            },
+            "left_eye_openness": {
+              "mean": 23.807598039215684,
+              "std": 17.94772946998152,
+              "min": 0.0,
+              "max": 49.416666666666664,
+              "median": 24.25
+            },
+            "right_eye_openness": {
+              "mean": 6.637656059898707,
+              "std": 4.129677503396573,
+              "min": 2.703125,
+              "max": 22.541666666666668,
+              "median": 5.703703703703704
+            },
+            "avg_eye_openness": {
+              "mean": 15.222627049557198,
+              "std": 9.39457015320155,
+              "min": 2.458333333333333,
+              "max": 27.546875,
+              "median": 14.907407407407408
+            },
+            "mouth_compression": {
+              "mean": 0.16581114963467905,
+              "std": 0.14382333255128046,
+              "min": 0.0,
+              "max": 0.5,
+              "median": 0.14285714285714285
+            },
+            "cognitive_stress_score": {
+              "mean": -5.01874113939524,
+              "std": 3.1282785208178923,
+              "min": -9.08179782563843,
+              "max": -0.7514955491160816,
+              "median": -4.948794473562766
+            }
+          },
+          "frame_count": 17,
+          "stress_score_trend": {
+            "increasing": true,
+            "decreasing": false,
+            "stable": false
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/7.mp4",
+        "file_name": "7.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.033085543850632,
+          "frame_count": 1161,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 38.65736666666667
+        },
+        "processing_metrics": {
+          "processing_time": 9.436503410339355,
+          "frames_processed": 78,
+          "faces_detected": 78,
+          "detection_rate": 1.0,
+          "fps_achieved": 8.265773518879591
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 169.86751512368033,
+              "std": 1.6636762085093755,
+              "min": 165.43772242145988,
+              "max": 174.05217608521875,
+              "median": 169.7254821951644
+            },
+            "left_eye_openness": {
+              "mean": 0.1408063328597505,
+              "std": 0.013820843777503908,
+              "min": 0.0784313725490196,
+              "max": 0.16527777777777777,
+              "median": 0.141331711896228
+            },
+            "right_eye_openness": {
+              "mean": 0.12499431670770449,
+              "std": 0.013800692115928504,
+              "min": 0.06746031746031746,
+              "max": 0.1486111111111111,
+              "median": 0.1270166536559979
+            },
+            "avg_eye_openness": {
+              "mean": 0.1329003247837275,
+              "std": 0.012008700670540863,
+              "min": 0.07294584500466852,
+              "max": 0.14860684417136033,
+              "median": 0.13584082496033845
+            },
+            "mouth_compression": {
+              "mean": 0.10900503589760237,
+              "std": 0.09730640710858554,
+              "min": 0.0,
+              "max": 0.31092436974789917,
+              "median": 0.13206311232627022
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3531398293606223,
+              "std": 0.0336575911496821,
+              "min": 0.2761044730996196,
+              "max": 0.4022518010532827,
+              "median": 0.3451510815819161
+            }
+          },
+          "frame_count": 78,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/3/8.mp4",
+        "file_name": "8.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 30.091774146438947,
+          "frame_count": 261,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 8.673466666666666
+        },
+        "processing_metrics": {
+          "processing_time": 2.419450521469116,
+          "frames_processed": 18,
+          "faces_detected": 18,
+          "detection_rate": 1.0,
+          "fps_achieved": 7.439705768014718
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 176.9831342411626,
+              "std": 1.1240673947565616,
+              "min": 175.071414000116,
+              "max": 179.26360478357006,
+              "median": 176.8812947144301
+            },
+            "left_eye_openness": {
+              "mean": 0.15322111693962756,
+              "std": 0.006846728122263352,
+              "min": 0.13762626262626262,
+              "max": 0.1721311475409836,
+              "median": 0.15192945075757575
+            },
+            "right_eye_openness": {
+              "mean": 0.12090562266375907,
+              "std": 0.008215683396088908,
+              "min": 0.11069651741293533,
+              "max": 0.13932291666666666,
+              "median": 0.11922530206112295
+            },
+            "avg_eye_openness": {
+              "mean": 0.1370633698016933,
+              "std": 0.005155095829200492,
+              "min": 0.13110583446404342,
+              "max": 0.15101066468253968,
+              "median": 0.136093385133023
+            },
+            "mouth_compression": {
+              "mean": 0.10868344096381788,
+              "std": 0.1173222712813208,
+              "min": 0.0,
+              "max": 0.30985915492957744,
+              "median": 0.01423324150596878
+            },
+            "cognitive_stress_score": {
+              "mean": 0.328140615607621,
+              "std": 0.04093443813163694,
+              "min": 0.258413583763582,
+              "max": 0.36964717459424795,
+              "median": 0.35672259235134174
+            }
+          },
+          "frame_count": 18,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": true,
+            "stable": false
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/3.mp4",
+        "file_name": "3.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 14.860806130258604,
+          "frame_count": 422,
+          "width": 480,
+          "height": 880,
+          "duration_seconds": 28.396844444444447
+        },
+        "processing_metrics": {
+          "processing_time": 1.9551117420196533,
+          "frames_processed": 61,
+          "faces_detected": 61,
+          "detection_rate": 1.0,
+          "fps_achieved": 31.20026272103828
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 126.12131968280362,
+              "std": 2.5411240882696924,
+              "min": 120.68206163303641,
+              "max": 131.01602955363896,
+              "median": 125.8840736550895
+            },
+            "left_eye_openness": {
+              "mean": 0.16971347877154827,
+              "std": 0.03063836699710753,
+              "min": 0.0960144927536232,
+              "max": 0.22291666666666665,
+              "median": 0.16666666666666666
+            },
+            "right_eye_openness": {
+              "mean": 0.1466725925564903,
+              "std": 0.02911767723403246,
+              "min": 0.03804347826086957,
+              "max": 0.19444444444444445,
+              "median": 0.15217391304347827
+            },
+            "avg_eye_openness": {
+              "mean": 0.15819303566401927,
+              "std": 0.025256189490296607,
+              "min": 0.07132670366944188,
+              "max": 0.20232117688513038,
+              "median": 0.15611083621969324
+            },
+            "mouth_compression": {
+              "mean": 0.18686518639796043,
+              "std": 0.1065072424496237,
+              "min": 0.0,
+              "max": 0.46511627906976744,
+              "median": 0.1839080459770115
+            },
+            "cognitive_stress_score": {
+              "mean": 0.4645761937033279,
+              "std": 0.03764941174650548,
+              "min": 0.36773799346582053,
+              "max": 0.5360864021667829,
+              "median": 0.4682123070654529
+            }
+          },
+          "frame_count": 61,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/4.mp4",
+        "file_name": "4.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 13.2231561635785,
+          "frame_count": 62,
+          "width": 480,
+          "height": 880,
+          "duration_seconds": 4.688744444444445
+        },
+        "processing_metrics": {
+          "processing_time": 0.24785137176513672,
+          "frames_processed": 11,
+          "faces_detected": 11,
+          "detection_rate": 1.0,
+          "fps_achieved": 44.38143683313389
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 134.75483332117767,
+              "std": 1.2374409957599846,
+              "min": 132.23085872821062,
+              "max": 136.43005533972345,
+              "median": 134.9988148096123
+            },
+            "left_eye_openness": {
+              "mean": 0.15450833141454673,
+              "std": 0.008636682803416501,
+              "min": 0.139937106918239,
+              "max": 0.16666666666666666,
+              "median": 0.15522875816993464
+            },
+            "right_eye_openness": {
+              "mean": 0.15262088974854932,
+              "std": 0.009345481779946041,
+              "min": 0.135,
+              "max": 0.17,
+              "median": 0.15
+            },
+            "avg_eye_openness": {
+              "mean": 0.15356461058154802,
+              "std": 0.006686742688984237,
+              "min": 0.14309780515979975,
+              "max": 0.16156462585034015,
+              "median": 0.15666666666666668
+            },
+            "mouth_compression": {
+              "mean": 0.12039410005579071,
+              "std": 0.07638770049981122,
+              "min": 0.010416666666666666,
+              "max": 0.23255813953488372,
+              "median": 0.125
+            },
+            "cognitive_stress_score": {
+              "mean": 0.45949765205029486,
+              "std": 0.027025263309424057,
+              "min": 0.4229539091943632,
+              "max": 0.5076096338919137,
+              "median": 0.45323183924531113
+            }
+          },
+          "frame_count": 11,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/7.mp4",
+        "file_name": "7.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 10.024670086541096,
+          "frame_count": 256,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 25.537000000000003
+        },
+        "processing_metrics": {
+          "processing_time": 1.5824427604675293,
+          "frames_processed": 52,
+          "faces_detected": 52,
+          "detection_rate": 1.0,
+          "fps_achieved": 32.860588262059295
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 147.4988634141661,
+              "std": 2.7380339644908203,
+              "min": 142.4724534778566,
+              "max": 155.5750622689896,
+              "median": 147.27429556809804
+            },
+            "left_eye_openness": {
+              "mean": 0.13749020472219767,
+              "std": 0.016611936312345355,
+              "min": 0.0592948717948718,
+              "max": 0.165,
+              "median": 0.139937106918239
+            },
+            "right_eye_openness": {
+              "mean": 0.17716092999587157,
+              "std": 0.019160319423071934,
+              "min": 0.09064327485380118,
+              "max": 0.21296296296296297,
+              "median": 0.1759987188446308
+            },
+            "avg_eye_openness": {
+              "mean": 0.1573255673590346,
+              "std": 0.014924582004609659,
+              "min": 0.07496907332433649,
+              "max": 0.18477272727272728,
+              "median": 0.15871863985071533
+            },
+            "mouth_compression": {
+              "mean": 0.17646765556868976,
+              "std": 0.0704387134585059,
+              "min": 0.009900990099009901,
+              "max": 0.33663366336633666,
+              "median": 0.1738888888888889
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3970727143102048,
+              "std": 0.02217282097965941,
+              "min": 0.33879558124709036,
+              "max": 0.4535210549287048,
+              "median": 0.396073220082767
+            }
+          },
+          "frame_count": 52,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      },
+      {
+        "video_path": "./live_face_datasets/selfies_videos_kaggle/files/4/8.mp4",
+        "file_name": "8.mp4",
+        "processing_successful": true,
+        "error": null,
+        "metrics": {},
+        "video_metadata": {
+          "fps": 15.07725148440981,
+          "frame_count": 97,
+          "width": 1280,
+          "height": 720,
+          "duration_seconds": 6.433533333333334
+        },
+        "processing_metrics": {
+          "processing_time": 0.5982546806335449,
+          "frames_processed": 14,
+          "faces_detected": 14,
+          "detection_rate": 1.0,
+          "fps_achieved": 23.40140487521829
+        },
+        "cognitive_analysis": {
+          "metric_statistics": {
+            "brow_furrow_distance": {
+              "mean": 181.9004396305394,
+              "std": 3.7836194975464355,
+              "min": 176.1891029547514,
+              "max": 191.9620795886521,
+              "median": 181.66518923255327
+            },
+            "left_eye_openness": {
+              "mean": 0.09086557614803337,
+              "std": 0.026173302051361064,
+              "min": 0.023284313725490197,
+              "max": 0.13480392156862744,
+              "median": 0.08843325791855204
+            },
+            "right_eye_openness": {
+              "mean": 0.1765505304155705,
+              "std": 0.026469872626110547,
+              "min": 0.09270833333333334,
+              "max": 0.20652173913043478,
+              "median": 0.1787157960199005
+            },
+            "avg_eye_openness": {
+              "mean": 0.13370805328180196,
+              "std": 0.021636316801297906,
+              "min": 0.05799632352941177,
+              "max": 0.14875116713352007,
+              "median": 0.13883616383616385
+            },
+            "mouth_compression": {
+              "mean": 0.11446839982863646,
+              "std": 0.08466266728675104,
+              "min": 0.0,
+              "max": 0.2706766917293233,
+              "median": 0.1136923076923077
+            },
+            "cognitive_stress_score": {
+              "mean": 0.31093971686138927,
+              "std": 0.03187075174028071,
+              "min": 0.24733845013793102,
+              "max": 0.3645259068174953,
+              "median": 0.30701866114448734
+            }
+          },
+          "frame_count": 14,
+          "stress_score_trend": {
+            "increasing": false,
+            "decreasing": false,
+            "stable": true
+          }
+        }
+      }
+    ],
+    "synthetic_face_videos": [],
+    "non_face_videos": [],
+    "corrupted_videos": []
+  },
+  "smart_metrics": {
+    "face_video_count": 20,
+    "real_face_video_count": 20,
+    "synthetic_face_video_count": 0,
+    "non_face_video_count": 0,
+    "average_face_detection_rate": 1.0,
+    "real_face_avg_detection": 1.0,
+    "synthetic_face_avg_detection": 0.0,
+    "recommendation": "SYSTEM_READY"
+  }
+}
