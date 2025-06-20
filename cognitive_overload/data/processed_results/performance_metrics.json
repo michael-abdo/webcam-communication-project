@@ -1,0 +1,12 @@
+{
+  "processing_time": 2.18,
+  "frames_processed": 90,
+  "frames_per_second": 41.4,
+  "real_time_factor": 13.8,
+  "memory_usage_mb": 181.5,
+  "memory_increase_mb": 62.9,
+  "real_time_suitable": true,
+  "memory_suitable": true,
+  "detection_rate": 1.0,
+  "timestamp_accurate": true
+}

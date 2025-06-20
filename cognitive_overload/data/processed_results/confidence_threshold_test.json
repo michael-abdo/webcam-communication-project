@@ -1,0 +1,23 @@
+{
+  "0.5": {
+    "frames_processed": 10,
+    "faces_detected": 10,
+    "detection_rate": 1.0,
+    "processing_time": 1.7892401218414307,
+    "landmarks_per_frame": 468
+  },
+  "0.7": {
+    "frames_processed": 10,
+    "faces_detected": 10,
+    "detection_rate": 1.0,
+    "processing_time": 1.6804416179656982,
+    "landmarks_per_frame": 468
+  },
+  "0.9": {
+    "frames_processed": 10,
+    "faces_detected": 0,
+    "detection_rate": 0.0,
+    "processing_time": 1.58473801612854,
+    "landmarks_per_frame": 468
+  }
+}

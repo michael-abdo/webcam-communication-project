@@ -1,0 +1,16 @@
+{
+  "single_face": {
+    "max_num_faces": 1,
+    "frames_processed": 6,
+    "faces_detected": 6,
+    "detection_rate": 1.0,
+    "landmarks_per_frame": 468
+  },
+  "multi_face": {
+    "max_num_faces": 2,
+    "frames_processed": 6,
+    "faces_detected": 6,
+    "detection_rate": 1.0,
+    "landmarks_per_frame": 468
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "dataset": "MobiFace",
+  "status": "manual_download_required",
+  "instructions": [
+    "1. Visit: https://mobiface.github.io/",
+    "2. Request access to dataset",
+    "3. Download files to this directory",
+    "4. Unzip all archives",
+    "5. Re-run validation script"
+  ],
+  "path": "./major_face_datasets/mobiface",
+  "downloaded_at": "2025-06-20T20:42:31.138068",
+  "description": "80 live-streaming mobile videos from 70 smartphone users"
+}

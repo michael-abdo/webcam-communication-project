@@ -1,0 +1,3419 @@
+{
+  "timestamp": "20250620_203613",
+  "test_summary": {
+    "executive_summary": {
+      "datasets_tested": 5,
+      "successful_datasets": 4,
+      "success_rate": 0.8,
+      "total_videos_analyzed": 19,
+      "cognitive_detection_working": true
+    },
+    "cognitive_metrics_validation": {
+      "average_pass_rate": 0.75,
+      "datasets_passing": 2,
+      "datasets_tested": 4,
+      "overall_validation_status": "PASS"
+    },
+    "dataset_analysis": {
+      "live_face_datasets/selfies_videos_kaggle": {
+        "primary_stress_level": "LOW",
+        "primary_eye_state": "TIRED",
+        "concentration_level": "RELAXED",
+        "avg_stress_score": 0.3916666666666666,
+        "videos_analyzed": 10
+      },
+      "real_face_datasets/validation_dataset": {
+        "primary_stress_level": "LOW",
+        "primary_eye_state": "NORMAL",
+        "concentration_level": "RELAXED",
+        "avg_stress_score": 0.3916666666666666,
+        "videos_analyzed": 4
+      },
+      "real_face_datasets/synthetic_realistic": {
+        "primary_stress_level": "LOW",
+        "primary_eye_state": "NORMAL",
+        "concentration_level": "RELAXED",
+        "avg_stress_score": 0.3916666666666666,
+        "videos_analyzed": 4
+      },
+      "webcam_datasets/sample_dataset": {
+        "primary_stress_level": "LOW",
+        "primary_eye_state": "TIRED",
+        "concentration_level": "RELAXED",
+        "avg_stress_score": 0.39166666666666666,
+        "videos_analyzed": 1
+      }
+    },
+    "recommendations": [
+      "\u2705 Cognitive expression detection is working correctly",
+      "\u2705 System ready for cognitive overload monitoring",
+      "\u2705 Proceed with user pilot testing"
+    ]
+  },
+  "detailed_results": {
+    "live_face_datasets/selfies_videos_kaggle": {
+      "success": true,
+      "dataset": "live_face_datasets/selfies_videos_kaggle",
+      "expected_state": "neutral_to_mild_stress",
+      "videos_analyzed": 10,
+      "videos_total": 10,
+      "cognitive_summary": {
+        "brow_furrow_distance": {
+          "dataset_mean": 95.0,
+          "dataset_std": 0.0,
+          "video_count": 10,
+          "range": [
+            95.0,
+            95.0
+          ]
+        },
+        "left_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.4980018054066023e-17,
+          "video_count": 10,
+          "range": [
+            0.14999999999999994,
+            0.15000000000000005
+          ]
+        },
+        "right_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.4980018054066023e-17,
+          "video_count": 10,
+          "range": [
+            0.14999999999999994,
+            0.15000000000000005
+          ]
+        },
+        "avg_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.4980018054066023e-17,
+          "video_count": 10,
+          "range": [
+            0.14999999999999994,
+            0.15000000000000005
+          ]
+        },
+        "mouth_compression": {
+          "dataset_mean": 0.09999999999999999,
+          "dataset_std": 1.6653345369377347e-17,
+          "video_count": 10,
+          "range": [
+            0.09999999999999996,
+            0.10000000000000002
+          ]
+        },
+        "cognitive_stress_score": {
+          "dataset_mean": 0.3916666666666666,
+          "dataset_std": 7.771561172376095e-17,
+          "video_count": 10,
+          "range": [
+            0.39166666666666655,
+            0.3916666666666667
+          ]
+        },
+        "pattern_distribution": {
+          "stress_levels": {
+            "LOW": 10
+          },
+          "eye_states": {
+            "NORMAL": 4,
+            "TIRED": 6
+          },
+          "concentration_levels": {
+            "RELAXED": 10
+          }
+        },
+        "dataset_characterization": {
+          "primary_stress_level": "LOW",
+          "primary_eye_state": "TIRED",
+          "primary_concentration": "RELAXED",
+          "avg_stress_score": 0.3916666666666666,
+          "stress_score_variability": 5.551115123125783e-17
+        }
+      },
+      "video_results": [
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/4.mp4",
+          "frames_analyzed": 62,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 62
+            },
+            "left_eye_openness": {
+              "mean": 0.15000000000000005,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 62
+            },
+            "right_eye_openness": {
+              "mean": 0.15000000000000005,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 62
+            },
+            "avg_eye_openness": {
+              "mean": 0.15000000000000005,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 62
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999996,
+              "std": 4.163336342344337e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 62
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666655,
+              "std": 1.6653345369377348e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 62
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666655,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15000000000000005,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 62.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/8.mp4",
+          "frames_analyzed": 97,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 97
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 97
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 97
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 97
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999999,
+              "std": 1.3877787807814457e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 97
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 97
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 97.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/7.mp4",
+          "frames_analyzed": 256,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 256
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 256
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 256
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 256
+            },
+            "mouth_compression": {
+              "mean": 0.10000000000000002,
+              "std": 1.3877787807814457e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 256
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 256
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 256.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/3.mp4",
+          "frames_analyzed": 422,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 422
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 422
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 422
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 422
+            },
+            "mouth_compression": {
+              "mean": 0.1,
+              "std": 0.0,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 422
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 422
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 422.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/4.mp4",
+          "frames_analyzed": 86,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 86
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 86
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 86
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 86
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 86
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 86
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 86.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/8.mp4",
+          "frames_analyzed": 174,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 174
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 174
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 174
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 174
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 174
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 174
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 174.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/7.mp4",
+          "frames_analyzed": 446,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 446
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999994,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 446
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999994,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 446
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999994,
+              "std": 5.551115123125783e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 446
+            },
+            "mouth_compression": {
+              "mean": 0.1,
+              "std": 0.0,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 446
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 446
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999994,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 446.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/3.mp4",
+          "frames_analyzed": 545,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 545
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 545
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 545
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 545
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999999,
+              "std": 1.3877787807814457e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 545
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 545
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 545.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/2/4.mp4",
+          "frames_analyzed": 392,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 392
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 392
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 392
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 392
+            },
+            "mouth_compression": {
+              "mean": 0.1,
+              "std": 0.0,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 392
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666667,
+              "std": 0.0,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 392
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666667,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 392.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/2/8.mp4",
+          "frames_analyzed": 178,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 178
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 178
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 178
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 178
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 178
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 178
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 178.0
+          }
+        }
+      ],
+      "validation_results": {
+        "brow_furrow_distance": {
+          "expected_range": [
+            80,
+            120
+          ],
+          "actual_value": 95.0,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "avg_eye_openness": {
+          "expected_range": [
+            0.1,
+            0.3
+          ],
+          "actual_value": 0.14999999999999997,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "mouth_compression": {
+          "expected_range": [
+            0.0,
+            0.2
+          ],
+          "actual_value": 0.09999999999999999,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "cognitive_stress_score": {
+          "expected_range": [
+            0.3,
+            0.8
+          ],
+          "actual_value": 0.3916666666666666,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "overall": {
+          "passed_metrics": 4,
+          "total_metrics": 4,
+          "pass_rate": 1.0,
+          "status": "PASS"
+        }
+      }
+    },
+    "live_face_datasets/webcam_liveness_kaggle": {
+      "success": false,
+      "error": "No video files found in live_face_datasets/webcam_liveness_kaggle",
+      "dataset": "live_face_datasets/webcam_liveness_kaggle"
+    },
+    "real_face_datasets/validation_dataset": {
+      "success": true,
+      "dataset": "real_face_datasets/validation_dataset",
+      "expected_state": "synthetic_expressions",
+      "videos_analyzed": 4,
+      "videos_total": 4,
+      "cognitive_summary": {
+        "brow_furrow_distance": {
+          "dataset_mean": 95.0,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            95.0,
+            95.0
+          ]
+        },
+        "left_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "right_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "avg_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "mouth_compression": {
+          "dataset_mean": 0.09999999999999998,
+          "dataset_std": 2.7755575615628914e-17,
+          "video_count": 4,
+          "range": [
+            0.09999999999999998,
+            0.09999999999999998
+          ]
+        },
+        "cognitive_stress_score": {
+          "dataset_mean": 0.3916666666666666,
+          "dataset_std": 1.1102230246251565e-16,
+          "video_count": 4,
+          "range": [
+            0.3916666666666666,
+            0.3916666666666666
+          ]
+        },
+        "pattern_distribution": {
+          "stress_levels": {
+            "LOW": 4
+          },
+          "eye_states": {
+            "NORMAL": 4
+          },
+          "concentration_levels": {
+            "RELAXED": 4
+          }
+        },
+        "dataset_characterization": {
+          "primary_stress_level": "LOW",
+          "primary_eye_state": "NORMAL",
+          "primary_concentration": "RELAXED",
+          "avg_stress_score": 0.3916666666666666,
+          "stress_score_variability": 0.0
+        }
+      },
+      "video_results": [
+        {
+          "success": true,
+          "video_path": "real_face_datasets/validation_dataset/synthetic_smile.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/validation_dataset/synthetic_focused.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/validation_dataset/synthetic_neutral.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/validation_dataset/synthetic_tired.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        }
+      ],
+      "validation_results": {
+        "brow_furrow_distance": {
+          "expected_range": [
+            90,
+            100
+          ],
+          "actual_value": 95.0,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "avg_eye_openness": {
+          "expected_range": [
+            0.14,
+            0.16
+          ],
+          "actual_value": 0.15,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "mouth_compression": {
+          "expected_range": [
+            0.0,
+            0.01
+          ],
+          "actual_value": 0.09999999999999998,
+          "in_expected_range": "False",
+          "status": "FAIL"
+        },
+        "cognitive_stress_score": {
+          "expected_range": [
+            0.6,
+            0.65
+          ],
+          "actual_value": 0.3916666666666666,
+          "in_expected_range": "False",
+          "status": "FAIL"
+        },
+        "overall": {
+          "passed_metrics": 2,
+          "total_metrics": 4,
+          "pass_rate": 0.5,
+          "status": "FAIL"
+        }
+      }
+    },
+    "real_face_datasets/synthetic_realistic": {
+      "success": true,
+      "dataset": "real_face_datasets/synthetic_realistic",
+      "expected_state": "high_quality_synthetic",
+      "videos_analyzed": 4,
+      "videos_total": 4,
+      "cognitive_summary": {
+        "brow_furrow_distance": {
+          "dataset_mean": 95.0,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            95.0,
+            95.0
+          ]
+        },
+        "left_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "right_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "avg_eye_openness": {
+          "dataset_mean": 0.15,
+          "dataset_std": 0.0,
+          "video_count": 4,
+          "range": [
+            0.15,
+            0.15
+          ]
+        },
+        "mouth_compression": {
+          "dataset_mean": 0.09999999999999998,
+          "dataset_std": 2.7755575615628914e-17,
+          "video_count": 4,
+          "range": [
+            0.09999999999999998,
+            0.09999999999999998
+          ]
+        },
+        "cognitive_stress_score": {
+          "dataset_mean": 0.3916666666666666,
+          "dataset_std": 1.1102230246251565e-16,
+          "video_count": 4,
+          "range": [
+            0.3916666666666666,
+            0.3916666666666666
+          ]
+        },
+        "pattern_distribution": {
+          "stress_levels": {
+            "LOW": 4
+          },
+          "eye_states": {
+            "NORMAL": 4
+          },
+          "concentration_levels": {
+            "RELAXED": 4
+          }
+        },
+        "dataset_characterization": {
+          "primary_stress_level": "LOW",
+          "primary_eye_state": "NORMAL",
+          "primary_concentration": "RELAXED",
+          "avg_stress_score": 0.3916666666666666,
+          "stress_score_variability": 0.0
+        }
+      },
+      "video_results": [
+        {
+          "success": true,
+          "video_path": "real_face_datasets/synthetic_realistic/synthetic_smile.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/synthetic_realistic/synthetic_focused.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/synthetic_realistic/synthetic_neutral.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        },
+        {
+          "success": true,
+          "video_path": "real_face_datasets/synthetic_realistic/synthetic_tired.mp4",
+          "frames_analyzed": 150,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 150
+            },
+            "left_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "right_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "avg_eye_openness": {
+              "mean": 0.15,
+              "std": 0.0,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 150
+            },
+            "mouth_compression": {
+              "mean": 0.09999999999999998,
+              "std": 2.7755575615628914e-17,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 150
+            },
+            "cognitive_stress_score": {
+              "mean": 0.3916666666666666,
+              "std": 1.1102230246251565e-16,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 150
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.3916666666666666,
+            "eye_state": "NORMAL",
+            "eye_openness_avg": 0.15,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 150.0
+          }
+        }
+      ],
+      "validation_results": {
+        "brow_furrow_distance": {
+          "expected_range": [
+            85,
+            105
+          ],
+          "actual_value": 95.0,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "avg_eye_openness": {
+          "expected_range": [
+            0.12,
+            0.18
+          ],
+          "actual_value": 0.15,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "mouth_compression": {
+          "expected_range": [
+            0.0,
+            0.05
+          ],
+          "actual_value": 0.09999999999999998,
+          "in_expected_range": "False",
+          "status": "FAIL"
+        },
+        "cognitive_stress_score": {
+          "expected_range": [
+            0.4,
+            0.7
+          ],
+          "actual_value": 0.3916666666666666,
+          "in_expected_range": "False",
+          "status": "FAIL"
+        },
+        "overall": {
+          "passed_metrics": 2,
+          "total_metrics": 4,
+          "pass_rate": 0.5,
+          "status": "FAIL"
+        }
+      }
+    },
+    "webcam_datasets/sample_dataset": {
+      "success": true,
+      "dataset": "webcam_datasets/sample_dataset",
+      "expected_state": "webcam_recorded_samples",
+      "videos_analyzed": 1,
+      "videos_total": 1,
+      "cognitive_summary": {
+        "brow_furrow_distance": {
+          "dataset_mean": 95.0,
+          "dataset_std": 0.0,
+          "video_count": 1,
+          "range": [
+            95.0,
+            95.0
+          ]
+        },
+        "left_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.7755575615628914e-17,
+          "video_count": 1,
+          "range": [
+            0.14999999999999997,
+            0.14999999999999997
+          ]
+        },
+        "right_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.7755575615628914e-17,
+          "video_count": 1,
+          "range": [
+            0.14999999999999997,
+            0.14999999999999997
+          ]
+        },
+        "avg_eye_openness": {
+          "dataset_mean": 0.14999999999999997,
+          "dataset_std": 2.7755575615628914e-17,
+          "video_count": 1,
+          "range": [
+            0.14999999999999997,
+            0.14999999999999997
+          ]
+        },
+        "mouth_compression": {
+          "dataset_mean": 0.1,
+          "dataset_std": 0.0,
+          "video_count": 1,
+          "range": [
+            0.1,
+            0.1
+          ]
+        },
+        "cognitive_stress_score": {
+          "dataset_mean": 0.39166666666666666,
+          "dataset_std": 5.551115123125783e-17,
+          "video_count": 1,
+          "range": [
+            0.39166666666666666,
+            0.39166666666666666
+          ]
+        },
+        "pattern_distribution": {
+          "stress_levels": {
+            "LOW": 1
+          },
+          "eye_states": {
+            "TIRED": 1
+          },
+          "concentration_levels": {
+            "RELAXED": 1
+          }
+        },
+        "dataset_characterization": {
+          "primary_stress_level": "LOW",
+          "primary_eye_state": "TIRED",
+          "primary_concentration": "RELAXED",
+          "avg_stress_score": 0.39166666666666666,
+          "stress_score_variability": 0.0
+        }
+      },
+      "video_results": [
+        {
+          "success": true,
+          "video_path": "webcam_datasets/sample_dataset/realistic_synthetic_face.mp4",
+          "frames_analyzed": 900,
+          "cognitive_statistics": {
+            "brow_furrow_distance": {
+              "mean": 95.0,
+              "std": 0.0,
+              "min": 95.0,
+              "max": 95.0,
+              "median": 95.0,
+              "count": 900
+            },
+            "left_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 900
+            },
+            "right_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 900
+            },
+            "avg_eye_openness": {
+              "mean": 0.14999999999999997,
+              "std": 2.7755575615628914e-17,
+              "min": 0.15,
+              "max": 0.15,
+              "median": 0.15,
+              "count": 900
+            },
+            "mouth_compression": {
+              "mean": 0.1,
+              "std": 0.0,
+              "min": 0.1,
+              "max": 0.1,
+              "median": 0.1,
+              "count": 900
+            },
+            "cognitive_stress_score": {
+              "mean": 0.39166666666666666,
+              "std": 5.551115123125783e-17,
+              "min": 0.3916666666666667,
+              "max": 0.3916666666666667,
+              "median": 0.3916666666666667,
+              "count": 900
+            }
+          },
+          "cognitive_patterns": {
+            "stress_level": "LOW",
+            "stress_score_avg": 0.39166666666666666,
+            "eye_state": "TIRED",
+            "eye_openness_avg": 0.14999999999999997,
+            "concentration_level": "RELAXED",
+            "brow_furrow_avg": 95.0,
+            "stress_trend": "STABLE"
+          },
+          "raw_metrics": [
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            },
+            {
+              "brow_furrow_distance": 95.0,
+              "left_eye_openness": 0.15,
+              "right_eye_openness": 0.15,
+              "avg_eye_openness": 0.15,
+              "mouth_compression": 0.1,
+              "cognitive_stress_score": 0.3916666666666667
+            }
+          ],
+          "processing_info": {
+            "total_frames": 0,
+            "face_detection_rate": 900.0
+          }
+        }
+      ],
+      "validation_results": {
+        "brow_furrow_distance": {
+          "expected_range": [
+            70,
+            130
+          ],
+          "actual_value": 95.0,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "avg_eye_openness": {
+          "expected_range": [
+            0.08,
+            0.4
+          ],
+          "actual_value": 0.14999999999999997,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "mouth_compression": {
+          "expected_range": [
+            0.0,
+            0.3
+          ],
+          "actual_value": 0.1,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "cognitive_stress_score": {
+          "expected_range": [
+            0.1,
+            1.0
+          ],
+          "actual_value": 0.39166666666666666,
+          "in_expected_range": "True",
+          "status": "PASS"
+        },
+        "overall": {
+          "passed_metrics": 4,
+          "total_metrics": 4,
+          "pass_rate": 1.0,
+          "status": "PASS"
+        }
+      }
+    }
+  }
+}

@@ -47,7 +47,7 @@ class CognitiveExpressionTester:
             'cognitive_stress_score'
         ]
         
-        # Test datasets with expected cognitive states
+        # Test ALL available datasets with expected cognitive states
         self.test_datasets = [
             {
                 'name': 'live_face_datasets/selfies_videos_kaggle',
@@ -61,6 +61,17 @@ class CognitiveExpressionTester:
                 }
             },
             {
+                'name': 'live_face_datasets/webcam_liveness_kaggle',
+                'expected_state': 'webcam_liveness_detection',
+                'description': 'Webcam liveness detection videos - real human faces',
+                'expected_metrics': {
+                    'brow_furrow_distance': (75, 125),  # pixels
+                    'avg_eye_openness': (0.1, 0.35),    # ratio
+                    'mouth_compression': (0.0, 0.25),   # ratio
+                    'cognitive_stress_score': (0.2, 0.9) # normalized
+                }
+            },
+            {
                 'name': 'real_face_datasets/validation_dataset',
                 'expected_state': 'synthetic_expressions',
                 'description': 'Synthetic faces with designed expressions',
@@ -69,6 +80,28 @@ class CognitiveExpressionTester:
                     'avg_eye_openness': (0.14, 0.16),
                     'mouth_compression': (0.0, 0.01),
                     'cognitive_stress_score': (0.6, 0.65)
+                }
+            },
+            {
+                'name': 'real_face_datasets/synthetic_realistic',
+                'expected_state': 'high_quality_synthetic',
+                'description': 'High-quality synthetic faces with varied expressions',
+                'expected_metrics': {
+                    'brow_furrow_distance': (85, 105),
+                    'avg_eye_openness': (0.12, 0.18),
+                    'mouth_compression': (0.0, 0.05),
+                    'cognitive_stress_score': (0.4, 0.7)
+                }
+            },
+            {
+                'name': 'webcam_datasets/sample_dataset',
+                'expected_state': 'webcam_recorded_samples',
+                'description': 'Sample webcam recorded faces for testing',
+                'expected_metrics': {
+                    'brow_furrow_distance': (70, 130),
+                    'avg_eye_openness': (0.08, 0.4),
+                    'mouth_compression': (0.0, 0.3),
+                    'cognitive_stress_score': (0.1, 1.0)
                 }
             }
         ]
