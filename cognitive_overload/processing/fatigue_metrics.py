@@ -69,10 +69,13 @@ class FatigueDetector:
         """
         self.calibration_mode = mode
         if mode == 'synthetic':
-            # Synthetic faces have lower eye openness values
-            self.eye_closed_threshold = 0.25  # Adjusted for synthetic
+            # Synthetic faces have higher eye openness values (0.18-0.22)
+            # Set threshold at ~80% of their range
+            self.eye_closed_threshold = 0.15  # Adjusted for synthetic
         else:
-            self.eye_closed_threshold = 0.2  # Standard for real faces
+            # Real faces have lower eye openness values (0.09-0.11)
+            # Set threshold at ~80% of their range  
+            self.eye_closed_threshold = 0.08  # Adjusted for real faces
     
     def update(self, eye_openness: float, timestamp: Optional[float] = None) -> Dict[str, any]:
         """

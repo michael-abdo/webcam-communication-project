@@ -1,0 +1,121 @@
+- Fix Eye Measurement Calculation (Critical Path)
+  - Debug Current Eye Openness Implementation
+    - Analyze why calculate_eye_openness returns constant 0.15
+    - Check if exception handling is masking the real issue
+    - Print intermediate values (vertical distances, horizontal distance)
+  - Verify MediaPipe Eye Landmark Indices
+    - Cross-reference landmark_mapping.py with MediaPipe documentation
+    - Confirm left_eye_landmarks and right_eye_landmarks indices are correct
+    - Test with landmark visualization to see actual points
+  - Fix Eye Landmark Extraction
+    - Update CognitiveLandmarkMapper eye definitions if needed
+    - Ensure upper_lid and lower_lid points are correctly mapped
+    - Verify inner_corner and outer_corner indices
+  - Implement Robust Eye Openness Calculation
+    - Add error checking for landmark availability
+    - Handle edge cases (profile views, partial occlusion)
+    - Return meaningful values instead of constant fallback
+- Calibrate Fatigue Detection Thresholds
+  - Run Diagnostic on Fixed Eye Measurements
+    - Process multiple real face videos
+    - Collect eye openness distribution statistics
+    - Identify natural variation ranges
+  - Set Appropriate Thresholds
+    - Define eye_closed_threshold based on percentiles
+    - Adjust for lighting conditions if needed
+    - Create separate profiles for different ethnicities/eye shapes
+  - Validate Against Manual Observation
+    - Watch videos and manually note when eyes appear closed
+    - Compare manual observations with calculated values
+    - Fine-tune thresholds for accuracy
+- Download and Prepare Validation Datasets
+  - Obtain NTHU Drowsy Driver Dataset
+    - Download from official source
+    - Extract and organize video files
+    - Review ground truth labels format
+  - Prepare Dataset Integration
+    - Create dataset loader for NTHU format
+    - Map ground truth labels to our metrics
+    - Set up validation pipeline
+  - Consider Additional Datasets
+    - DROZY dataset for multi-modal validation
+    - UTA-RLDD for real-life drowsiness
+    - Create unified dataset interface
+- Validate Against Ground Truth
+  - Run Fatigue Detector on Labeled Data
+    - Process all validation videos
+    - Calculate PERCLOS for each video
+    - Compare with ground truth drowsiness labels
+  - Calculate Accuracy Metrics
+    - Precision, recall, F1 score
+    - ROC curve and AUC
+    - Confusion matrix analysis
+  - Optimize for Target Accuracy
+    - Tune thresholds to achieve >85% accuracy
+    - Balance false positives vs false negatives
+    - Consider safety-critical requirements
+- Implement Real-Time Alerting System
+  - Design Alert Thresholds
+    - Define fatigue levels (alert, warning, critical)
+    - Set progressive alert escalation
+    - Include hysteresis to prevent flickering
+  - Create Alert Mechanisms
+    - Visual alerts (UI indicators)
+    - Audio alerts (configurable sounds)
+    - Log events for analysis
+  - Add Intervention Recommendations
+    - "Take a 15-minute break"
+    - "Pull over safely"
+    - "Switch drivers if possible"
+- Build Demonstration Interface
+  - Create Simple Web Dashboard
+    - Real-time fatigue metrics display
+    - PERCLOS trend visualization
+    - Blink rate monitoring
+  - Add Video Feed Display
+    - Show live webcam with overlay
+    - Highlight eye regions being tracked
+    - Display current fatigue level
+  - Include Historical Analysis
+    - Session fatigue progression
+    - Peak alertness times
+    - Break effectiveness tracking
+- Performance Optimization
+  - Profile Current Implementation
+    - Measure processing time per frame
+    - Identify bottlenecks
+    - Check memory usage patterns
+  - Optimize Critical Paths
+    - Optimize eye landmark extraction
+    - Reduce redundant calculations
+    - Consider frame skipping for efficiency
+  - Ensure Real-Time Performance
+    - Maintain 30+ fps processing
+    - Minimize latency for alerts
+    - Test on various hardware
+- Documentation and Deployment Preparation
+  - Create User Documentation
+    - How fatigue detection works
+    - Understanding PERCLOS scores
+    - Responding to alerts
+  - Prepare Technical Documentation
+    - API reference for FatigueDetector
+    - Integration examples
+    - Troubleshooting guide
+  - Set Up Deployment Pipeline
+    - Docker containerization
+    - Cloud deployment options
+    - Edge device considerations
+- Market Validation and Pilot Testing
+  - Identify Pilot Partners
+    - Transportation companies
+    - Online education platforms
+    - Manufacturing facilities
+  - Design Pilot Program
+    - Define success metrics
+    - Set pilot duration
+    - Create feedback mechanisms
+  - Prepare ROI Demonstration
+    - Cost of accidents prevented
+    - Productivity improvements
+    - Compliance benefits

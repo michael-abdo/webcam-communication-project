@@ -1,0 +1,86 @@
+{
+  "timestamp": "20250620_224029",
+  "test_type": "calibrated_fatigue_detection",
+  "results": [
+    {
+      "video": "Real Human Face",
+      "calibration": "real",
+      "statistics": {
+        "frames_processed": 545,
+        "eye_openness_mean": 0.11304131280733597,
+        "eye_openness_std": 0.013463070143813795,
+        "eye_openness_range": [
+          0.07458600427350427,
+          0.14005102040816325
+        ],
+        "final_perclos": 0.9174311926605505,
+        "total_blinks": 3,
+        "microsleeps": 0,
+        "session_duration": 18.166666666666668,
+        "calibration_mode": "real"
+      },
+      "validation": {
+        "passed": true,
+        "issues": [
+          "PERCLOS very low (0.9%) - possibly too alert",
+          "PERCLOS in valid range (0-100%)"
+        ]
+      },
+      "status": "success"
+    },
+    {
+      "video": "Synthetic Neutral",
+      "calibration": "synthetic",
+      "statistics": {
+        "frames_processed": 150,
+        "eye_openness_mean": 0.18400088418954516,
+        "eye_openness_std": 0.005393990994127159,
+        "eye_openness_range": [
+          0.173485985985986,
+          0.19855699855699854
+        ],
+        "final_perclos": 0.0,
+        "total_blinks": 0,
+        "microsleeps": 0,
+        "session_duration": 5.0,
+        "calibration_mode": "synthetic"
+      },
+      "validation": {
+        "passed": true,
+        "issues": [
+          "Neutral baseline PERCLOS: 0.0%",
+          "PERCLOS in valid range (0-100%)"
+        ],
+        "baseline_perclos": 0.0
+      },
+      "status": "success"
+    },
+    {
+      "video": "Synthetic Tired",
+      "calibration": "synthetic",
+      "statistics": {
+        "frames_processed": 150,
+        "eye_openness_mean": 0.19914894073137107,
+        "eye_openness_std": 0.004500621511564526,
+        "eye_openness_range": [
+          0.19083011583011583,
+          0.22181372549019607
+        ],
+        "final_perclos": 0.0,
+        "total_blinks": 0,
+        "microsleeps": 0,
+        "session_duration": 5.0,
+        "calibration_mode": "synthetic"
+      },
+      "validation": {
+        "passed": true,
+        "issues": [
+          "Tired video PERCLOS: 0.0%",
+          "PERCLOS in valid range (0-100%)"
+        ],
+        "expected_higher_than_neutral": true
+      },
+      "status": "success"
+    }
+  ]
+}
