@@ -1,0 +1,104 @@
+{
+  "timestamp": "20250620_202544",
+  "test_summary": {
+    "executive_summary": {
+      "datasets_tested": 2,
+      "successful_datasets": 0,
+      "success_rate": 0.0,
+      "total_videos_analyzed": 0,
+      "cognitive_detection_working": false
+    },
+    "cognitive_metrics_validation": {},
+    "dataset_analysis": {},
+    "recommendations": [
+      "\u274c Cognitive expression detection needs troubleshooting",
+      "\u274c Check landmark processing and cognitive mapping"
+    ]
+  },
+  "detailed_results": {
+    "live_face_datasets/selfies_videos_kaggle": {
+      "success": false,
+      "error": "No videos were successfully analyzed",
+      "dataset": "live_face_datasets/selfies_videos_kaggle",
+      "video_results": [
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/4.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/8.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/7.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/4/3.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/4.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/8.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/7.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/1/3.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/2/4.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "live_face_datasets/selfies_videos_kaggle/files/2/8.mp4"
+        }
+      ]
+    },
+    "real_face_datasets/validation_dataset": {
+      "success": false,
+      "error": "No videos were successfully analyzed",
+      "dataset": "real_face_datasets/validation_dataset",
+      "video_results": [
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "real_face_datasets/validation_dataset/synthetic_smile.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "real_face_datasets/validation_dataset/synthetic_focused.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "real_face_datasets/validation_dataset/synthetic_neutral.mp4"
+        },
+        {
+          "success": false,
+          "error": "Processing error: 'CognitiveLandmarkMapper' object has no attribute 'calculate_brow_furrow_distance'",
+          "video_path": "real_face_datasets/validation_dataset/synthetic_tired.mp4"
+        }
+      ]
+    }
+  }
+}
