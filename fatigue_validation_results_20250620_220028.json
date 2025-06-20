@@ -1,0 +1,87 @@
+{
+  "timestamp": "20250620_220028",
+  "test_type": "fatigue_detection_validation",
+  "results": [
+    {
+      "test_case": "Synthetic Tired",
+      "calibration": "synthetic",
+      "perclos": 100.0,
+      "fatigue_level": "SEVERE_FATIGUE",
+      "blinks": 0,
+      "microsleeps": 0,
+      "validation_passed": true,
+      "summary": {
+        "session_duration_seconds": 5.0,
+        "overall_perclos": 100.0,
+        "total_blinks": 0,
+        "total_microsleeps": 0,
+        "calibration_mode": "synthetic"
+      },
+      "final_metrics": {
+        "perclos": 1.0,
+        "perclos_percentage": 100.0,
+        "fatigue_level": "SEVERE_FATIGUE",
+        "blink_rate": 0,
+        "microsleep_count": 0,
+        "avg_blink_duration_ms": 0,
+        "recommendation": "Stop activity - high risk detected",
+        "data_points": 150,
+        "window_coverage": 0.08333333333333333
+      }
+    },
+    {
+      "test_case": "Synthetic Neutral",
+      "calibration": "synthetic",
+      "perclos": 100.0,
+      "fatigue_level": "SEVERE_FATIGUE",
+      "blinks": 0,
+      "microsleeps": 0,
+      "validation_passed": false,
+      "summary": {
+        "session_duration_seconds": 5.0,
+        "overall_perclos": 100.0,
+        "total_blinks": 0,
+        "total_microsleeps": 0,
+        "calibration_mode": "synthetic"
+      },
+      "final_metrics": {
+        "perclos": 1.0,
+        "perclos_percentage": 100.0,
+        "fatigue_level": "SEVERE_FATIGUE",
+        "blink_rate": 0,
+        "microsleep_count": 0,
+        "avg_blink_duration_ms": 0,
+        "recommendation": "Stop activity - high risk detected",
+        "data_points": 150,
+        "window_coverage": 0.08333333333333333
+      }
+    },
+    {
+      "test_case": "Real Human Selfie",
+      "calibration": "real",
+      "perclos": 100.0,
+      "fatigue_level": "SEVERE_FATIGUE",
+      "blinks": 0,
+      "microsleeps": 0,
+      "validation_passed": true,
+      "summary": {
+        "session_duration_seconds": 18.166666666666668,
+        "overall_perclos": 100.0,
+        "total_blinks": 0,
+        "total_microsleeps": 0,
+        "calibration_mode": "real"
+      },
+      "final_metrics": {
+        "perclos": 1.0,
+        "perclos_percentage": 100.0,
+        "fatigue_level": "SEVERE_FATIGUE",
+        "blink_rate": 0,
+        "microsleep_count": 0,
+        "avg_blink_duration_ms": 0,
+        "recommendation": "Stop activity - high risk detected",
+        "data_points": 545,
+        "window_coverage": 0.30277777777777776
+      }
+    }
+  ]
+}
