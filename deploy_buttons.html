@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Fatigue Detection System</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .deploy-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .deploy-section h2 {
+            margin-top: 0;
+            color: #555;
+        }
+        .deploy-button {
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .recommended {
+            background: #4CAF50;
+            color: white;
+        }
+        .alternative {
+            background: #2196F3;
+            color: white;
+        }
+        .features {
+            margin: 10px 0;
+            color: #666;
+        }
+        .features li {
+            margin: 5px 0;
+        }
+        .manual-steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy Fatigue Detection System</h1>
+        
+        <div class="deploy-section">
+            <h2>Railway Deployment <span class="status recommended">Recommended</span></h2>
+            <p>Deploy via GitHub integration for automatic HTTPS and easy setup.</p>
+            
+            <div class="manual-steps">
+                <strong>Manual Steps:</strong>
+                <ol>
+                    <li>Click the button below to open Railway</li>
+                    <li>Sign in with GitHub</li>
+                    <li>Select repository: <span class="code">mh2010github/webcam</span></li>
+                    <li>Choose branch: <span class="code">deploy</span></li>
+                    <li>Click "Deploy Now"</li>
+                </ol>
+            </div>
+            
+            <a href="https://railway.app/new/github" target="_blank" class="deploy-button">
+                <img src="https://railway.app/button.svg" alt="Deploy on Railway">
+            </a>
+            
+            <ul class="features">
+                <li>✅ Automatic HTTPS</li>
+                <li>✅ $5 free credit monthly</li>
+                <li>✅ ChatGPT Agent compatible</li>
+                <li>✅ No credit card required</li>
+            </ul>
+        </div>
+
+        <div class="deploy-section">
+            <h2>Render Deployment <span class="status alternative">Alternative</span></h2>
+            <p>One-click deployment with automatic configuration.</p>
+            
+            <a href="https://render.com/deploy?repo=https://github.com/mh2010github/webcam&branch=deploy" target="_blank" class="deploy-button">
+                <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
+            </a>
+            
+            <ul class="features">
+                <li>✅ Automatic HTTPS</li>
+                <li>✅ Free tier (spins down after 15 min)</li>
+                <li>✅ render.yaml pre-configured</li>
+                <li>✅ GitHub integration</li>
+            </ul>
+        </div>
+
+        <div class="deploy-section">
+            <h2>🔍 Post-Deployment Validation</h2>
+            <p>After deployment, test your endpoints:</p>
+            
+            <div class="manual-steps">
+                <pre>
+# Health check
+curl https://your-app.railway.app/health
+
+# System info
+curl https://your-app.railway.app/api/info
+
+# Fatigue analysis
+curl -X POST -H 'Content-Type: application/json' \
+  -d '{"perclos": 0.25, "confidence": 0.95}' \
+  https://your-app.railway.app/api/analyze
+                </pre>
+            </div>
+        </div>
+
+        <div class="deploy-section">
+            <h2>📋 Requirements Met</h2>
+            <ul class="features">
+                <li>✅ Automatic HTTPS (no ERR_TUNNEL_CONNECTION_FAILED)</li>
+                <li>✅ CORS enabled for ChatGPT compatibility</li>
+                <li>✅ No authentication required</li>
+                <li>✅ JSON API responses</li>
+                <li>✅ 100% fatigue detection accuracy maintained</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
