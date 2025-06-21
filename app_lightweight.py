@@ -38,9 +38,10 @@ def api_home():
         'uptime_seconds': (datetime.now() - system_state['start_time']).total_seconds(),
         'endpoints': [
             'GET /health - Health check',
-            'GET /api/info - System information',
+            'GET /api/info - System information', 
             'GET /api/metrics - Current metrics',
-            'POST /api/analyze - Analyze fatigue'
+            'POST /api/analyze - Analyze fatigue',
+            'GET /video-analysis - Video dataset analysis interface'
         ]
     })
 
@@ -53,6 +54,11 @@ def dashboard():
 def demo():
     """Demo interface."""
     return render_template('demo.html')
+
+@app.route('/video-analysis')
+def video_analysis():
+    """Video dataset analysis interface.""" 
+    return render_template('video_analysis.html')
 
 @app.route('/health')
 def health():

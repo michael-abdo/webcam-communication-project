@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Dataset Analysis Interface</title>
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --dark-bg: #1f2937;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-blue), #3b82f6);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .panel h3 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dataset-selector {
+            margin-bottom: 20px;
+        }
+
+        .selector-group {
+            margin-bottom: 15px;
+        }
+
+        .selector-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        select, input[type="number"], input[type="range"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .video-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .video-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .video-card.selected {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .video-info {
+            font-size: 13px;
+        }
+
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .video-meta {
+            color: var(--text-secondary);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .quality-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .quality-high { background: var(--accent-green); }
+        .quality-medium { background: var(--accent-orange); }
+        .quality-low { background: var(--accent-red); }
+
+        .analysis-panel {
+            grid-column: 1 / -1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .analysis-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .metrics-container {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .fatigue-normal { color: var(--accent-green); }
+        .fatigue-moderate { color: var(--accent-orange); }
+        .fatigue-high { color: var(--accent-red); }
+
+        .chart-container {
+            height: 200px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-idle {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .status-analyzing {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .status-complete {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-table th {
+            background: var(--light-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .results-table tr:hover {
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .analysis-display {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 Video Dataset Analysis Interface</h1>
+            <p>Real-time fatigue detection analysis on video datasets</p>
+        </div>
+
+        <div class="dashboard">
+            <!-- Dataset Selection Panel -->
+            <div class="panel">
+                <h3>📁 Dataset Selection</h3>
+                
+                <div class="dataset-selector">
+                    <div class="selector-group">
+                        <label for="datasetType">Dataset Type:</label>
+                        <select id="datasetType">
+                            <option value="">All Datasets</option>
+                            <option value="test_videos">Test Videos</option>
+                            <option value="live_faces">Live Faces</option>
+                            <option value="real_faces">Real Faces</option>
+                            <option value="webcam_samples">Webcam Samples</option>
+                            <option value="processed_results">Processed Results</option>
+                        </select>
+                    </div>
+
+                    <div class="selector-group">
+                        <label for="subjectId">Subject ID:</label>
+                        <select id="subjectId">
+                            <option value="">All Subjects</option>
+                        </select>
+                    </div>
+
+                    <div class="selector-group">
+                        <label for="scenario">Scenario:</label>
+                        <select id="scenario">
+                            <option value="">All Scenarios</option>
+                        </select>
+                    </div>
+
+                    <div class="selector-group">
+                        <label for="minQuality">Minimum Quality: <span id="qualityValue">0.0</span></label>
+                        <input type="range" id="minQuality" min="0" max="1" step="0.1" value="0">
+                    </div>
+                </div>
+
+                <div id="datasetSummary" class="metrics-container">
+                    <div class="metric">
+                        <span class="metric-label">Total Videos:</span>
+                        <span class="metric-value" id="totalVideos">0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Size:</span>
+                        <span class="metric-value" id="totalSize">0 MB</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Datasets:</span>
+                        <span class="metric-value" id="totalDatasets">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Selection Panel -->
+            <div class="panel">
+                <h3>🎬 Video Selection</h3>
+                <div id="videoGrid" class="video-grid">
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+                        Loading videos...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Panel -->
+        <div class="panel analysis-panel">
+            <h3>⚡ Real-time Analysis</h3>
+            
+            <div class="controls">
+                <button id="startAnalysis" class="btn btn-primary" disabled>
+                    <span>▶️</span> Start Analysis
+                </button>
+                <button id="stopAnalysis" class="btn btn-danger" disabled>
+                    <span>⏹️</span> Stop Analysis
+                </button>
+                <div class="selector-group" style="min-width: 150px;">
+                    <label for="frameSkip">Frame Skip:</label>
+                    <input type="number" id="frameSkip" value="1" min="1" max="10">
+                </div>
+                <div id="analysisStatus" class="status-indicator status-idle">
+                    <span>⏸️</span> Ready
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <div class="analysis-display">
+                <div class="metrics-container">
+                    <h4 style="margin-bottom: 15px; color: var(--text-primary);">Current Metrics</h4>
+                    <div class="metric">
+                        <span class="metric-label">PERCLOS:</span>
+                        <span class="metric-value" id="currentPerclos">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Blink Rate:</span>
+                        <span class="metric-value" id="currentBlinkRate">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Fatigue Level:</span>
+                        <span class="metric-value" id="currentFatigueLevel">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Risk Score:</span>
+                        <span class="metric-value" id="currentRiskScore">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Processing Time:</span>
+                        <span class="metric-value" id="processingTime">--</span>
+                    </div>
+                </div>
+
+                <div class="chart-container" id="chartContainer">
+                    📊 Real-time analysis chart will appear here
+                </div>
+            </div>
+
+            <table class="results-table" id="resultsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Frame</th>
+                        <th>Time (s)</th>
+                        <th>PERCLOS</th>
+                        <th>Blink Rate</th>
+                        <th>Fatigue Level</th>
+                        <th>Risk Score</th>
+                        <th>Processing (ms)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        class VideoAnalysisInterface {
+            constructor() {
+                this.selectedVideo = null;
+                this.isAnalyzing = false;
+                this.analysisResults = [];
+                this.initializeElements();
+                this.attachEventListeners();
+                this.loadDatasets();
+                this.loadVideos();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    datasetType: document.getElementById('datasetType'),
+                    subjectId: document.getElementById('subjectId'),
+                    scenario: document.getElementById('scenario'),
+                    minQuality: document.getElementById('minQuality'),
+                    qualityValue: document.getElementById('qualityValue'),
+                    videoGrid: document.getElementById('videoGrid'),
+                    startAnalysis: document.getElementById('startAnalysis'),
+                    stopAnalysis: document.getElementById('stopAnalysis'),
+                    frameSkip: document.getElementById('frameSkip'),
+                    analysisStatus: document.getElementById('analysisStatus'),
+                    progressFill: document.getElementById('progressFill'),
+                    resultsTable: document.getElementById('resultsTable'),
+                    resultsBody: document.getElementById('resultsBody')
+                };
+
+                this.metrics = {
+                    totalVideos: document.getElementById('totalVideos'),
+                    totalSize: document.getElementById('totalSize'),
+                    totalDatasets: document.getElementById('totalDatasets'),
+                    currentPerclos: document.getElementById('currentPerclos'),
+                    currentBlinkRate: document.getElementById('currentBlinkRate'),
+                    currentFatigueLevel: document.getElementById('currentFatigueLevel'),
+                    currentRiskScore: document.getElementById('currentRiskScore'),
+                    processingTime: document.getElementById('processingTime')
+                };
+            }
+
+            attachEventListeners() {
+                // Filter controls
+                this.elements.datasetType.addEventListener('change', () => this.loadVideos());
+                this.elements.subjectId.addEventListener('change', () => this.loadVideos());
+                this.elements.scenario.addEventListener('change', () => this.loadVideos());
+                this.elements.minQuality.addEventListener('input', (e) => {
+                    this.elements.qualityValue.textContent = e.target.value;
+                    this.loadVideos();
+                });
+
+                // Analysis controls
+                this.elements.startAnalysis.addEventListener('click', () => this.startAnalysis());
+                this.elements.stopAnalysis.addEventListener('click', () => this.stopAnalysis());
+            }
+
+            async loadDatasets() {
+                try {
+                    const response = await fetch('/api/datasets');
+                    const data = await response.json();
+                    
+                    this.metrics.totalVideos.textContent = data.total_videos;
+                    this.metrics.totalSize.textContent = `${data.total_size_mb.toFixed(1)} MB`;
+                    this.metrics.totalDatasets.textContent = data.total_datasets;
+                    
+                } catch (error) {
+                    console.error('Error loading datasets:', error);
+                }
+            }
+
+            async loadVideos() {
+                const params = new URLSearchParams({
+                    dataset_type: this.elements.datasetType.value,
+                    subject_id: this.elements.subjectId.value,
+                    scenario: this.elements.scenario.value,
+                    min_quality: this.elements.minQuality.value
+                });
+
+                try {
+                    const response = await fetch(`/api/videos?${params}`);
+                    const videos = await response.json();
+                    this.displayVideos(videos);
+                    this.updateFilterOptions(videos);
+                } catch (error) {
+                    console.error('Error loading videos:', error);
+                    this.elements.videoGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--accent-red);">Error loading videos</div>';
+                }
+            }
+
+            displayVideos(videos) {
+                if (videos.length === 0) {
+                    this.elements.videoGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">No videos found matching criteria</div>';
+                    return;
+                }
+
+                this.elements.videoGrid.innerHTML = videos.map(video => `
+                    <div class="video-card" data-path="${video.filepath}">
+                        <div class="quality-badge quality-${this.getQualityClass(video.quality_score)}">
+                            ${(video.quality_score * 100).toFixed(0)}%
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">${video.filename}</div>
+                            <div class="video-meta">
+                                <span>📐 ${video.width}x${video.height}</span>
+                                <span>⏱️ ${video.duration_seconds.toFixed(1)}s</span>
+                                <span>🎞️ ${video.fps.toFixed(1)} fps</span>
+                                <span>💾 ${(video.size_bytes / 1024 / 1024).toFixed(1)} MB</span>
+                                ${video.subject_id ? `<span>👤 ${video.subject_id}</span>` : ''}
+                                ${video.scenario ? `<span>🎭 ${video.scenario}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Add click handlers
+                this.elements.videoGrid.querySelectorAll('.video-card').forEach(card => {
+                    card.addEventListener('click', () => this.selectVideo(card));
+                });
+            }
+
+            getQualityClass(score) {
+                if (score >= 0.7) return 'high';
+                if (score >= 0.4) return 'medium';
+                return 'low';
+            }
+
+            selectVideo(card) {
+                // Remove previous selection
+                this.elements.videoGrid.querySelectorAll('.video-card').forEach(c => c.classList.remove('selected'));
+                
+                // Select current
+                card.classList.add('selected');
+                this.selectedVideo = card.dataset.path;
+                this.elements.startAnalysis.disabled = false;
+            }
+
+            updateFilterOptions(videos) {
+                // Update subject options
+                const subjects = [...new Set(videos.map(v => v.subject_id).filter(Boolean))];
+                this.updateSelectOptions(this.elements.subjectId, subjects);
+
+                // Update scenario options
+                const scenarios = [...new Set(videos.map(v => v.scenario).filter(Boolean))];
+                this.updateSelectOptions(this.elements.scenario, scenarios);
+            }
+
+            updateSelectOptions(select, options) {
+                const currentValue = select.value;
+                const defaultOption = select.children[0];
+                
+                select.innerHTML = '';
+                select.appendChild(defaultOption);
+                
+                options.forEach(option => {
+                    const optElement = document.createElement('option');
+                    optElement.value = option;
+                    optElement.textContent = option;
+                    select.appendChild(optElement);
+                });
+                
+                if (options.includes(currentValue)) {
+                    select.value = currentValue;
+                }
+            }
+
+            async startAnalysis() {
+                if (!this.selectedVideo) return;
+
+                this.isAnalyzing = true;
+                this.elements.startAnalysis.disabled = true;
+                this.elements.stopAnalysis.disabled = false;
+                this.updateStatus('analyzing', 'Analyzing...');
+
+                try {
+                    const response = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            video_path: this.selectedVideo,
+                            frame_skip: parseInt(this.elements.frameSkip.value)
+                        })
+                    });
+
+                    if (response.ok) {
+                        this.pollResults();
+                    } else {
+                        throw new Error('Failed to start analysis');
+                    }
+                } catch (error) {
+                    console.error('Error starting analysis:', error);
+                    this.updateStatus('idle', 'Error');
+                    this.isAnalyzing = false;
+                    this.elements.startAnalysis.disabled = false;
+                    this.elements.stopAnalysis.disabled = true;
+                }
+            }
+
+            async stopAnalysis() {
+                try {
+                    await fetch('/api/stop');
+                    this.isAnalyzing = false;
+                    this.elements.startAnalysis.disabled = false;
+                    this.elements.stopAnalysis.disabled = true;
+                    this.updateStatus('complete', 'Stopped');
+                } catch (error) {
+                    console.error('Error stopping analysis:', error);
+                }
+            }
+
+            async pollResults() {
+                if (!this.isAnalyzing) return;
+
+                try {
+                    const response = await fetch('/api/results');
+                    const data = await response.json();
+
+                    if (data.results && data.results.length > 0) {
+                        this.updateResults(data.results);
+                        this.elements.resultsTable.style.display = 'table';
+                    }
+
+                    if (data.is_analyzing) {
+                        setTimeout(() => this.pollResults(), 1000);
+                    } else {
+                        this.isAnalyzing = false;
+                        this.elements.startAnalysis.disabled = false;
+                        this.elements.stopAnalysis.disabled = true;
+                        this.updateStatus('complete', 'Complete');
+                    }
+                } catch (error) {
+                    console.error('Error polling results:', error);
+                }
+            }
+
+            updateResults(results) {
+                if (results.length === 0) return;
+
+                const latest = results[results.length - 1];
+                
+                // Update current metrics
+                this.metrics.currentPerclos.textContent = latest.perclos.toFixed(3);
+                this.metrics.currentBlinkRate.textContent = latest.blink_rate.toFixed(1);
+                this.metrics.currentFatigueLevel.textContent = latest.fatigue_level;
+                this.metrics.currentFatigueLevel.className = `metric-value fatigue-${latest.fatigue_level.toLowerCase()}`;
+                this.metrics.currentRiskScore.textContent = latest.risk_score.toFixed(3);
+                this.metrics.processingTime.textContent = `${latest.processing_time_ms.toFixed(1)} ms`;
+
+                // Update results table (last 10 results)
+                const recentResults = results.slice(-10).reverse();
+                this.elements.resultsBody.innerHTML = recentResults.map(result => `
+                    <tr>
+                        <td>${result.frame_number}</td>
+                        <td>${result.timestamp.toFixed(1)}</td>
+                        <td>${result.perclos.toFixed(3)}</td>
+                        <td>${result.blink_rate.toFixed(1)}</td>
+                        <td><span class="fatigue-${result.fatigue_level.toLowerCase()}">${result.fatigue_level}</span></td>
+                        <td>${result.risk_score.toFixed(3)}</td>
+                        <td>${result.processing_time_ms.toFixed(1)}</td>
+                    </tr>
+                `).join('');
+            }
+
+            updateStatus(type, message) {
+                this.elements.analysisStatus.className = `status-indicator status-${type}`;
+                
+                const icons = {
+                    idle: '⏸️',
+                    analyzing: '<div class="loading-spinner"></div>',
+                    complete: '✅'
+                };
+                
+                this.elements.analysisStatus.innerHTML = `${icons[type]} ${message}`;
+            }
+        }
+
+        // Initialize interface when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new VideoAnalysisInterface();
+        });
+    </script>
+</body>
+</html>
