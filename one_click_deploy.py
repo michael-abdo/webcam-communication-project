@@ -23,13 +23,9 @@ def create_deployment_urls():
     print("=" * 50)
     print()
     
-    # Railway deployment URL
-    railway_params = {
-        'template': f'{repo_url}/tree/{branch}',
-        'envs': '',
-        'referralCode': ''
-    }
-    railway_url = "https://railway.app/new?" + urllib.parse.urlencode(railway_params)
+    # Railway deployment URL (corrected format)
+    railway_template_url = f'{repo_url}/tree/{branch}'
+    railway_url = f"https://railway.com/new/template?template={railway_template_url}"
     
     # Render deployment URL  
     render_params = {
