@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements_lightweight.txt
-    startCommand: gunicorn app_lightweight:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    startCommand: python simple_test.py
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
