@@ -9,11 +9,14 @@ and intervention recommendations based on validated PERCLOS thresholds.
 import time
 import json
 import threading
+import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Callable
 from enum import Enum
 from collections import deque
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class AlertLevel(Enum):
@@ -137,7 +140,7 @@ class AlertSystem:
                 try:
                     self.alert_callbacks[escalated_level.value](alert_response)
                 except Exception as e:
-                    print(f"Alert callback error: {e}")
+                    logger.error(f"Alert callback error: {e}")
             
             return alert_response
     
@@ -200,8 +203,8 @@ class AlertSystem:
                 current_index = list(AlertLevel).index(alert_level)
                 if current_index < len(AlertLevel) - 1:
                     escalated_level = list(AlertLevel)[current_index + 1]
-                    print(f"⚠️ Escalating alert: {alert_level.value} → {escalated_level.value} "
-                          f"(sustained for {time_at_level:.1f}s)")
+                    logger.info(f"Escalating alert: {alert_level.value} → {escalated_level.value} "
+                               f"(sustained for {time_at_level:.1f}s)")
                     return escalated_level
         
         return alert_level
@@ -432,7 +435,6 @@ def audio_alert_callback(alert_response: Dict[str, any]):
     """Example audio alert callback function."""
     if alert_response.get('audio_alert', False):
         alert_level = alert_response['alert_level']
-        print(f"🔊 AUDIO ALERT: {alert_level.upper()} - {alert_response['message']}")
         # In real implementation, would play actual audio file
 
 
@@ -440,14 +442,11 @@ def visual_alert_callback(alert_response: Dict[str, any]):
     """Example visual alert callback function."""
     color = alert_response.get('visual_alert', 'green')
     message = alert_response['message']
-    print(f"🚨 VISUAL ALERT ({color.upper()}): {message}")
     # In real implementation, would update UI elements
 
 
 def intervention_callback(alert_response: Dict[str, any]):
     """Example intervention callback function."""
     if alert_response.get('action_required', False):
-        print(f"⚠️ INTERVENTION REQUIRED: {alert_response['recommendation']}")
-        if 'interventions' in alert_response:
-            for intervention in alert_response['interventions']:
-                print(f"  • {intervention}")
+        # In real implementation, would trigger intervention actions
+        pass

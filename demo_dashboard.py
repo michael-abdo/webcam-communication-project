@@ -12,7 +12,6 @@ sys.path.append('./cognitive_overload/processing')
 import cv2
 import json
 import time
-import threading
 from datetime import datetime
 from flask import Flask, render_template, jsonify, Response
 from landmark_processor import LandmarkProcessor

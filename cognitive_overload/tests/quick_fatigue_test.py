@@ -5,7 +5,7 @@ Tests PERCLOS on the synthetic tired face video.
 """
 
 import sys
-sys.path.append('./cognitive_overload/processing')
+sys.path.append('../processing')
 
 from landmark_processor import LandmarkProcessor
 from landmark_mapping import CognitiveLandmarkMapper
