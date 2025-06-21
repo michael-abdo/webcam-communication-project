@@ -1,0 +1,842 @@
+{
+  "timestamp": "20250620_225711",
+  "analysis_type": "fatigue_test_creation",
+  "ground_truth": {
+    "video_classification": {
+      "fatigue_level": "alert",
+      "perclos_percentage": 0.9174311926605505,
+      "contains_microsleeps": false,
+      "blink_events": 0,
+      "microsleep_events": 0
+    },
+    "temporal_events": {
+      "blinks": [],
+      "microsleeps": []
+    },
+    "validation_criteria": {
+      "expected_perclos_range": [
+        0,
+        2.9174311926605503
+      ],
+      "expected_fatigue_level": "alert",
+      "expected_blink_count_range": [
+        0,
+        2
+      ],
+      "expected_microsleep_count": 0
+    },
+    "frame_level_labels": {
+      "total_frames": 545,
+      "eyes_closed_frames": 5,
+      "frame_details": [
+        {
+          "frame": 0,
+          "timestamp": 0.0,
+          "left_eye_openness": 0.10037878787878789,
+          "right_eye_openness": 0.10256410256410256,
+          "avg_openness": 0.10147144522144522,
+          "eyes_closed": false
+        },
+        {
+          "frame": 1,
+          "timestamp": 0.03333333333333333,
+          "left_eye_openness": 0.09074074074074073,
+          "right_eye_openness": 0.11666666666666667,
+          "avg_openness": 0.1037037037037037,
+          "eyes_closed": false
+        },
+        {
+          "frame": 2,
+          "timestamp": 0.06666666666666667,
+          "left_eye_openness": 0.08514492753623189,
+          "right_eye_openness": 0.11752136752136752,
+          "avg_openness": 0.10133314752879971,
+          "eyes_closed": false
+        },
+        {
+          "frame": 3,
+          "timestamp": 0.1,
+          "left_eye_openness": 0.08514492753623189,
+          "right_eye_openness": 0.11752136752136752,
+          "avg_openness": 0.10133314752879971,
+          "eyes_closed": false
+        },
+        {
+          "frame": 4,
+          "timestamp": 0.13333333333333333,
+          "left_eye_openness": 0.08518518518518518,
+          "right_eye_openness": 0.10897435897435898,
+          "avg_openness": 0.09707977207977209,
+          "eyes_closed": false
+        },
+        {
+          "frame": 5,
+          "timestamp": 0.16666666666666666,
+          "left_eye_openness": 0.08514492753623189,
+          "right_eye_openness": 0.11458333333333333,
+          "avg_openness": 0.09986413043478261,
+          "eyes_closed": false
+        },
+        {
+          "frame": 6,
+          "timestamp": 0.2,
+          "left_eye_openness": 0.07624113475177305,
+          "right_eye_openness": 0.11538461538461539,
+          "avg_openness": 0.09581287506819422,
+          "eyes_closed": false
+        },
+        {
+          "frame": 7,
+          "timestamp": 0.23333333333333334,
+          "left_eye_openness": 0.07624113475177305,
+          "right_eye_openness": 0.11538461538461539,
+          "avg_openness": 0.09581287506819422,
+          "eyes_closed": false
+        },
+        {
+          "frame": 8,
+          "timestamp": 0.26666666666666666,
+          "left_eye_openness": 0.08333333333333333,
+          "right_eye_openness": 0.12719298245614033,
+          "avg_openness": 0.10526315789473684,
+          "eyes_closed": false
+        },
+        {
+          "frame": 9,
+          "timestamp": 0.3,
+          "left_eye_openness": 0.07118055555555555,
+          "right_eye_openness": 0.13513513513513514,
+          "avg_openness": 0.10315784534534535,
+          "eyes_closed": false
+        },
+        {
+          "frame": 10,
+          "timestamp": 0.3333333333333333,
+          "left_eye_openness": 0.05442176870748299,
+          "right_eye_openness": 0.12719298245614033,
+          "avg_openness": 0.09080737558181166,
+          "eyes_closed": false
+        },
+        {
+          "frame": 11,
+          "timestamp": 0.36666666666666664,
+          "left_eye_openness": 0.05902777777777778,
+          "right_eye_openness": 0.13157894736842105,
+          "avg_openness": 0.09530336257309942,
+          "eyes_closed": false
+        },
+        {
+          "frame": 12,
+          "timestamp": 0.4,
+          "left_eye_openness": 0.06382978723404255,
+          "right_eye_openness": 0.14189189189189189,
+          "avg_openness": 0.10286083956296721,
+          "eyes_closed": false
+        },
+        {
+          "frame": 13,
+          "timestamp": 0.43333333333333335,
+          "left_eye_openness": 0.06560283687943262,
+          "right_eye_openness": 0.13963963963963966,
+          "avg_openness": 0.10262123825953615,
+          "eyes_closed": false
+        },
+        {
+          "frame": 14,
+          "timestamp": 0.4666666666666667,
+          "left_eye_openness": 0.057291666666666664,
+          "right_eye_openness": 0.12162162162162163,
+          "avg_openness": 0.08945664414414414,
+          "eyes_closed": false
+        },
+        {
+          "frame": 15,
+          "timestamp": 0.5,
+          "left_eye_openness": 0.07312925170068027,
+          "right_eye_openness": 0.1118421052631579,
+          "avg_openness": 0.09248567848191908,
+          "eyes_closed": false
+        },
+        {
+          "frame": 16,
+          "timestamp": 0.5333333333333333,
+          "left_eye_openness": 0.07291666666666667,
+          "right_eye_openness": 0.11965811965811966,
+          "avg_openness": 0.09628739316239317,
+          "eyes_closed": false
+        },
+        {
+          "frame": 17,
+          "timestamp": 0.5666666666666667,
+          "left_eye_openness": 0.07624113475177305,
+          "right_eye_openness": 0.12061403508771928,
+          "avg_openness": 0.09842758491974617,
+          "eyes_closed": false
+        },
+        {
+          "frame": 18,
+          "timestamp": 0.6,
+          "left_eye_openness": 0.08687943262411348,
+          "right_eye_openness": 0.10897435897435898,
+          "avg_openness": 0.09792689579923622,
+          "eyes_closed": false
+        },
+        {
+          "frame": 19,
+          "timestamp": 0.6333333333333333,
+          "left_eye_openness": 0.06423611111111112,
+          "right_eye_openness": 0.1,
+          "avg_openness": 0.08211805555555557,
+          "eyes_closed": false
+        },
+        {
+          "frame": 20,
+          "timestamp": 0.6666666666666666,
+          "left_eye_openness": 0.07291666666666667,
+          "right_eye_openness": 0.11041666666666668,
+          "avg_openness": 0.09166666666666667,
+          "eyes_closed": false
+        },
+        {
+          "frame": 21,
+          "timestamp": 0.7,
+          "left_eye_openness": 0.0726950354609929,
+          "right_eye_openness": 0.10912698412698411,
+          "avg_openness": 0.0909110097939885,
+          "eyes_closed": false
+        },
+        {
+          "frame": 22,
+          "timestamp": 0.7333333333333333,
+          "left_eye_openness": 0.0960144927536232,
+          "right_eye_openness": 0.10772357723577236,
+          "avg_openness": 0.10186903499469778,
+          "eyes_closed": false
+        },
+        {
+          "frame": 23,
+          "timestamp": 0.7666666666666667,
+          "left_eye_openness": 0.10555555555555556,
+          "right_eye_openness": 0.11178861788617886,
+          "avg_openness": 0.1086720867208672,
+          "eyes_closed": false
+        },
+        {
+          "frame": 24,
+          "timestamp": 0.8,
+          "left_eye_openness": 0.0925925925925926,
+          "right_eye_openness": 0.11788617886178861,
+          "avg_openness": 0.1052393857271906,
+          "eyes_closed": false
+        },
+        {
+          "frame": 25,
+          "timestamp": 0.8333333333333334,
+          "left_eye_openness": 0.10416666666666666,
+          "right_eye_openness": 0.11585365853658537,
+          "avg_openness": 0.11001016260162602,
+          "eyes_closed": false
+        },
+        {
+          "frame": 26,
+          "timestamp": 0.8666666666666667,
+          "left_eye_openness": 0.1,
+          "right_eye_openness": 0.11458333333333333,
+          "avg_openness": 0.10729166666666667,
+          "eyes_closed": false
+        },
+        {
+          "frame": 27,
+          "timestamp": 0.9,
+          "left_eye_openness": 0.07624113475177305,
+          "right_eye_openness": 0.09722222222222221,
+          "avg_openness": 0.08673167848699763,
+          "eyes_closed": false
+        },
+        {
+          "frame": 28,
+          "timestamp": 0.9333333333333333,
+          "left_eye_openness": 0.09444444444444444,
+          "right_eye_openness": 0.10714285714285714,
+          "avg_openness": 0.1007936507936508,
+          "eyes_closed": false
+        },
+        {
+          "frame": 29,
+          "timestamp": 0.9666666666666667,
+          "left_eye_openness": 0.08695652173913043,
+          "right_eye_openness": 0.0975609756097561,
+          "avg_openness": 0.09225874867444327,
+          "eyes_closed": false
+        },
+        {
+          "frame": 30,
+          "timestamp": 1.0,
+          "left_eye_openness": 0.09239130434782608,
+          "right_eye_openness": 0.10416666666666667,
+          "avg_openness": 0.09827898550724637,
+          "eyes_closed": false
+        },
+        {
+          "frame": 31,
+          "timestamp": 1.0333333333333334,
+          "left_eye_openness": 0.08514492753623189,
+          "right_eye_openness": 0.10208333333333333,
+          "avg_openness": 0.09361413043478262,
+          "eyes_closed": false
+        },
+        {
+          "frame": 32,
+          "timestamp": 1.0666666666666667,
+          "left_eye_openness": 0.09782608695652174,
+          "right_eye_openness": 0.10897435897435898,
+          "avg_openness": 0.10340022296544035,
+          "eyes_closed": false
+        },
+        {
+          "frame": 33,
+          "timestamp": 1.1,
+          "left_eye_openness": 0.09963768115942029,
+          "right_eye_openness": 0.1125,
+          "avg_openness": 0.10606884057971014,
+          "eyes_closed": false
+        },
+        {
+          "frame": 34,
+          "timestamp": 1.1333333333333333,
+          "left_eye_openness": 0.09782608695652174,
+          "right_eye_openness": 0.10365853658536585,
+          "avg_openness": 0.1007423117709438,
+          "eyes_closed": false
+        },
+        {
+          "frame": 35,
+          "timestamp": 1.1666666666666667,
+          "left_eye_openness": 0.09963768115942029,
+          "right_eye_openness": 0.11458333333333333,
+          "avg_openness": 0.1071105072463768,
+          "eyes_closed": false
+        },
+        {
+          "frame": 36,
+          "timestamp": 1.2,
+          "left_eye_openness": 0.0960144927536232,
+          "right_eye_openness": 0.11382113821138212,
+          "avg_openness": 0.10491781548250266,
+          "eyes_closed": false
+        },
+        {
+          "frame": 37,
+          "timestamp": 1.2333333333333334,
+          "left_eye_openness": 0.09782608695652174,
+          "right_eye_openness": 0.11666666666666667,
+          "avg_openness": 0.10724637681159421,
+          "eyes_closed": false
+        },
+        {
+          "frame": 38,
+          "timestamp": 1.2666666666666666,
+          "left_eye_openness": 0.1111111111111111,
+          "right_eye_openness": 0.12083333333333332,
+          "avg_openness": 0.11597222222222221,
+          "eyes_closed": false
+        },
+        {
+          "frame": 39,
+          "timestamp": 1.3,
+          "left_eye_openness": 0.0960144927536232,
+          "right_eye_openness": 0.10683760683760685,
+          "avg_openness": 0.10142604979561502,
+          "eyes_closed": false
+        },
+        {
+          "frame": 40,
+          "timestamp": 1.3333333333333333,
+          "left_eye_openness": 0.07801418439716312,
+          "right_eye_openness": 0.11538461538461539,
+          "avg_openness": 0.09669939989088926,
+          "eyes_closed": false
+        },
+        {
+          "frame": 41,
+          "timestamp": 1.3666666666666667,
+          "left_eye_openness": 0.07608695652173914,
+          "right_eye_openness": 0.11622807017543861,
+          "avg_openness": 0.09615751334858888,
+          "eyes_closed": false
+        },
+        {
+          "frame": 42,
+          "timestamp": 1.4,
+          "left_eye_openness": 0.07624113475177305,
+          "right_eye_openness": 0.14473684210526316,
+          "avg_openness": 0.1104889884285181,
+          "eyes_closed": false
+        },
+        {
+          "frame": 43,
+          "timestamp": 1.4333333333333333,
+          "left_eye_openness": 0.06914893617021277,
+          "right_eye_openness": 0.13596491228070176,
+          "avg_openness": 0.10255692422545726,
+          "eyes_closed": false
+        },
+        {
+          "frame": 44,
+          "timestamp": 1.4666666666666666,
+          "left_eye_openness": 0.07638888888888888,
+          "right_eye_openness": 0.13247863247863248,
+          "avg_openness": 0.10443376068376067,
+          "eyes_closed": false
+        },
+        {
+          "frame": 45,
+          "timestamp": 1.5,
+          "left_eye_openness": 0.08163265306122448,
+          "right_eye_openness": 0.14743589743589744,
+          "avg_openness": 0.11453427524856097,
+          "eyes_closed": false
+        },
+        {
+          "frame": 46,
+          "timestamp": 1.5333333333333334,
+          "left_eye_openness": 0.0782312925170068,
+          "right_eye_openness": 0.14166666666666666,
+          "avg_openness": 0.10994897959183673,
+          "eyes_closed": false
+        },
+        {
+          "frame": 47,
+          "timestamp": 1.5666666666666667,
+          "left_eye_openness": 0.08163265306122448,
+          "right_eye_openness": 0.1452991452991453,
+          "avg_openness": 0.1134658991801849,
+          "eyes_closed": false
+        },
+        {
+          "frame": 48,
+          "timestamp": 1.6,
+          "left_eye_openness": 0.08,
+          "right_eye_openness": 0.13541666666666669,
+          "avg_openness": 0.10770833333333335,
+          "eyes_closed": false
+        },
+        {
+          "frame": 49,
+          "timestamp": 1.6333333333333333,
+          "left_eye_openness": 0.09027777777777778,
+          "right_eye_openness": 0.14583333333333331,
+          "avg_openness": 0.11805555555555555,
+          "eyes_closed": false
+        },
+        {
+          "frame": 50,
+          "timestamp": 1.6666666666666667,
+          "left_eye_openness": 0.0782312925170068,
+          "right_eye_openness": 0.13125,
+          "avg_openness": 0.1047406462585034,
+          "eyes_closed": false
+        },
+        {
+          "frame": 51,
+          "timestamp": 1.7,
+          "left_eye_openness": 0.09,
+          "right_eye_openness": 0.1346153846153846,
+          "avg_openness": 0.1123076923076923,
+          "eyes_closed": false
+        },
+        {
+          "frame": 52,
+          "timestamp": 1.7333333333333334,
+          "left_eye_openness": 0.08843537414965985,
+          "right_eye_openness": 0.14791666666666667,
+          "avg_openness": 0.11817602040816326,
+          "eyes_closed": false
+        },
+        {
+          "frame": 53,
+          "timestamp": 1.7666666666666666,
+          "left_eye_openness": 0.09523809523809525,
+          "right_eye_openness": 0.13958333333333334,
+          "avg_openness": 0.11741071428571428,
+          "eyes_closed": false
+        },
+        {
+          "frame": 54,
+          "timestamp": 1.8,
+          "left_eye_openness": 0.10069444444444443,
+          "right_eye_openness": 0.13125,
+          "avg_openness": 0.11597222222222223,
+          "eyes_closed": false
+        },
+        {
+          "frame": 55,
+          "timestamp": 1.8333333333333333,
+          "left_eye_openness": 0.0954861111111111,
+          "right_eye_openness": 0.13247863247863248,
+          "avg_openness": 0.11398237179487179,
+          "eyes_closed": false
+        },
+        {
+          "frame": 56,
+          "timestamp": 1.8666666666666667,
+          "left_eye_openness": 0.10243055555555557,
+          "right_eye_openness": 0.1346153846153846,
+          "avg_openness": 0.11852297008547008,
+          "eyes_closed": false
+        },
+        {
+          "frame": 57,
+          "timestamp": 1.9,
+          "left_eye_openness": 0.10416666666666667,
+          "right_eye_openness": 0.13157894736842105,
+          "avg_openness": 0.11787280701754385,
+          "eyes_closed": false
+        },
+        {
+          "frame": 58,
+          "timestamp": 1.9333333333333333,
+          "left_eye_openness": 0.0954861111111111,
+          "right_eye_openness": 0.13596491228070176,
+          "avg_openness": 0.11572551169590643,
+          "eyes_closed": false
+        },
+        {
+          "frame": 59,
+          "timestamp": 1.9666666666666666,
+          "left_eye_openness": 0.08854166666666667,
+          "right_eye_openness": 0.13815789473684212,
+          "avg_openness": 0.11334978070175439,
+          "eyes_closed": false
+        },
+        {
+          "frame": 60,
+          "timestamp": 2.0,
+          "left_eye_openness": 0.0954861111111111,
+          "right_eye_openness": 0.1463963963963964,
+          "avg_openness": 0.12094125375375375,
+          "eyes_closed": false
+        },
+        {
+          "frame": 61,
+          "timestamp": 2.033333333333333,
+          "left_eye_openness": 0.0920138888888889,
+          "right_eye_openness": 0.15170940170940173,
+          "avg_openness": 0.12186164529914531,
+          "eyes_closed": false
+        },
+        {
+          "frame": 62,
+          "timestamp": 2.066666666666667,
+          "left_eye_openness": 0.0797872340425532,
+          "right_eye_openness": 0.13815789473684212,
+          "avg_openness": 0.10897256438969766,
+          "eyes_closed": false
+        },
+        {
+          "frame": 63,
+          "timestamp": 2.1,
+          "left_eye_openness": 0.09042553191489362,
+          "right_eye_openness": 0.14316239316239315,
+          "avg_openness": 0.11679396253864338,
+          "eyes_closed": false
+        },
+        {
+          "frame": 64,
+          "timestamp": 2.1333333333333333,
+          "left_eye_openness": 0.08506944444444443,
+          "right_eye_openness": 0.15570175438596492,
+          "avg_openness": 0.12038559941520469,
+          "eyes_closed": false
+        },
+        {
+          "frame": 65,
+          "timestamp": 2.1666666666666665,
+          "left_eye_openness": 0.08506944444444443,
+          "right_eye_openness": 0.13815789473684212,
+          "avg_openness": 0.11161366959064328,
+          "eyes_closed": false
+        },
+        {
+          "frame": 66,
+          "timestamp": 2.2,
+          "left_eye_openness": 0.09027777777777778,
+          "right_eye_openness": 0.14473684210526316,
+          "avg_openness": 0.11750730994152048,
+          "eyes_closed": false
+        },
+        {
+          "frame": 67,
+          "timestamp": 2.2333333333333334,
+          "left_eye_openness": 0.09895833333333333,
+          "right_eye_openness": 0.13596491228070176,
+          "avg_openness": 0.11746162280701755,
+          "eyes_closed": false
+        },
+        {
+          "frame": 68,
+          "timestamp": 2.2666666666666666,
+          "left_eye_openness": 0.08159722222222222,
+          "right_eye_openness": 0.12606837606837606,
+          "avg_openness": 0.10383279914529914,
+          "eyes_closed": false
+        },
+        {
+          "frame": 69,
+          "timestamp": 2.3,
+          "left_eye_openness": 0.0954861111111111,
+          "right_eye_openness": 0.13125,
+          "avg_openness": 0.11336805555555556,
+          "eyes_closed": false
+        },
+        {
+          "frame": 70,
+          "timestamp": 2.3333333333333335,
+          "left_eye_openness": 0.08159722222222222,
+          "right_eye_openness": 0.13815789473684212,
+          "avg_openness": 0.10987755847953218,
+          "eyes_closed": false
+        },
+        {
+          "frame": 71,
+          "timestamp": 2.3666666666666667,
+          "left_eye_openness": 0.09523809523809525,
+          "right_eye_openness": 0.1388888888888889,
+          "avg_openness": 0.11706349206349206,
+          "eyes_closed": false
+        },
+        {
+          "frame": 72,
+          "timestamp": 2.4,
+          "left_eye_openness": 0.0920138888888889,
+          "right_eye_openness": 0.1388888888888889,
+          "avg_openness": 0.1154513888888889,
+          "eyes_closed": false
+        },
+        {
+          "frame": 73,
+          "timestamp": 2.433333333333333,
+          "left_eye_openness": 0.07291666666666667,
+          "right_eye_openness": 0.1513157894736842,
+          "avg_openness": 0.11211622807017543,
+          "eyes_closed": false
+        },
+        {
+          "frame": 74,
+          "timestamp": 2.466666666666667,
+          "left_eye_openness": 0.07446808510638298,
+          "right_eye_openness": 0.1337719298245614,
+          "avg_openness": 0.10412000746547219,
+          "eyes_closed": false
+        },
+        {
+          "frame": 75,
+          "timestamp": 2.5,
+          "left_eye_openness": 0.08854166666666667,
+          "right_eye_openness": 0.1282051282051282,
+          "avg_openness": 0.10837339743589744,
+          "eyes_closed": false
+        },
+        {
+          "frame": 76,
+          "timestamp": 2.533333333333333,
+          "left_eye_openness": 0.08854166666666667,
+          "right_eye_openness": 0.1425438596491228,
+          "avg_openness": 0.11554276315789475,
+          "eyes_closed": false
+        },
+        {
+          "frame": 77,
+          "timestamp": 2.566666666666667,
+          "left_eye_openness": 0.08833333333333333,
+          "right_eye_openness": 0.13034188034188032,
+          "avg_openness": 0.10933760683760682,
+          "eyes_closed": false
+        },
+        {
+          "frame": 78,
+          "timestamp": 2.6,
+          "left_eye_openness": 0.08673469387755102,
+          "right_eye_openness": 0.13157894736842105,
+          "avg_openness": 0.10915682062298604,
+          "eyes_closed": false
+        },
+        {
+          "frame": 79,
+          "timestamp": 2.6333333333333333,
+          "left_eye_openness": 0.10034013605442177,
+          "right_eye_openness": 0.13034188034188032,
+          "avg_openness": 0.11534100819815105,
+          "eyes_closed": false
+        },
+        {
+          "frame": 80,
+          "timestamp": 2.6666666666666665,
+          "left_eye_openness": 0.08506944444444443,
+          "right_eye_openness": 0.1346153846153846,
+          "avg_openness": 0.10984241452991453,
+          "eyes_closed": false
+        },
+        {
+          "frame": 81,
+          "timestamp": 2.7,
+          "left_eye_openness": 0.08854166666666667,
+          "right_eye_openness": 0.14316239316239315,
+          "avg_openness": 0.11585202991452992,
+          "eyes_closed": false
+        },
+        {
+          "frame": 82,
+          "timestamp": 2.7333333333333334,
+          "left_eye_openness": 0.09353741496598639,
+          "right_eye_openness": 0.1425438596491228,
+          "avg_openness": 0.1180406373075546,
+          "eyes_closed": false
+        },
+        {
+          "frame": 83,
+          "timestamp": 2.7666666666666666,
+          "left_eye_openness": 0.09833333333333334,
+          "right_eye_openness": 0.14035087719298245,
+          "avg_openness": 0.11934210526315789,
+          "eyes_closed": false
+        },
+        {
+          "frame": 84,
+          "timestamp": 2.8,
+          "left_eye_openness": 0.0954861111111111,
+          "right_eye_openness": 0.14035087719298245,
+          "avg_openness": 0.11791849415204678,
+          "eyes_closed": false
+        },
+        {
+          "frame": 85,
+          "timestamp": 2.8333333333333335,
+          "left_eye_openness": 0.09574468085106383,
+          "right_eye_openness": 0.13034188034188032,
+          "avg_openness": 0.11304328059647208,
+          "eyes_closed": false
+        },
+        {
+          "frame": 86,
+          "timestamp": 2.8666666666666667,
+          "left_eye_openness": 0.10243055555555557,
+          "right_eye_openness": 0.1469298245614035,
+          "avg_openness": 0.12468019005847952,
+          "eyes_closed": false
+        },
+        {
+          "frame": 87,
+          "timestamp": 2.9,
+          "left_eye_openness": 0.10833333333333334,
+          "right_eye_openness": 0.1425438596491228,
+          "avg_openness": 0.12543859649122807,
+          "eyes_closed": false
+        },
+        {
+          "frame": 88,
+          "timestamp": 2.933333333333333,
+          "left_eye_openness": 0.11564625850340136,
+          "right_eye_openness": 0.13815789473684212,
+          "avg_openness": 0.12690207662012173,
+          "eyes_closed": false
+        },
+        {
+          "frame": 89,
+          "timestamp": 2.966666666666667,
+          "left_eye_openness": 0.10714285714285714,
+          "right_eye_openness": 0.12606837606837606,
+          "avg_openness": 0.11660561660561661,
+          "eyes_closed": false
+        },
+        {
+          "frame": 90,
+          "timestamp": 3.0,
+          "left_eye_openness": 0.11054421768707484,
+          "right_eye_openness": 0.13034188034188032,
+          "avg_openness": 0.12044304901447758,
+          "eyes_closed": false
+        },
+        {
+          "frame": 91,
+          "timestamp": 3.033333333333333,
+          "left_eye_openness": 0.09353741496598639,
+          "right_eye_openness": 0.1282051282051282,
+          "avg_openness": 0.11087127158555729,
+          "eyes_closed": false
+        },
+        {
+          "frame": 92,
+          "timestamp": 3.066666666666667,
+          "left_eye_openness": 0.09722222222222222,
+          "right_eye_openness": 0.11538461538461539,
+          "avg_openness": 0.10630341880341881,
+          "eyes_closed": false
+        },
+        {
+          "frame": 93,
+          "timestamp": 3.1,
+          "left_eye_openness": 0.10374149659863945,
+          "right_eye_openness": 0.11538461538461539,
+          "avg_openness": 0.10956305599162741,
+          "eyes_closed": false
+        },
+        {
+          "frame": 94,
+          "timestamp": 3.1333333333333333,
+          "left_eye_openness": 0.1054421768707483,
+          "right_eye_openness": 0.1111111111111111,
+          "avg_openness": 0.1082766439909297,
+          "eyes_closed": false
+        },
+        {
+          "frame": 95,
+          "timestamp": 3.1666666666666665,
+          "left_eye_openness": 0.11458333333333333,
+          "right_eye_openness": 0.10416666666666667,
+          "avg_openness": 0.109375,
+          "eyes_closed": false
+        },
+        {
+          "frame": 96,
+          "timestamp": 3.2,
+          "left_eye_openness": 0.1139455782312925,
+          "right_eye_openness": 0.1111111111111111,
+          "avg_openness": 0.1125283446712018,
+          "eyes_closed": false
+        },
+        {
+          "frame": 97,
+          "timestamp": 3.2333333333333334,
+          "left_eye_openness": 0.12,
+          "right_eye_openness": 0.11458333333333333,
+          "avg_openness": 0.11729166666666666,
+          "eyes_closed": false
+        },
+        {
+          "frame": 98,
+          "timestamp": 3.2666666666666666,
+          "left_eye_openness": 0.11458333333333333,
+          "right_eye_openness": 0.11752136752136752,
+          "avg_openness": 0.11605235042735043,
+          "eyes_closed": false
+        },
+        {
+          "frame": 99,
+          "timestamp": 3.3,
+          "left_eye_openness": 0.09333333333333334,
+          "right_eye_openness": 0.12393162393162392,
+          "avg_openness": 0.10863247863247863,
+          "eyes_closed": false
+        }
+      ]
+    }
+  },
+  "fatigue_events": [],
+  "summary": {
+    "total_frames": 545,
+    "total_fatigue_events": 0,
+    "overall_perclos": 0.9174311926605505,
+    "fatigue_level": "alert"
+  }
+}

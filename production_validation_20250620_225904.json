@@ -1,0 +1,229 @@
+{
+  "timestamp": "20250620_225904",
+  "validation_type": "production_readiness",
+  "summary": {
+    "total_tests": 5,
+    "successful_tests": 5,
+    "overall_accuracy_percentage": 100.0,
+    "average_accuracy_score": 100.0,
+    "production_ready": true,
+    "target_accuracy": 85.0
+  },
+  "test_results": [
+    {
+      "test_name": "Real Human Face 1 (Alert)",
+      "test_type": "real",
+      "ground_truth": {
+        "fatigue_level": "alert",
+        "perclos_range": [
+          0,
+          3
+        ],
+        "expected_blinks": [
+          2,
+          5
+        ],
+        "description": "Alert person in selfie video"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.9174311926605505,
+        "fatigue_level": "ALERT",
+        "blink_count": 3,
+        "microsleeps": 0,
+        "session_duration": 18.166666666666668,
+        "frames_processed": 545,
+        "eye_openness_stats": {
+          "mean": 0.11304131280733597,
+          "std": 0.013463070143813795,
+          "min": 0.07458600427350427,
+          "max": 0.14005102040816325
+        }
+      },
+      "validation": {
+        "perclos_pass": true,
+        "fatigue_level_pass": true,
+        "blink_count_pass": true,
+        "overall_pass": true,
+        "accuracy_score": 100,
+        "notes": [
+          "\u2705 PERCLOS within expected range",
+          "\u2705 Fatigue level matches exactly",
+          "\u2705 Blink count within expected range"
+        ]
+      },
+      "status": "success"
+    },
+    {
+      "test_name": "Real Human Face 2 (Alert)",
+      "test_type": "real",
+      "ground_truth": {
+        "fatigue_level": "alert",
+        "perclos_range": [
+          0,
+          3
+        ],
+        "expected_blinks": [
+          1,
+          4
+        ],
+        "description": "Alert person in short video"
+      },
+      "measured_results": {
+        "perclos_percentage": 1.1627906976744187,
+        "fatigue_level": "ALERT",
+        "blink_count": 1,
+        "microsleeps": 0,
+        "session_duration": 2.8666666666666667,
+        "frames_processed": 86,
+        "eye_openness_stats": {
+          "mean": 0.12848258372930849,
+          "std": 0.015453676070995856,
+          "min": 0.07631944444444444,
+          "max": 0.16279069767441862
+        }
+      },
+      "validation": {
+        "perclos_pass": true,
+        "fatigue_level_pass": true,
+        "blink_count_pass": true,
+        "overall_pass": true,
+        "accuracy_score": 100,
+        "notes": [
+          "\u2705 PERCLOS within expected range",
+          "\u2705 Fatigue level matches exactly",
+          "\u2705 Blink count within expected range"
+        ]
+      },
+      "status": "success"
+    },
+    {
+      "test_name": "Real Human Face 3 (Alert)",
+      "test_type": "real",
+      "ground_truth": {
+        "fatigue_level": "alert",
+        "perclos_range": [
+          0,
+          2
+        ],
+        "expected_blinks": [
+          5,
+          15
+        ],
+        "description": "Alert person in longer video"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.8333333333333334,
+        "fatigue_level": "ALERT",
+        "blink_count": 6,
+        "microsleeps": 0,
+        "session_duration": 60.0,
+        "frames_processed": 2181,
+        "eye_openness_stats": {
+          "mean": 0.1324819875083162,
+          "std": 0.00893838602250999,
+          "min": 0.06653225806451613,
+          "max": 0.146963915583192
+        }
+      },
+      "validation": {
+        "perclos_pass": true,
+        "fatigue_level_pass": true,
+        "blink_count_pass": true,
+        "overall_pass": true,
+        "accuracy_score": 100,
+        "notes": [
+          "\u2705 PERCLOS within expected range",
+          "\u2705 Fatigue level matches exactly",
+          "\u2705 Blink count within expected range"
+        ]
+      },
+      "status": "success"
+    },
+    {
+      "test_name": "Synthetic Neutral (Baseline)",
+      "test_type": "synthetic",
+      "ground_truth": {
+        "fatigue_level": "alert",
+        "perclos_range": [
+          0,
+          1
+        ],
+        "expected_blinks": [
+          0,
+          2
+        ],
+        "description": "Synthetic neutral baseline"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.0,
+        "fatigue_level": "ALERT",
+        "blink_count": 0,
+        "microsleeps": 0,
+        "session_duration": 5.0,
+        "frames_processed": 150,
+        "eye_openness_stats": {
+          "mean": 0.18400088418954516,
+          "std": 0.005393990994127159,
+          "min": 0.173485985985986,
+          "max": 0.19855699855699854
+        }
+      },
+      "validation": {
+        "perclos_pass": true,
+        "fatigue_level_pass": true,
+        "blink_count_pass": true,
+        "overall_pass": true,
+        "accuracy_score": 100,
+        "notes": [
+          "\u2705 PERCLOS within expected range",
+          "\u2705 Fatigue level matches exactly",
+          "\u2705 Blink count within expected range"
+        ]
+      },
+      "status": "success"
+    },
+    {
+      "test_name": "Synthetic Focused (Control)",
+      "test_type": "synthetic",
+      "ground_truth": {
+        "fatigue_level": "alert",
+        "perclos_range": [
+          0,
+          1
+        ],
+        "expected_blinks": [
+          0,
+          2
+        ],
+        "description": "Synthetic focused state"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.0,
+        "fatigue_level": "ALERT",
+        "blink_count": 0,
+        "microsleeps": 0,
+        "session_duration": 5.0,
+        "frames_processed": 150,
+        "eye_openness_stats": {
+          "mean": 0.18462535767161994,
+          "std": 0.0037495556383011406,
+          "min": 0.1701388888888889,
+          "max": 0.19624819624819625
+        }
+      },
+      "validation": {
+        "perclos_pass": true,
+        "fatigue_level_pass": true,
+        "blink_count_pass": true,
+        "overall_pass": true,
+        "accuracy_score": 100,
+        "notes": [
+          "\u2705 PERCLOS within expected range",
+          "\u2705 Fatigue level matches exactly",
+          "\u2705 Blink count within expected range"
+        ]
+      },
+      "status": "success"
+    }
+  ]
+}

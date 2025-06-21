@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-06-20T23:17:25.927583",
+  "profiling_type": "fatigue_detection_system",
+  "performance_metrics": {
+    "video_fps": 81.81780983699689,
+    "avg_frame_time_ms": 0.057201385498046875,
+    "max_frame_time_ms": 0.16045570373535156,
+    "theoretical_fps": 17482.094031343782,
+    "target_fps": 30.0,
+    "component_times": {
+      "eye_calculation_ms": 0.0357508659362793,
+      "fatigue_detection_ms": 0.0044155120849609375,
+      "alert_system_ms": 0.01703500747680664
+    },
+    "meets_target": "True"
+  },
+  "profiling_results": {
+    "video_processing": {
+      "profile_text": "         289972 function calls in 6.661 seconds\n\n   Ordered by: cumulative time\n   List reduced from 48 to 20 due to restriction <20>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.025    0.025    6.661    6.661 /home/Mike/projects/webcam/./cognitive_overload/processing/landmark_processor.py:118(process_video)\n      545    0.831    0.002    6.238    0.011 /home/Mike/projects/webcam/./cognitive_overload/processing/landmark_processor.py:67(process_frame)\n      545    0.008    0.000    5.216    0.010 /usr/local/lib/python3.10/dist-packages/mediapipe/python/solutions/face_mesh.py:110(process)\n      545    4.785    0.009    5.208    0.010 /usr/local/lib/python3.10/dist-packages/mediapipe/python/solution_base.py:268(process)\n      546    0.003    0.000    0.397    0.001 /home/Mike/projects/webcam/./cognitive_overload/processing/video_processor.py:92(frame_generator)\n      546    0.005    0.000    0.394    0.001 /home/Mike/projects/webcam/./cognitive_overload/processing/video_processor.py:79(read_frame)\n      546    0.389    0.001    0.389    0.001 {method 'read' of 'cv2.VideoCapture' objects}\n      545    0.069    0.000    0.164    0.000 /usr/lib/python3.10/collections/__init__.py:328(namedtuple)\n      545    0.149    0.000    0.149    0.000 {cvtColor}\n      545    0.009    0.000    0.145    0.000 /usr/local/lib/python3.10/dist-packages/mediapipe/python/solution_base.py:564(_make_packet)\n      545    0.006    0.000    0.127    0.000 /usr/local/lib/python3.10/dist-packages/mediapipe/python/packet_creator.py:152(create_image)\n      545    0.120    0.000    0.120    0.000 {built-in method mediapipe.python._framework_bindings._packet_creator._create_image_from_pixel_data}\n      545    0.084    0.000    0.084    0.000 {built-in method builtins.eval}\n      545    0.013    0.000    0.083    0.000 /usr/local/lib/python3.10/dist-packages/mediapipe/python/solution_base.py:573(_get_packet_content)\n      545    0.012    0.000    0.065    0.000 /usr/local/lib/python3.10/dist-packages/mediapipe/python/packet_getter.py:80(get_proto_list)\n   261600    0.042    0.000    0.042    0.000 {method 'append' of 'list' objects}\n      545    0.027    0.000    0.027    0.000 {method 'ParseFromString' of 'google._upb._message.Message' objects}\n      545    0.026    0.000    0.026    0.000 {method 'clear' of 'dict' objects}\n      545    0.014    0.000    0.014    0.000 {built-in method mediapipe.python._framework_bindings._packet_getter._get_serialized_proto_list}\n     1635    0.008    0.000    0.008    0.000 {built-in method builtins.getattr}\n\n\n",
+      "top_functions": []
+    }
+  },
+  "optimization_status": "analyzed",
+  "real_time_capable": "True"
+}

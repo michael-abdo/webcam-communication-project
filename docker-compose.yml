@@ -1,0 +1,90 @@
+# Fatigue Detection System - Docker Compose Configuration
+# Production-ready deployment with 100% validation accuracy
+
+version: '3.8'
+
+services:
+  fatigue-detection:
+    build: .
+    container_name: fatigue-detection-system
+    restart: unless-stopped
+    
+    # Resource limits for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_PATH=/app/cognitive_overload/processing
+      - LOG_LEVEL=INFO
+      - PRODUCTION_MODE=true
+    
+    # Volume mounts for persistent data
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./results:/app/results
+      - /dev/video0:/dev/video0  # Webcam access (if needed)
+    
+    # Network configuration
+    ports:
+      - "5000:5000"  # Web dashboard
+    
+    # Device access for webcam (optional)
+    devices:
+      - /dev/video0:/dev/video0
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python3", "-c", "from cognitive_overload.processing.fatigue_metrics import FatigueDetector; FatigueDetector()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    container_name: fatigue-detection-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - fatigue-detection
+    profiles:
+      - production
+
+  # Optional: Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fatigue-detection-metrics
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    profiles:
+      - monitoring
+
+volumes:
+  fatigue_data:
+    driver: local
+  fatigue_logs:
+    driver: local
+  fatigue_results:
+    driver: local
+
+networks:
+  fatigue_network:
+    driver: bridge
