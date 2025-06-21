@@ -2,8 +2,8 @@
 """
 Integrated Fatigue Detection System with Foundation-First Architecture
 
-This system builds on the solid camera foundation, ensuring camera health
-is validated before running advanced fatigue detection features.
+This system uses the core pipeline with enforced foundation validation
+to ensure reliable operation built on solid fundamentals.
 """
 
 import sys
@@ -13,23 +13,13 @@ import json
 import threading
 from datetime import datetime
 
-# Add camera tools to path
-sys.path.append('./camera_tools/tests')
-sys.path.append('./camera_tools/health_monitoring')
-sys.path.append('./cognitive_overload/processing')
+# Import core pipeline
+from core_pipeline import pipeline, get_pipeline
 
-# Foundation imports
-from quick_camera_test import test_camera, main as run_camera_test
-from webcam_health_monitor import WebcamHealthMonitor
-
-# Advanced feature imports
+# Flask imports
+from flask import Flask, render_template_string, jsonify, Response
 import cv2
 import numpy as np
-from flask import Flask, render_template_string, jsonify, Response
-from landmark_processor import LandmarkProcessor
-from landmark_mapping import CognitiveLandmarkMapper
-from fatigue_metrics import FatigueDetector
-from alert_system import AlertSystem
 
 app = Flask(__name__)
 

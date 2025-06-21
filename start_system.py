@@ -2,8 +2,8 @@
 """
 Unified System Startup Script - Foundation First
 
-This script ensures proper system startup by validating camera health
-before launching any advanced features.
+This script ensures proper system startup using the core pipeline
+with enforced foundation validation.
 """
 
 import sys
@@ -11,8 +11,8 @@ import os
 import time
 import subprocess
 
-# Add camera tools to path
-sys.path.append('./camera_tools/tests')
+# Import core pipeline
+from core_pipeline import pipeline, quick_start
 
 def print_header():
     """Print system header."""
@@ -20,21 +20,17 @@ def print_header():
     print("🏗️  WEBCAM COMMUNICATION SYSTEM - FOUNDATION FIRST")
     print("=" * 60)
     print("Built on solid foundations • Camera health validated first")
+    print("Core Pipeline with Enforced Validation")
     print("=" * 60 + "\n")
 
 def validate_foundation():
-    """Run foundation camera test."""
+    """Validate foundation using core pipeline."""
     print("🎯 STEP 1: VALIDATING CAMERA FOUNDATION...")
     print("-" * 40)
     
     try:
-        # Import and run camera test
-        from quick_camera_test import test_camera
-        
-        # Test primary camera
-        camera_healthy = test_camera(0)
-        
-        if camera_healthy:
+        # Use core pipeline validation
+        if pipeline.validator.validate_layer('foundation'):
             print("\n✅ FOUNDATION SOLID - Camera test passed!")
             print("   Camera is healthy and active")
             return True
@@ -45,7 +41,7 @@ def validate_foundation():
             
     except Exception as e:
         print(f"\n❌ Foundation test error: {e}")
-        print("   Make sure you're running from project root directory")
+        print("   Make sure camera is connected and accessible")
         return False
 
 def show_system_menu():
@@ -53,13 +49,14 @@ def show_system_menu():
     print("\n📋 SYSTEM OPTIONS (Foundation Validated)")
     print("-" * 40)
     print("1. Camera Status Dashboard (http://localhost:5002)")
-    print("2. Fatigue Detection Demo (http://localhost:5000)")
-    print("3. Integrated System (Full Features)")
+    print("2. Original Fatigue Demo (http://localhost:5000)")
+    print("3. ⚡ ENFORCED Dashboard (Core Pipeline)")
     print("4. Run All Camera Tools")
-    print("5. Exit")
+    print("5. Pipeline Status Report")
+    print("6. Exit")
     print("-" * 40)
     
-    return input("Select option (1-5): ")
+    return input("Select option (1-6): ")
 
 def start_camera_dashboard():
     """Start camera status dashboard."""
@@ -76,12 +73,18 @@ def start_fatigue_demo():
     subprocess.Popen([sys.executable, "demo_dashboard.py"])
     time.sleep(2)
 
-def start_integrated_system():
-    """Start integrated system with all features."""
-    print("\n🚀 Starting Integrated System...")
+def start_enforced_dashboard():
+    """Start enforced dashboard with core pipeline."""
+    print("\n⚡ Starting ENFORCED Dashboard (Core Pipeline)...")
+    print("This uses strict foundation enforcement!")
     print("Access at: http://localhost:5000")
-    subprocess.Popen([sys.executable, "integrated_fatigue_system.py"])
+    subprocess.Popen([sys.executable, "enforced_dashboard.py"])
     time.sleep(2)
+
+def show_pipeline_status():
+    """Show current pipeline status."""
+    print("\n📊 PIPELINE STATUS REPORT")
+    pipeline.status_report()
 
 def run_camera_tools():
     """Run camera tools menu."""
@@ -114,14 +117,16 @@ def main():
         elif choice == '2':
             start_fatigue_demo()
         elif choice == '3':
-            start_integrated_system()
+            start_enforced_dashboard()
         elif choice == '4':
             run_camera_tools()
         elif choice == '5':
+            show_pipeline_status()
+        elif choice == '6':
             print("\n👋 Exiting system. Foundation remains solid!")
             break
         else:
-            print("\n❌ Invalid choice. Please select 1-5.")
+            print("\n❌ Invalid choice. Please select 1-6.")
         
         # Give time for subprocess to start
         if choice in ['1', '2', '3']:
