@@ -51,7 +51,11 @@ python3 camera_status_dashboard.py
 
 ### Step 4: Advanced Features (Built on Everything)
 ```bash
-# Only run after all lower layers work
+# Basic Fatigue Detection Dashboard (no MediaPipe required)
+python3 basic_fatigue_dashboard.py
+# Access: http://localhost:5001
+
+# Advanced Fatigue Detection (requires MediaPipe)
 python3 demo_dashboard.py
 # Access: http://localhost:5000
 ```
@@ -92,10 +96,13 @@ python3 camera_status_dashboard.py
 
 ### Advanced Features (Layer 4)
 ```bash
+# Basic fatigue detection (motion-based simulation)
+python3 basic_fatigue_dashboard.py
+
+# Full fatigue detection (MediaPipe face tracking)
 python3 demo_dashboard.py
-python3 simple_demo.py
 ```
-**Purpose**: Fatigue detection, cognitive analysis  
+**Purpose**: Fatigue detection, PERCLOS monitoring, progressive alerts  
 **Built On**: All previous layers
 
 ## 🏗️ Why Foundation-First?
@@ -201,8 +208,27 @@ python3 quick_camera_test.py
 
 ---
 
+## 🎯 Available Dashboards
+
+### 📹 Basic Camera Dashboard
+- **URL**: http://localhost:5002
+- **Features**: Live video streaming, camera health monitoring
+- **Purpose**: Foundation verification and basic monitoring
+
+### 📊 Basic Fatigue Detection
+- **URL**: http://localhost:5001  
+- **Features**: Progressive PERCLOS simulation, motion detection, alert levels
+- **Purpose**: Fatigue monitoring without external dependencies
+
+### 🧠 Advanced Fatigue Detection
+- **URL**: http://localhost:5000
+- **Features**: MediaPipe face tracking, real blink detection, eye landmark analysis
+- **Purpose**: Production-grade fatigue detection (requires MediaPipe)
+
+---
+
 **🎯 Remember: Strong foundations create reliable systems. Always test camera health first.**
 
 [![Camera Health](https://img.shields.io/badge/Foundation-Camera%20Health%20First-critical)](camera_tools/tests/)
 [![Test Driven](https://img.shields.io/badge/Architecture-Test%20Driven-blue)](camera_tools/)
-[![Production Ready](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](docs/)
+[![Fatigue Detection](https://img.shields.io/badge/Feature-Fatigue%20Detection-orange)](basic_fatigue_dashboard.py)
