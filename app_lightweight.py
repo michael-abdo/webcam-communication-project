@@ -28,8 +28,8 @@ def home():
     return render_template('dashboard.html')
 
 @app.route('/api')
-def api_info():
-    """API info endpoint."""
+def api_home():
+    """API home endpoint."""
     return jsonify({
         'name': 'Fatigue Detection System',
         'version': system_state['version'],
