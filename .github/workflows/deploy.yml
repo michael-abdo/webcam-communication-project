@@ -1,0 +1,17 @@
+name: Deploy to Railway
+on:
+  push:
+    branches: [ deploy ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Deploy to Railway
+        run: |
+          echo "✅ Deployment triggered via GitHub Actions"
+          echo "Railway will auto-deploy from this push"
