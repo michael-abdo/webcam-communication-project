@@ -8,7 +8,7 @@ import os
 import json
 import time
 from datetime import datetime
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -24,7 +24,12 @@ system_state = {
 
 @app.route('/')
 def home():
-    """Home page with system info."""
+    """Home page with dashboard interface."""
+    return render_template('dashboard.html')
+
+@app.route('/api')
+def api_info():
+    """API info endpoint."""
     return jsonify({
         'name': 'Fatigue Detection System',
         'version': system_state['version'],
@@ -38,6 +43,16 @@ def home():
             'POST /api/analyze - Analyze fatigue'
         ]
     })
+
+@app.route('/dashboard')
+def dashboard():
+    """Full dashboard interface."""
+    return render_template('dashboard.html')
+
+@app.route('/demo')
+def demo():
+    """Demo interface."""
+    return render_template('demo.html')
 
 @app.route('/health')
 def health():

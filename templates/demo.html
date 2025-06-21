@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatigue Detection Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #ff5252;
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            min-height: 100px;
+        }
+        .fatigue-high { background: rgba(239, 68, 68, 0.3); }
+        .fatigue-moderate { background: rgba(245, 158, 11, 0.3); }
+        .fatigue-low { background: rgba(16, 185, 129, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 Fatigue Detection Demo</h1>
+        
+        <div class="demo-section">
+            <h3>Test Fatigue Analysis</h3>
+            <div class="input-group">
+                <label>PERCLOS (% eye closure):</label>
+                <input type="number" id="perclos" value="0.3" step="0.1" min="0" max="1">
+            </div>
+            <div class="input-group">
+                <label>Blink Rate (blinks/min):</label>
+                <input type="number" id="blinkRate" value="15" step="1" min="0" max="50">
+            </div>
+            <button onclick="analyzeFatigue()">Analyze Fatigue Level</button>
+        </div>
+
+        <div class="demo-section">
+            <h3>Quick Test Scenarios</h3>
+            <button onclick="testScenario('alert')">Test Alert Level</button>
+            <button onclick="testScenario('moderate')">Test Moderate Level</button>
+            <button onclick="testScenario('high')">Test High Level</button>
+        </div>
+
+        <div id="result" class="result">
+            Click "Analyze Fatigue Level" to see results...
+        </div>
+    </div>
+
+    <script>
+        async function analyzeFatigue() {
+            const perclos = parseFloat(document.getElementById('perclos').value);
+            const blinkRate = parseInt(document.getElementById('blinkRate').value);
+            
+            const data = {
+                perclos: perclos,
+                blink_rate: blinkRate,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                displayResult(result);
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        function testScenario(level) {
+            if (level === 'alert') {
+                document.getElementById('perclos').value = '0.15';
+                document.getElementById('blinkRate').value = '20';
+            } else if (level === 'moderate') {
+                document.getElementById('perclos').value = '0.35';
+                document.getElementById('blinkRate').value = '12';
+            } else if (level === 'high') {
+                document.getElementById('perclos').value = '0.65';
+                document.getElementById('blinkRate').value = '8';
+            }
+            analyzeFatigue();
+        }
+
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            const fatigueClass = result.fatigue_level.toLowerCase();
+            
+            resultDiv.className = `result fatigue-${fatigueClass}`;
+            resultDiv.innerHTML = `
+                <h4>Analysis Result</h4>
+                <p><strong>Fatigue Level:</strong> ${result.fatigue_level}</p>
+                <p><strong>Risk Score:</strong> ${result.risk_score}</p>
+                <p><strong>Confidence:</strong> ${result.confidence}</p>
+                <p><strong>Processing Time:</strong> ${result.processing_time_ms}ms</p>
+                <p><strong>Recommendations:</strong></p>
+                <ul>
+                    ${result.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+        }
+    </script>
+</body>
+</html>
