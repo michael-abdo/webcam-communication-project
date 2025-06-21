@@ -4,10 +4,20 @@ Simple Fatigue Detection Demo
 
 A command-line demo showing the production-ready fatigue detection system
 processing a video file with real-time alerts and metrics display.
+
+FOUNDATION-FIRST: Camera validation recommended before webcam demos.
 """
 
 import sys
 sys.path.append('./cognitive_overload/processing')
+sys.path.append('./camera_tools/tests')
+
+# Try to import foundation test
+try:
+    from quick_camera_test import test_camera
+    FOUNDATION_AVAILABLE = True
+except ImportError:
+    FOUNDATION_AVAILABLE = False
 
 import time
 import json

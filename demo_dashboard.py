@@ -4,10 +4,23 @@ Fatigue Detection Demo Dashboard
 
 A simple web dashboard for demonstrating real-time fatigue detection
 with PERCLOS metrics, alert visualization, and live webcam feed.
+
+FOUNDATION-FIRST: Camera health is validated before starting fatigue detection.
 """
 
 import sys
+import os
 sys.path.append('./cognitive_overload/processing')
+sys.path.append('./camera_tools/tests')
+
+# Foundation imports for camera validation
+try:
+    from quick_camera_test import test_camera
+    FOUNDATION_AVAILABLE = True
+except ImportError:
+    print("⚠️  WARNING: Camera foundation tests not available")
+    print("   Run from project root directory for foundation validation")
+    FOUNDATION_AVAILABLE = False
 
 import cv2
 import json
@@ -32,7 +45,9 @@ demo_state = {
     'blink_history': [],
     'session_start_time': None,
     'frame_count': 0,
-    'camera': None
+    'camera': None,
+    'foundation_validated': False,
+    'camera_healthy': False
 }
 
 # Initialize fatigue detection components
@@ -48,10 +63,83 @@ def dashboard():
     return render_template('dashboard.html')
 
 
+@app.route('/api/validate_foundation')
+def validate_foundation():
+    """Validate camera foundation before starting demo."""
+    global demo_state
+    
+    if not FOUNDATION_AVAILABLE:
+        # Fallback validation if foundation tests not available
+        try:
+            test_cap = cv2.VideoCapture(0)
+            if test_cap.isOpened():
+                ret, frame = test_cap.read()
+                test_cap.release()
+                demo_state['camera_healthy'] = ret
+                demo_state['foundation_validated'] = True
+                return jsonify({
+                    'status': 'success',
+                    'foundation_healthy': ret,
+                    'message': 'Basic camera check completed (foundation tests not available)'
+                })
+            else:
+                demo_state['camera_healthy'] = False
+                return jsonify({
+                    'status': 'error',
+                    'foundation_healthy': False,
+                    'message': 'Camera not accessible'
+                })
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'foundation_healthy': False,
+                'message': f'Camera validation failed: {str(e)}'
+            })
+    
+    # Use foundation test if available
+    try:
+        print("🏗️  Running foundation camera test...")
+        camera_healthy = test_camera(0)
+        demo_state['camera_healthy'] = camera_healthy
+        demo_state['foundation_validated'] = True
+        
+        if camera_healthy:
+            return jsonify({
+                'status': 'success',
+                'foundation_healthy': True,
+                'message': '✅ Foundation validated - camera is healthy and active'
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'foundation_healthy': False,
+                'message': '❌ Foundation test failed - camera not working properly'
+            })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'foundation_healthy': False,
+            'message': f'Foundation validation error: {str(e)}'
+        })
+
+
 @app.route('/api/start_demo')
 def start_demo():
     """Start the demo with webcam."""
     global demo_state
+    
+    # Check foundation first
+    if not demo_state['foundation_validated']:
+        return jsonify({
+            'status': 'error',
+            'message': 'Foundation not validated. Please validate camera health first.'
+        })
+    
+    if not demo_state['camera_healthy']:
+        return jsonify({
+            'status': 'error',
+            'message': 'Camera is not healthy. Cannot start demo.'
+        })
     
     try:
         # Initialize webcam
@@ -106,6 +194,55 @@ def get_metrics():
         'frame_count': demo_state['frame_count'],
         'running': demo_state['running']
     })
+
+
+@app.route('/start_detection', methods=['POST'])
+def start_detection():
+    """Start detection endpoint for frontend."""
+    return start_demo()
+
+
+@app.route('/stop_detection', methods=['POST'])  
+def stop_detection():
+    """Stop detection endpoint for frontend."""
+    return stop_demo()
+
+
+@app.route('/reset_metrics', methods=['POST'])
+def reset_metrics():
+    """Reset all metrics."""
+    global demo_state
+    demo_state['current_metrics'] = {}
+    demo_state['alert_status'] = {}
+    demo_state['perclos_history'] = []
+    demo_state['blink_history'] = []
+    demo_state['frame_count'] = 0
+    demo_state['session_start_time'] = time.time() if demo_state['running'] else None
+    return jsonify({'status': 'success', 'message': 'Metrics reset'})
+
+
+@app.route('/get_metrics')
+def get_metrics_frontend():
+    """Get metrics for frontend (simplified format)."""
+    metrics = demo_state.get('current_metrics', {})
+    alert_status = demo_state.get('alert_status', {})
+    
+    # Convert to frontend format
+    response = {
+        'metrics': {
+            'perclos': metrics.get('perclos_percentage', 0) / 100.0,  # Convert to 0-1 range
+            'blink_rate': metrics.get('blink_rate', 0),
+            'eye_openness': metrics.get('eye_openness', 1.0),
+        },
+        'alert_status': {
+            'level': alert_status.get('alert_level', 'Normal'),
+            'message': alert_status.get('message', 'All systems normal')
+        },
+        'frame_count': demo_state.get('frame_count', 0),
+        'fps': 30.0 if demo_state['running'] else 0.0
+    }
+    
+    return jsonify(response)
 
 
 def generate_frames():
@@ -457,10 +594,14 @@ def dashboard_template():
 
 
 if __name__ == '__main__':
-    print("🚀 Starting Fatigue Detection Demo Dashboard...")
+    print("🏗️  FATIGUE DETECTION DEMO - FOUNDATION FIRST")
+    print("=" * 50)
     print("📊 Production-ready system with 100% validation accuracy")
     print("🌐 Access dashboard at: http://localhost:5000")
+    print("\n⚠️  IMPORTANT: Camera foundation validation required!")
+    print("   Please validate camera health before starting demo.")
     print("\nFeatures:")
+    print("  🎯 Foundation-first camera validation")
     print("  ✅ Real-time PERCLOS calculation")
     print("  ✅ Progressive alert system") 
     print("  ✅ Live webcam with face tracking overlay")
