@@ -461,27 +461,28 @@ def serve_video(video_path):
     # Check if we're on Heroku (production)
     if os.environ.get('DYNO'):
         # On Heroku, map to demo videos based on keywords in the path
+        # Using reliable video URLs that allow cross-origin access
         if 'synthetic_tired' in video_path or 'tired' in video_path:
-            # Use a sleepy/tired person video
-            video_url = 'https://cdn.pixabay.com/video/2024/02/29/202640-917259645_tiny.mp4'
+            # Use Big Buck Bunny - a classic test video
+            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
         elif 'synthetic_focused' in video_path or 'focused' in video_path:
-            # Use an alert/focused person video
-            video_url = 'https://cdn.pixabay.com/video/2023/10/01/182869-869029112_tiny.mp4'
+            # Use another test video
+            video_url = 'https://www.w3schools.com/html/movie.mp4'
         elif 'test_face' in video_path:
-            # Use a face detection test video
-            video_url = 'https://cdn.pixabay.com/video/2024/01/14/196686-901429198_tiny.mp4'
+            # Use a smaller test video
+            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
         elif 'selfie' in video_path or 'kaggle' in video_path:
-            # Use selfie-style videos
+            # Use different videos for variety
             video_urls = [
-                'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4',
-                'https://cdn.pixabay.com/video/2024/06/27/218206-964455746_tiny.mp4',
-                'https://cdn.pixabay.com/video/2022/11/28/140583-775564703_tiny.mp4'
+                'https://www.w3schools.com/html/mov_bbb.mp4',
+                'https://www.w3schools.com/html/movie.mp4',
+                'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
             ]
             # Pick one based on the path hash
             video_url = video_urls[hash(video_path) % len(video_urls)]
         else:
             # Default video
-            video_url = 'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4'
+            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
         
         # Return redirect URL
         return jsonify({
@@ -499,7 +500,7 @@ def serve_video(video_path):
         else:
             # Fallback to demo video
             return jsonify({
-                'redirect_url': 'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4',
+                'redirect_url': 'https://www.w3schools.com/html/mov_bbb.mp4',
                 'type': 'fallback'
             })
 
