@@ -503,7 +503,7 @@
                     <div class="selector-group">
                         <label for="datasetType">Dataset Type:</label>
                         <select id="datasetType">
-                            <option value="">All Datasets</option>
+                            <option value="all">All Datasets</option>
                             <option value="test_videos">Test Videos</option>
                             <option value="live_faces">Live Faces</option>
                             <option value="real_faces">Real Faces</option>
@@ -515,14 +515,14 @@
                     <div class="selector-group">
                         <label for="subjectId">Subject ID:</label>
                         <select id="subjectId">
-                            <option value="">All Subjects</option>
+                            <option value="all">All Subjects</option>
                         </select>
                     </div>
 
                     <div class="selector-group">
                         <label for="scenario">Scenario:</label>
                         <select id="scenario">
-                            <option value="">All Scenarios</option>
+                            <option value="all">All Scenarios</option>
                         </select>
                     </div>
 
@@ -762,10 +762,10 @@
 
             async loadVideos() {
                 const params = new URLSearchParams({
-                    dataset_type: this.elements.datasetType.value,
-                    subject_id: this.elements.subjectId.value,
-                    scenario: this.elements.scenario.value,
-                    min_quality: this.elements.minQuality.value
+                    dataset_type: this.elements.datasetType.value || 'all',
+                    subject_id: this.elements.subjectId.value || 'all',
+                    scenario: this.elements.scenario.value || 'all',
+                    min_quality: this.elements.minQuality.value || '0'
                 });
 
                 // Show loading spinner
