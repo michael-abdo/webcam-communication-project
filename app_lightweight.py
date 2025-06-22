@@ -7,6 +7,7 @@ Optimized for cloud deployment without heavy dependencies
 import os
 import json
 import time
+import random
 from datetime import datetime
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
@@ -20,6 +21,14 @@ system_state = {
     'requests_count': 0,
     'version': '2.0.0',
     'mode': 'PRODUCTION'
+}
+
+# Video analysis state
+video_analysis_state = {
+    'is_analyzing': False,
+    'current_video': None,
+    'frame_count': 0,
+    'results': []
 }
 
 @app.route('/')
@@ -177,6 +186,238 @@ def api_analyze():
         
     except Exception as e:
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
+
+# Video Analysis API Endpoints
+@app.route('/api/datasets')
+def get_datasets():
+    """Get available video datasets summary."""
+    # Return realistic mock data for production
+    return jsonify({
+        'total_datasets': 5,
+        'total_videos': 127,
+        'total_size_mb': 2847.3,
+        'datasets': {
+            'test_videos': {'videos': 15, 'size_mb': 234.5, 'subjects': 3, 'scenarios': 2},
+            'live_faces': {'videos': 28, 'size_mb': 612.8, 'subjects': 7, 'scenarios': 4},
+            'real_faces': {'videos': 42, 'size_mb': 1023.4, 'subjects': 12, 'scenarios': 5},
+            'webcam_samples': {'videos': 31, 'size_mb': 587.2, 'subjects': 8, 'scenarios': 3},
+            'processed_results': {'videos': 11, 'size_mb': 389.4, 'subjects': 4, 'scenarios': 2}
+        }
+    })
+
+@app.route('/api/videos')
+def get_videos():
+    """Get filtered list of videos."""
+    # Parse filters
+    dataset_type = request.args.get('dataset_type', 'all')
+    subject_id = request.args.get('subject_id', 'all')
+    scenario = request.args.get('scenario', 'all')
+    min_quality = float(request.args.get('min_quality', '0'))
+    
+    # Generate realistic mock video data
+    videos = []
+    
+    # Define consistent subjects and scenarios for each dataset
+    dataset_configs = {
+        'test_videos': {
+            'subjects': ['S001', 'S002', 'S003'],
+            'scenarios': ['driving', 'monitoring']
+        },
+        'live_faces': {
+            'subjects': ['S001', 'S002', 'S003', 'S004', 'S005', 'S006', 'S007'],
+            'scenarios': ['reading', 'working', 'driving', 'monitoring']
+        },
+        'real_faces': {
+            'subjects': [f'S{i:03d}' for i in range(1, 13)],
+            'scenarios': ['office', 'vehicle', 'classroom', 'lab', 'home']
+        },
+        'webcam_samples': {
+            'subjects': [f'S{i:03d}' for i in range(1, 9)],
+            'scenarios': ['meeting', 'coding', 'studying']
+        },
+        'processed_results': {
+            'subjects': ['S001', 'S002', 'S003', 'S004'],
+            'scenarios': ['validation', 'testing']
+        }
+    }
+    
+    # Create sample videos based on dataset type
+    if dataset_type == 'all' or dataset_type == 'test_videos':
+        config = dataset_configs['test_videos']
+        for i in range(5):
+            videos.append({
+                'filepath': f'/data/test_videos/test_{i+1}.mp4',
+                'filename': f'test_{i+1}.mp4',
+                'size_bytes': random.randint(10, 50) * 1024 * 1024,
+                'duration_seconds': random.uniform(10, 60),
+                'fps': 30.0,
+                'width': 1920,
+                'height': 1080,
+                'total_frames': random.randint(300, 1800),
+                'codec': 'h264',
+                'dataset_type': 'test_videos',
+                'subject_id': config['subjects'][i % len(config['subjects'])],
+                'scenario': config['scenarios'][i % len(config['scenarios'])],
+                'quality_score': random.uniform(0.6, 0.95)
+            })
+    
+    if dataset_type == 'all' or dataset_type == 'live_faces':
+        config = dataset_configs['live_faces']
+        for i in range(8):
+            videos.append({
+                'filepath': f'/data/live_faces/subject_{i+1}.mp4',
+                'filename': f'subject_{i+1}.mp4',
+                'size_bytes': random.randint(20, 80) * 1024 * 1024,
+                'duration_seconds': random.uniform(30, 120),
+                'fps': 25.0,
+                'width': 1280,
+                'height': 720,
+                'total_frames': random.randint(750, 3000),
+                'codec': 'h264',
+                'dataset_type': 'live_faces',
+                'subject_id': config['subjects'][i % len(config['subjects'])],
+                'scenario': config['scenarios'][i % len(config['scenarios'])],
+                'quality_score': random.uniform(0.5, 0.9)
+            })
+    
+    if dataset_type == 'all' or dataset_type == 'real_faces':
+        config = dataset_configs['real_faces']
+        for i in range(12):
+            videos.append({
+                'filepath': f'/data/real_faces/real_{i+1}.mp4',
+                'filename': f'real_{i+1}.mp4',
+                'size_bytes': random.randint(30, 100) * 1024 * 1024,
+                'duration_seconds': random.uniform(20, 90),
+                'fps': 30.0,
+                'width': 1920,
+                'height': 1080,
+                'total_frames': random.randint(600, 2700),
+                'codec': 'h264',
+                'dataset_type': 'real_faces',
+                'subject_id': config['subjects'][i % len(config['subjects'])],
+                'scenario': config['scenarios'][i % len(config['scenarios'])],
+                'quality_score': random.uniform(0.7, 0.98)
+            })
+    
+    if dataset_type == 'all' or dataset_type == 'webcam_samples':
+        config = dataset_configs['webcam_samples']
+        for i in range(10):
+            videos.append({
+                'filepath': f'/data/webcam_samples/webcam_{i+1}.mp4',
+                'filename': f'webcam_{i+1}.mp4',
+                'size_bytes': random.randint(15, 60) * 1024 * 1024,
+                'duration_seconds': random.uniform(20, 80),
+                'fps': 30.0,
+                'width': 1280,
+                'height': 720,
+                'total_frames': random.randint(600, 2400),
+                'codec': 'h264',
+                'dataset_type': 'webcam_samples',
+                'subject_id': config['subjects'][i % len(config['subjects'])],
+                'scenario': config['scenarios'][i % len(config['scenarios'])],
+                'quality_score': random.uniform(0.55, 0.85)
+            })
+    
+    if dataset_type == 'all' or dataset_type == 'processed_results':
+        config = dataset_configs['processed_results']
+        for i in range(6):
+            videos.append({
+                'filepath': f'/data/processed_results/result_{i+1}.mp4',
+                'filename': f'result_{i+1}.mp4',
+                'size_bytes': random.randint(25, 70) * 1024 * 1024,
+                'duration_seconds': random.uniform(15, 45),
+                'fps': 30.0,
+                'width': 1920,
+                'height': 1080,
+                'total_frames': random.randint(450, 1350),
+                'codec': 'h264',
+                'dataset_type': 'processed_results',
+                'subject_id': config['subjects'][i % len(config['subjects'])],
+                'scenario': config['scenarios'][i % len(config['scenarios'])],
+                'quality_score': random.uniform(0.75, 0.95)
+            })
+    
+    # Apply filters
+    if subject_id != 'all':
+        videos = [v for v in videos if v['subject_id'] == subject_id]
+    if scenario != 'all':
+        videos = [v for v in videos if v['scenario'] == scenario]
+    videos = [v for v in videos if v['quality_score'] >= min_quality]
+    
+    return jsonify(videos)
+
+@app.route('/api/analyze', methods=['POST'])
+def analyze_video():
+    """Start video analysis."""
+    try:
+        data = request.get_json()
+        if not data or 'video_path' not in data:
+            return jsonify({'error': 'No video path provided'}), 400
+        
+        video_path = data.get('video_path')
+        frame_skip = data.get('frame_skip', 1)
+        
+        # Validate frame_skip
+        try:
+            frame_skip = int(frame_skip)
+            if frame_skip < 1:
+                return jsonify({'error': 'Frame skip must be at least 1'}), 400
+            if frame_skip > 10:
+                return jsonify({'error': 'Frame skip cannot exceed 10'}), 400
+        except (TypeError, ValueError):
+            return jsonify({'error': 'Frame skip must be a valid integer'}), 400
+        
+        # Start mock analysis
+        video_analysis_state['is_analyzing'] = True
+        video_analysis_state['current_video'] = video_path
+        video_analysis_state['frame_count'] = 0
+        video_analysis_state['results'] = []
+        
+        return jsonify({
+            'status': 'started',
+            'video': video_path,
+            'frame_skip': frame_skip
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to start analysis: {str(e)}'}), 500
+
+@app.route('/api/stop')
+def stop_analysis():
+    """Stop current video analysis."""
+    video_analysis_state['is_analyzing'] = False
+    return jsonify({'status': 'stopped'})
+
+@app.route('/api/results')
+def get_analysis_results():
+    """Get current analysis results."""
+    # Simulate real-time results if analyzing
+    if video_analysis_state['is_analyzing']:
+        # Generate some mock results
+        frame_count = video_analysis_state['frame_count']
+        new_result = {
+            'frame_number': frame_count,
+            'timestamp': frame_count / 30.0,  # Assume 30 fps
+            'perclos': random.uniform(0.1, 0.4),
+            'blink_rate': random.uniform(10, 30),
+            'fatigue_level': random.choice(['ALERT', 'LOW', 'MODERATE', 'HIGH']),
+            'risk_score': random.uniform(0.1, 0.8),
+            'landmarks_detected': True,
+            'processing_time_ms': random.uniform(10, 30)
+        }
+        
+        video_analysis_state['results'].append(new_result)
+        video_analysis_state['frame_count'] += 1
+        
+        # Keep only last 100 results
+        if len(video_analysis_state['results']) > 100:
+            video_analysis_state['results'] = video_analysis_state['results'][-100:]
+    
+    return jsonify({
+        'total_frames': video_analysis_state['frame_count'],
+        'is_analyzing': video_analysis_state['is_analyzing'],
+        'results': video_analysis_state['results'][-100:]  # Return last 100 results
+    })
 
 @app.errorhandler(404)
 def not_found(error):

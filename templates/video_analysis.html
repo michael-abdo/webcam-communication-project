@@ -35,6 +35,9 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+            overflow-x: hidden;
         }
 
         .header {
@@ -224,6 +227,79 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+        
+        /* Focus styles for accessibility */
+        .btn:focus {
+            outline: 3px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+        
+        .btn-danger:focus {
+            outline-color: var(--accent-red);
+        }
+        
+        input:focus,
+        select:focus {
+            outline: 3px solid var(--primary-blue);
+            outline-offset: 1px;
+        }
+        
+        /* Prevent layout shift on range slider interaction */
+        input[type="range"] {
+            margin: 0;
+            padding: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        input[type="range"]:focus {
+            outline-offset: 3px;
+        }
+        
+        input[type="range"]::-webkit-slider-track {
+            background: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            margin-top: -6px;
+            box-sizing: border-box;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        input[type="range"]::-moz-range-track {
+            background: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+            border: none;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        
+        .video-card:focus {
+            outline: 3px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
 
         .analysis-display {
             display: grid;
@@ -357,6 +433,17 @@
             background: rgba(37, 99, 235, 0.02);
         }
 
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .dashboard {
+                gap: 20px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -369,20 +456,48 @@
             .controls {
                 flex-direction: column;
             }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .selector-group {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                max-height: 300px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎥 Video Dataset Analysis Interface</h1>
+            <h1><span aria-hidden="true">🎥</span> Video Dataset Analysis Interface</h1>
             <p>Real-time fatigue detection analysis on video datasets</p>
         </div>
 
         <div class="dashboard">
             <!-- Dataset Selection Panel -->
             <div class="panel">
-                <h3>📁 Dataset Selection</h3>
+                <h3><span aria-hidden="true">📁</span> Dataset Selection</h3>
                 
                 <div class="dataset-selector">
                     <div class="selector-group">
@@ -413,7 +528,7 @@
 
                     <div class="selector-group">
                         <label for="minQuality">Minimum Quality: <span id="qualityValue">0.0</span></label>
-                        <input type="range" id="minQuality" min="0" max="1" step="0.1" value="0">
+                        <input type="range" id="minQuality" min="0" max="1" step="0.1" value="0" aria-label="Minimum quality filter" tabindex="0" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">
                     </div>
                 </div>
 
@@ -435,8 +550,8 @@
 
             <!-- Video Selection Panel -->
             <div class="panel">
-                <h3>🎬 Video Selection</h3>
-                <div id="videoGrid" class="video-grid">
+                <h3><span aria-hidden="true">🎬</span> Video Selection</h3>
+                <div id="videoGrid" class="video-grid" role="list" aria-label="Available videos">
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
                         Loading videos...
                     </div>
@@ -446,25 +561,25 @@
 
         <!-- Analysis Panel -->
         <div class="panel analysis-panel">
-            <h3>⚡ Real-time Analysis</h3>
+            <h3><span aria-hidden="true">⚡</span> Real-time Analysis</h3>
             
             <div class="controls">
-                <button id="startAnalysis" class="btn btn-primary" disabled>
-                    <span>▶️</span> Start Analysis
+                <button id="startAnalysis" class="btn btn-primary" disabled aria-label="Start video analysis" tabindex="0">
+                    <span aria-hidden="true">▶️</span> Start Analysis
                 </button>
-                <button id="stopAnalysis" class="btn btn-danger" disabled>
-                    <span>⏹️</span> Stop Analysis
+                <button id="stopAnalysis" class="btn btn-danger" disabled aria-label="Stop video analysis" tabindex="0">
+                    <span aria-hidden="true">⏹️</span> Stop Analysis
                 </button>
                 <div class="selector-group" style="min-width: 150px;">
                     <label for="frameSkip">Frame Skip:</label>
                     <input type="number" id="frameSkip" value="1" min="1" max="10">
                 </div>
-                <div id="analysisStatus" class="status-indicator status-idle">
-                    <span>⏸️</span> Ready
+                <div id="analysisStatus" class="status-indicator status-idle" role="status" aria-live="polite">
+                    <span aria-hidden="true">⏸️</span> Ready
                 </div>
             </div>
 
-            <div class="progress-bar">
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Analysis progress">
                 <div id="progressFill" class="progress-fill" style="width: 0%"></div>
             </div>
 
@@ -494,11 +609,11 @@
                 </div>
 
                 <div class="chart-container" id="chartContainer">
-                    📊 Real-time analysis chart will appear here
+                    <span aria-hidden="true">📊</span> Real-time analysis chart will appear here
                 </div>
             </div>
 
-            <table class="results-table" id="resultsTable" style="display: none;">
+            <table class="results-table" id="resultsTable" style="display: none;" aria-label="Video analysis results">
                 <thead>
                     <tr>
                         <th>Frame</th>
@@ -522,6 +637,7 @@
                 this.selectedVideo = null;
                 this.isAnalyzing = false;
                 this.analysisResults = [];
+                this.debounceTimer = null;
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadDatasets();
@@ -559,30 +675,88 @@
 
             attachEventListeners() {
                 // Filter controls
-                this.elements.datasetType.addEventListener('change', () => this.loadVideos());
-                this.elements.subjectId.addEventListener('change', () => this.loadVideos());
-                this.elements.scenario.addEventListener('change', () => this.loadVideos());
-                this.elements.minQuality.addEventListener('input', (e) => {
-                    this.elements.qualityValue.textContent = e.target.value;
+                this.elements.datasetType.addEventListener('change', () => {
+                    // Reset dependent dropdowns when dataset type changes
+                    this.elements.subjectId.value = 'all';
+                    this.elements.scenario.value = 'all';
                     this.loadVideos();
                 });
+                this.elements.subjectId.addEventListener('change', () => this.loadVideos());
+                this.elements.scenario.addEventListener('change', () => this.loadVideos());
+                // Handle slider updates with both input and change events
+                this.elements.minQuality.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    this.elements.qualityValue.textContent = value;
+                    // Update ARIA attributes for accessibility
+                    e.target.setAttribute('aria-valuenow', value);
+                    e.target.setAttribute('aria-valuetext', `${(value * 100).toFixed(0)} percent`);
+                });
+                
+                // Debounce video loading on slider change to prevent race conditions
+                let qualityDebounceTimer = null;
+                this.elements.minQuality.addEventListener('change', (e) => {
+                    // Ensure label is updated
+                    this.elements.qualityValue.textContent = e.target.value;
+                    
+                    // Debounce video loading
+                    if (qualityDebounceTimer) {
+                        clearTimeout(qualityDebounceTimer);
+                    }
+                    qualityDebounceTimer = setTimeout(() => {
+                        this.loadVideos();
+                    }, 300);
+                });
 
-                // Analysis controls
-                this.elements.startAnalysis.addEventListener('click', () => this.startAnalysis());
+                // Analysis controls with debouncing
+                this.elements.startAnalysis.addEventListener('click', () => {
+                    // Prevent rapid double-clicks
+                    if (this.debounceTimer) {
+                        clearTimeout(this.debounceTimer);
+                    }
+                    
+                    // Disable button immediately to prevent clicks during debounce
+                    this.elements.startAnalysis.disabled = true;
+                    
+                    this.debounceTimer = setTimeout(() => {
+                        this.startAnalysis();
+                        this.debounceTimer = null;
+                    }, 300); // 300ms debounce delay
+                });
                 this.elements.stopAnalysis.addEventListener('click', () => this.stopAnalysis());
             }
 
             async loadDatasets() {
                 try {
+                    // Show loading state
+                    this.metrics.totalVideos.textContent = '...';
+                    this.metrics.totalSize.textContent = '...';
+                    this.metrics.totalDatasets.textContent = '...';
+                    
                     const response = await fetch('/api/datasets');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
                     const data = await response.json();
                     
-                    this.metrics.totalVideos.textContent = data.total_videos;
-                    this.metrics.totalSize.textContent = `${data.total_size_mb.toFixed(1)} MB`;
-                    this.metrics.totalDatasets.textContent = data.total_datasets;
+                    // Update metrics with real data
+                    this.metrics.totalVideos.textContent = data.total_videos || 0;
+                    this.metrics.totalSize.textContent = `${(data.total_size_mb || 0).toFixed(1)} MB`;
+                    this.metrics.totalDatasets.textContent = data.total_datasets || 0;
                     
                 } catch (error) {
                     console.error('Error loading datasets:', error);
+                    // Show error state with retry hint
+                    this.metrics.totalVideos.textContent = '—';
+                    this.metrics.totalSize.textContent = '—';
+                    this.metrics.totalDatasets.textContent = '—';
+                    
+                    // Add error tooltip to stats card
+                    const statsCard = document.querySelector('.stats-card');
+                    if (statsCard) {
+                        statsCard.title = 'Failed to load stats. Refresh page to retry.';
+                        statsCard.style.cursor = 'help';
+                    }
                 }
             }
 
@@ -594,6 +768,14 @@
                     min_quality: this.elements.minQuality.value
                 });
 
+                // Show loading spinner
+                this.elements.videoGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <div class="loading-spinner" style="margin: 0 auto;"></div>
+                        <div style="margin-top: 10px; color: var(--text-secondary);">Loading videos...</div>
+                    </div>
+                `;
+
                 try {
                     const response = await fetch(`/api/videos?${params}`);
                     const videos = await response.json();
@@ -601,7 +783,19 @@
                     this.updateFilterOptions(videos);
                 } catch (error) {
                     console.error('Error loading videos:', error);
-                    this.elements.videoGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--accent-red);">Error loading videos</div>';
+                    this.elements.videoGrid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <div style="color: var(--accent-red); font-size: 18px; margin-bottom: 10px;">
+                                <span aria-hidden="true">⚠️</span> Error loading videos
+                            </div>
+                            <div style="color: var(--text-secondary); margin-bottom: 20px;">
+                                Unable to fetch video list. Please check your connection and try again.
+                            </div>
+                            <button class="btn btn-primary" onclick="window.videoInterface.loadVideos()" style="margin: 0 auto;">
+                                <span aria-hidden="true">🔄</span> Retry
+                            </button>
+                        </div>
+                    `;
                 }
             }
 
@@ -612,27 +806,33 @@
                 }
 
                 this.elements.videoGrid.innerHTML = videos.map(video => `
-                    <div class="video-card" data-path="${video.filepath}">
+                    <div class="video-card" data-path="${video.filepath}" role="listitem" tabindex="0" aria-label="${video.filename} - ${video.width}x${video.height}, ${video.duration_seconds.toFixed(1)} seconds">
                         <div class="quality-badge quality-${this.getQualityClass(video.quality_score)}">
                             ${(video.quality_score * 100).toFixed(0)}%
                         </div>
                         <div class="video-info">
                             <div class="video-title">${video.filename}</div>
                             <div class="video-meta">
-                                <span>📐 ${video.width}x${video.height}</span>
-                                <span>⏱️ ${video.duration_seconds.toFixed(1)}s</span>
-                                <span>🎞️ ${video.fps.toFixed(1)} fps</span>
-                                <span>💾 ${(video.size_bytes / 1024 / 1024).toFixed(1)} MB</span>
-                                ${video.subject_id ? `<span>👤 ${video.subject_id}</span>` : ''}
-                                ${video.scenario ? `<span>🎭 ${video.scenario}</span>` : ''}
+                                <span><span aria-hidden="true">📐</span> ${video.width}x${video.height}</span>
+                                <span><span aria-hidden="true">⏱️</span> ${video.duration_seconds.toFixed(1)}s</span>
+                                <span><span aria-hidden="true">🎞️</span> ${video.fps.toFixed(1)} fps</span>
+                                <span><span aria-hidden="true">💾</span> ${(video.size_bytes / 1024 / 1024).toFixed(1)} MB</span>
+                                ${video.subject_id ? `<span><span aria-hidden="true">👤</span> ${video.subject_id}</span>` : ''}
+                                ${video.scenario ? `<span><span aria-hidden="true">🎭</span> ${video.scenario}</span>` : ''}
                             </div>
                         </div>
                     </div>
                 `).join('');
 
-                // Add click handlers
+                // Add click and keyboard handlers
                 this.elements.videoGrid.querySelectorAll('.video-card').forEach(card => {
                     card.addEventListener('click', () => this.selectVideo(card));
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.selectVideo(card);
+                        }
+                    });
                 });
             }
 
@@ -682,7 +882,27 @@
             }
 
             async startAnalysis() {
-                if (!this.selectedVideo) return;
+                if (!this.selectedVideo) {
+                    this.elements.startAnalysis.disabled = false;
+                    return;
+                }
+
+                // Validate frame skip value
+                const frameSkipValue = parseInt(this.elements.frameSkip.value);
+                if (isNaN(frameSkipValue) || frameSkipValue < 1) {
+                    alert('Frame skip must be at least 1');
+                    this.elements.frameSkip.value = '1';
+                    this.elements.frameSkip.focus();
+                    this.elements.startAnalysis.disabled = false;
+                    return;
+                }
+                if (frameSkipValue > 10) {
+                    alert('Frame skip cannot exceed 10');
+                    this.elements.frameSkip.value = '10';
+                    this.elements.frameSkip.focus();
+                    this.elements.startAnalysis.disabled = false;
+                    return;
+                }
 
                 this.isAnalyzing = true;
                 this.elements.startAnalysis.disabled = true;
@@ -695,7 +915,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             video_path: this.selectedVideo,
-                            frame_skip: parseInt(this.elements.frameSkip.value)
+                            frame_skip: frameSkipValue
                         })
                     });
 
@@ -782,18 +1002,19 @@
                 this.elements.analysisStatus.className = `status-indicator status-${type}`;
                 
                 const icons = {
-                    idle: '⏸️',
-                    analyzing: '<div class="loading-spinner"></div>',
-                    complete: '✅'
+                    idle: '<span aria-hidden="true">⏸️</span>',
+                    analyzing: '<div class="loading-spinner" aria-hidden="true"></div>',
+                    complete: '<span aria-hidden="true">✅</span>'
                 };
                 
                 this.elements.analysisStatus.innerHTML = `${icons[type]} ${message}`;
+                this.elements.analysisStatus.setAttribute('aria-label', message);
             }
         }
 
         // Initialize interface when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new VideoAnalysisInterface();
+            window.videoInterface = new VideoAnalysisInterface();
         });
     </script>
 </body>
