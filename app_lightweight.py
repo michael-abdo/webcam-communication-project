@@ -474,29 +474,46 @@ def serve_video(video_path):
         except Exception as e:
             print(f"Error serving file {full_path}: {e}")
     
-    # If we can't serve the actual file, return appropriate demo video
-    if 'synthetic_tired' in video_path or 'tired' in video_path:
+    # If we can't serve the actual file, return appropriate demo video with dataset info
+    dataset_info = {}
+    
+    if 'selfies_videos_kaggle' in video_path:
+        # This is from the Kaggle dataset: tapakah68/selfie-and-video-dataset-4-000-people
+        kaggle_demo_videos = [
+            'https://www.w3schools.com/html/mov_bbb.mp4',
+            'https://www.w3schools.com/html/movie.mp4', 
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+        ]
+        video_url = kaggle_demo_videos[hash(video_path) % len(kaggle_demo_videos)]
+        dataset_info = {
+            'kaggle_dataset': 'tapakah68/selfie-and-video-dataset-4-000-people',
+            'kaggle_url': 'https://www.kaggle.com/datasets/tapakah68/selfie-and-video-dataset-4-000-people',
+            'description': 'Selfie and Video Dataset - 4,000+ people for face recognition',
+            'license': 'Open Database License',
+            'note': 'Demo video shown - original is from Kaggle dataset above'
+        }
+    elif 'synthetic_tired' in video_path or 'tired' in video_path:
         video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
     elif 'synthetic_focused' in video_path or 'focused' in video_path:
         video_url = 'https://www.w3schools.com/html/movie.mp4'
     elif 'test_face' in video_path:
         video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
-    elif 'selfie' in video_path or 'kaggle' in video_path:
-        # Use different videos for variety
-        video_urls = [
-            'https://www.w3schools.com/html/mov_bbb.mp4',
-            'https://www.w3schools.com/html/movie.mp4',
-            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-        ]
-        video_url = video_urls[hash(video_path) % len(video_urls)]
     else:
         video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
     
-    return jsonify({
+    response_data = {
         'redirect_url': video_url,
         'type': 'fallback',
         'original_path': video_path
-    })
+    }
+    
+    # Add dataset info if available
+    if dataset_info:
+        response_data['dataset_info'] = dataset_info
+    
+    return jsonify(response_data)
 
 @app.errorhandler(404)
 def not_found(error):

@@ -499,6 +499,14 @@
         <div class="header">
             <h1><span aria-hidden="true">🎥</span> Video Dataset Analysis Interface</h1>
             <p>Real-time fatigue detection analysis on video datasets</p>
+            <div style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">
+                Videos from: 
+                <a href="https://www.kaggle.com/datasets/tapakah68/selfie-and-video-dataset-4-000-people" 
+                   target="_blank" 
+                   style="color: var(--primary-blue); text-decoration: none;">
+                    Kaggle Selfie & Video Dataset (4,000+ people)
+                </a>
+            </div>
         </div>
 
         <div class="dashboard">
@@ -622,6 +630,12 @@
                     <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
                         <span aria-hidden="true">🎥</span> Select a video to begin analysis
                     </div>
+                    <div id="datasetInfo" style="display: none; margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid var(--primary-blue);">
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">
+                            <strong>Dataset Source:</strong>
+                        </div>
+                        <div id="datasetDetails" style="font-size: 11px; color: var(--text-secondary);"></div>
+                    </div>
                 </div>
                 
                 <div class="chart-container" id="chartContainer" style="display: none;">
@@ -678,7 +692,9 @@
                     videoPlayer: document.getElementById('videoPlayer'),
                     videoPlaceholder: document.getElementById('videoPlaceholder'),
                     chartContainer: document.getElementById('chartContainer'),
-                    analysisChart: document.getElementById('analysisChart')
+                    analysisChart: document.getElementById('analysisChart'),
+                    datasetInfo: document.getElementById('datasetInfo'),
+                    datasetDetails: document.getElementById('datasetDetails')
                 };
 
                 this.metrics = {
@@ -904,6 +920,11 @@
                                 const data = await response.json();
                                 this.elements.videoPlayer.src = data.redirect_url;
                                 console.log(`Loaded video via redirect: ${data.redirect_url} (type: ${data.type})`);
+                                
+                                // Show dataset info if available
+                                if (data.dataset_info) {
+                                    this.showDatasetInfo(data.dataset_info);
+                                }
                             }
                         } catch (fetchError) {
                             console.warn('Fallback fetch also failed:', fetchError);
@@ -1159,6 +1180,27 @@
                         <td>${result.processing_time_ms.toFixed(1)}</td>
                     </tr>
                 `).join('');
+            }
+            
+            showDatasetInfo(datasetInfo) {
+                let infoHtml = '';
+                
+                if (datasetInfo.kaggle_dataset) {
+                    infoHtml = `
+                        <strong>Kaggle Dataset:</strong> 
+                        <a href="${datasetInfo.kaggle_url}" target="_blank" style="color: var(--primary-blue); text-decoration: none;">
+                            ${datasetInfo.kaggle_dataset}
+                        </a><br>
+                        <strong>Description:</strong> ${datasetInfo.description}<br>
+                        <strong>License:</strong> ${datasetInfo.license}<br>
+                        <em>${datasetInfo.note}</em>
+                    `;
+                } else {
+                    infoHtml = 'Demo video from standard test sources';
+                }
+                
+                this.elements.datasetDetails.innerHTML = infoHtml;
+                this.elements.datasetInfo.style.display = 'block';
             }
             
             renderChart() {
