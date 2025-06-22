@@ -877,16 +877,22 @@
             
             async loadVideoPreview(videoPath) {
                 try {
-                    // Fetch video URL from backend
+                    // First, try to fetch video info from API
                     const response = await fetch(`/api/video${videoPath}`);
-                    const data = await response.json();
                     
                     // Hide placeholder, show video player
                     this.elements.videoPlaceholder.style.display = 'none';
                     this.elements.videoPlayer.style.display = 'block';
                     
-                    // Set video source
-                    this.elements.videoPlayer.src = data.video_url;
+                    if (response.headers.get('content-type')?.includes('application/json')) {
+                        // Got a JSON response with redirect URL
+                        const data = await response.json();
+                        this.elements.videoPlayer.src = data.redirect_url;
+                    } else {
+                        // Direct video stream
+                        this.elements.videoPlayer.src = `/api/video${videoPath}`;
+                    }
+                    
                     this.elements.videoPlayer.load();
                     
                     // Don't autoplay until analysis starts
@@ -901,7 +907,7 @@
                 } catch (error) {
                     console.error('Error loading video:', error);
                     // Use fallback video on error
-                    this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                    this.elements.videoPlayer.src = 'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4';
                     this.elements.videoPlayer.load();
                 }
             }

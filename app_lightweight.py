@@ -244,59 +244,92 @@ def get_videos():
     # Create sample videos based on dataset type
     if dataset_type == 'all' or dataset_type == 'test_videos':
         config = dataset_configs['test_videos']
-        for i in range(5):
+        test_files = [
+            ('test_face.mp4', 1920, 1080, 30.0, 15.2),
+            ('test_30fps.mp4', 1280, 720, 30.0, 10.5),
+            ('test_15fps.mp4', 1280, 720, 15.0, 8.3),
+            ('realistic_synthetic_face.mp4', 1920, 1080, 30.0, 12.7),
+            ('test_1280x720.mp4', 1280, 720, 30.0, 9.8)
+        ]
+        for i, (filename, width, height, fps, duration) in enumerate(test_files[:5]):
             videos.append({
-                'filepath': f'/data/test_videos/test_{i+1}.mp4',
-                'filename': f'test_{i+1}.mp4',
-                'size_bytes': random.randint(10, 50) * 1024 * 1024,
-                'duration_seconds': random.uniform(10, 60),
-                'fps': 30.0,
-                'width': 1920,
-                'height': 1080,
-                'total_frames': random.randint(300, 1800),
+                'filepath': f'/cognitive_overload/tests/test_videos/{filename}',
+                'filename': filename,
+                'size_bytes': int(duration * fps * width * height * 0.1),  # Estimate based on resolution
+                'duration_seconds': duration,
+                'fps': fps,
+                'width': width,
+                'height': height,
+                'total_frames': int(duration * fps),
                 'codec': 'h264',
                 'dataset_type': 'test_videos',
                 'subject_id': config['subjects'][i % len(config['subjects'])],
                 'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': random.uniform(0.6, 0.95)
+                'quality_score': 0.7 + (width * height / (1920 * 1080)) * 0.25
             })
     
     if dataset_type == 'all' or dataset_type == 'live_faces':
         config = dataset_configs['live_faces']
-        for i in range(8):
+        # Use actual Kaggle selfie videos from directories 1-10
+        live_face_files = []
+        for dir_num in range(1, 9):  # Directories 1-8
+            for video_num in [3, 4, 7, 8]:  # Each directory has these video numbers
+                live_face_files.append((f'{dir_num}/{video_num}.mp4', dir_num))
+        
+        for i, (filepath, dir_num) in enumerate(live_face_files[:8]):
             videos.append({
-                'filepath': f'/data/live_faces/subject_{i+1}.mp4',
-                'filename': f'subject_{i+1}.mp4',
+                'filepath': f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{filepath}',
+                'filename': f'selfie_dir{dir_num}_video{filepath.split("/")[1]}',
                 'size_bytes': random.randint(20, 80) * 1024 * 1024,
-                'duration_seconds': random.uniform(30, 120),
+                'duration_seconds': random.uniform(30, 90),
                 'fps': 25.0,
                 'width': 1280,
                 'height': 720,
-                'total_frames': random.randint(750, 3000),
+                'total_frames': random.randint(750, 2250),
                 'codec': 'h264',
                 'dataset_type': 'live_faces',
                 'subject_id': config['subjects'][i % len(config['subjects'])],
                 'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': random.uniform(0.5, 0.9)
+                'quality_score': random.uniform(0.6, 0.85)
             })
     
     if dataset_type == 'all' or dataset_type == 'real_faces':
         config = dataset_configs['real_faces']
-        for i in range(12):
+        # Use synthetic realistic face videos
+        synthetic_files = [
+            ('synthetic_focused.mp4', 'office', 18.5),
+            ('synthetic_neutral.mp4', 'vehicle', 22.3),
+            ('synthetic_smile.mp4', 'classroom', 15.8),
+            ('synthetic_tired.mp4', 'lab', 25.2)
+        ]
+        
+        # Add more Kaggle videos from other directories
+        for dir_num in range(9, 11):  # Directories 9-10
+            for video_num in [3, 4, 7, 8]:
+                synthetic_files.append((f'kaggle_{dir_num}_{video_num}.mp4', 'home', random.uniform(20, 60)))
+        
+        for i, (filename, scenario, duration) in enumerate(synthetic_files[:12]):
+            if filename.startswith('synthetic_'):
+                filepath = f'/cognitive_overload/validation/real_face_datasets/synthetic_realistic/{filename}'
+            else:
+                dir_num = filename.split('_')[1]
+                video_num = filename.split('_')[2].replace('.mp4', '')
+                filepath = f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{dir_num}/{video_num}.mp4'
+            
             videos.append({
-                'filepath': f'/data/real_faces/real_{i+1}.mp4',
-                'filename': f'real_{i+1}.mp4',
-                'size_bytes': random.randint(30, 100) * 1024 * 1024,
-                'duration_seconds': random.uniform(20, 90),
+                'filepath': filepath,
+                'filename': filename,
+                'size_bytes': int(duration * 30 * 1920 * 1080 * 0.1),
+                'duration_seconds': duration,
                 'fps': 30.0,
                 'width': 1920,
                 'height': 1080,
-                'total_frames': random.randint(600, 2700),
+                'total_frames': int(duration * 30),
                 'codec': 'h264',
                 'dataset_type': 'real_faces',
                 'subject_id': config['subjects'][i % len(config['subjects'])],
-                'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': random.uniform(0.7, 0.98)
+                'scenario': scenario,
+                'quality_score': random.uniform(0.75, 0.95)
             })
     
     if dataset_type == 'all' or dataset_type == 'webcam_samples':
@@ -421,35 +454,54 @@ def get_analysis_results():
 
 @app.route('/api/video/<path:video_path>')
 def serve_video(video_path):
-    """Serve video files for the video analysis interface."""
-    # For demo purposes, we'll serve a few sample video URLs
-    # In production, this would serve actual video files from storage
+    """Serve video files - actual files in development, demo URLs in production."""
+    import os
+    from pathlib import Path
     
-    # Map video paths to sample video URLs
-    sample_videos = {
-        'test_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4',
-        'test_2.mp4': 'https://www.w3schools.com/html/movie.mp4',
-        'subject_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4',
-        'real_1.mp4': 'https://www.w3schools.com/html/movie.mp4',
-        'webcam_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4'
-    }
-    
-    # Extract just the filename from the path
-    filename = video_path.split('/')[-1]
-    
-    # Check if we have a sample URL for this video
-    if filename in sample_videos:
-        # Redirect to the sample video URL
+    # Check if we're on Heroku (production)
+    if os.environ.get('DYNO'):
+        # On Heroku, map to demo videos based on keywords in the path
+        if 'synthetic_tired' in video_path or 'tired' in video_path:
+            # Use a sleepy/tired person video
+            video_url = 'https://cdn.pixabay.com/video/2024/02/29/202640-917259645_tiny.mp4'
+        elif 'synthetic_focused' in video_path or 'focused' in video_path:
+            # Use an alert/focused person video
+            video_url = 'https://cdn.pixabay.com/video/2023/10/01/182869-869029112_tiny.mp4'
+        elif 'test_face' in video_path:
+            # Use a face detection test video
+            video_url = 'https://cdn.pixabay.com/video/2024/01/14/196686-901429198_tiny.mp4'
+        elif 'selfie' in video_path or 'kaggle' in video_path:
+            # Use selfie-style videos
+            video_urls = [
+                'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4',
+                'https://cdn.pixabay.com/video/2024/06/27/218206-964455746_tiny.mp4',
+                'https://cdn.pixabay.com/video/2022/11/28/140583-775564703_tiny.mp4'
+            ]
+            # Pick one based on the path hash
+            video_url = video_urls[hash(video_path) % len(video_urls)]
+        else:
+            # Default video
+            video_url = 'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4'
+        
+        # Return redirect URL
         return jsonify({
-            'video_url': sample_videos[filename],
-            'type': 'redirect'
+            'redirect_url': video_url,
+            'type': 'demo'
         })
     else:
-        # Return a default video URL
-        return jsonify({
-            'video_url': 'https://www.w3schools.com/html/mov_bbb.mp4',
-            'type': 'default'
-        })
+        # In development, try to serve actual files
+        base_dir = Path('.')
+        video_path = video_path.replace('..', '')
+        full_path = base_dir / video_path.lstrip('/')
+        
+        if full_path.exists() and full_path.is_file():
+            return send_file(str(full_path), mimetype='video/mp4')
+        else:
+            # Fallback to demo video
+            return jsonify({
+                'redirect_url': 'https://cdn.pixabay.com/video/2023/12/17/193654-892853308_tiny.mp4',
+                'type': 'fallback'
+            })
 
 @app.errorhandler(404)
 def not_found(error):
