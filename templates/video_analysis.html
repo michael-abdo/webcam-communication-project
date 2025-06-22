@@ -346,10 +346,17 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
+        }
+        
+        .video-player-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        #videoPlayer {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .progress-bar {
@@ -608,8 +615,17 @@
                     </div>
                 </div>
 
-                <div class="chart-container" id="chartContainer">
-                    <span aria-hidden="true">📊</span> Real-time analysis chart will appear here
+                <div class="video-player-container" style="margin-bottom: 20px;">
+                    <video id="videoPlayer" style="width: 100%; max-height: 400px; background: #000; border-radius: 8px; display: none;" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                    <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+                        <span aria-hidden="true">🎥</span> Select a video to begin analysis
+                    </div>
+                </div>
+                
+                <div class="chart-container" id="chartContainer" style="display: none;">
+                    <canvas id="analysisChart" style="width: 100%; height: 200px;"></canvas>
                 </div>
             </div>
 
@@ -658,7 +674,11 @@
                     analysisStatus: document.getElementById('analysisStatus'),
                     progressFill: document.getElementById('progressFill'),
                     resultsTable: document.getElementById('resultsTable'),
-                    resultsBody: document.getElementById('resultsBody')
+                    resultsBody: document.getElementById('resultsBody'),
+                    videoPlayer: document.getElementById('videoPlayer'),
+                    videoPlaceholder: document.getElementById('videoPlaceholder'),
+                    chartContainer: document.getElementById('chartContainer'),
+                    analysisChart: document.getElementById('analysisChart')
                 };
 
                 this.metrics = {
@@ -850,6 +870,40 @@
                 card.classList.add('selected');
                 this.selectedVideo = card.dataset.path;
                 this.elements.startAnalysis.disabled = false;
+                
+                // Load video preview
+                this.loadVideoPreview(card.dataset.path);
+            }
+            
+            async loadVideoPreview(videoPath) {
+                try {
+                    // Fetch video URL from backend
+                    const response = await fetch(`/api/video${videoPath}`);
+                    const data = await response.json();
+                    
+                    // Hide placeholder, show video player
+                    this.elements.videoPlaceholder.style.display = 'none';
+                    this.elements.videoPlayer.style.display = 'block';
+                    
+                    // Set video source
+                    this.elements.videoPlayer.src = data.video_url;
+                    this.elements.videoPlayer.load();
+                    
+                    // Don't autoplay until analysis starts
+                    this.elements.videoPlayer.pause();
+                    
+                    // Reset any existing analysis data
+                    if (this.chartData) {
+                        this.chartData.labels = [];
+                        this.chartData.datasets[0].data = [];
+                        this.chartData.datasets[1].data = [];
+                    }
+                } catch (error) {
+                    console.error('Error loading video:', error);
+                    // Use fallback video on error
+                    this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                    this.elements.videoPlayer.load();
+                }
             }
 
             updateFilterOptions(videos) {
@@ -908,6 +962,17 @@
                 this.elements.startAnalysis.disabled = true;
                 this.elements.stopAnalysis.disabled = false;
                 this.updateStatus('analyzing', 'Analyzing...');
+                
+                // Start video playback
+                this.elements.videoPlayer.play();
+                
+                // Show chart container
+                this.elements.chartContainer.style.display = 'block';
+                
+                // Initialize chart if needed
+                if (!this.chart) {
+                    this.initializeChart();
+                }
 
                 try {
                     const response = await fetch('/api/analyze', {
@@ -921,6 +986,8 @@
 
                     if (response.ok) {
                         this.pollResults();
+                        // Sync video progress with analysis
+                        this.syncVideoWithAnalysis();
                     } else {
                         throw new Error('Failed to start analysis');
                     }
@@ -940,9 +1007,61 @@
                     this.elements.startAnalysis.disabled = false;
                     this.elements.stopAnalysis.disabled = true;
                     this.updateStatus('complete', 'Stopped');
+                    
+                    // Pause video
+                    this.elements.videoPlayer.pause();
+                    
+                    // Clear sync interval
+                    if (this.syncInterval) {
+                        clearInterval(this.syncInterval);
+                        this.syncInterval = null;
+                    }
                 } catch (error) {
                     console.error('Error stopping analysis:', error);
                 }
+            }
+            
+            syncVideoWithAnalysis() {
+                // Update progress bar based on video progress
+                this.syncInterval = setInterval(() => {
+                    if (this.elements.videoPlayer.duration) {
+                        const progress = (this.elements.videoPlayer.currentTime / this.elements.videoPlayer.duration) * 100;
+                        this.elements.progressFill.style.width = `${progress}%`;
+                        
+                        // Update progress bar ARIA attributes
+                        const progressBar = this.elements.progressFill.parentElement;
+                        progressBar.setAttribute('aria-valuenow', Math.round(progress));
+                    }
+                    
+                    // Stop when video ends
+                    if (this.elements.videoPlayer.ended && this.isAnalyzing) {
+                        this.stopAnalysis();
+                    }
+                }, 100);
+            }
+            
+            initializeChart() {
+                const ctx = this.elements.analysisChart.getContext('2d');
+                this.chartData = {
+                    labels: [],
+                    datasets: [{
+                        label: 'PERCLOS',
+                        data: [],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Risk Score',
+                        data: [],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }]
+                };
+                
+                // Simple chart rendering (without Chart.js for now)
+                this.elements.analysisChart.width = this.elements.analysisChart.offsetWidth;
+                this.elements.analysisChart.height = 200;
             }
 
             async pollResults() {
@@ -983,6 +1102,22 @@
                 this.metrics.currentRiskScore.textContent = latest.risk_score.toFixed(3);
                 this.metrics.processingTime.textContent = `${latest.processing_time_ms.toFixed(1)} ms`;
 
+                // Update chart data
+                if (this.chartData) {
+                    // Keep only last 50 points for performance
+                    if (this.chartData.labels.length > 50) {
+                        this.chartData.labels.shift();
+                        this.chartData.datasets[0].data.shift();
+                        this.chartData.datasets[1].data.shift();
+                    }
+                    
+                    this.chartData.labels.push(latest.timestamp.toFixed(1));
+                    this.chartData.datasets[0].data.push(latest.perclos);
+                    this.chartData.datasets[1].data.push(latest.risk_score);
+                    
+                    this.renderChart();
+                }
+
                 // Update results table (last 10 results)
                 const recentResults = results.slice(-10).reverse();
                 this.elements.resultsBody.innerHTML = recentResults.map(result => `
@@ -996,6 +1131,48 @@
                         <td>${result.processing_time_ms.toFixed(1)}</td>
                     </tr>
                 `).join('');
+            }
+            
+            renderChart() {
+                const ctx = this.elements.analysisChart.getContext('2d');
+                const width = this.elements.analysisChart.width;
+                const height = this.elements.analysisChart.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Simple line chart rendering
+                const padding = 40;
+                const chartWidth = width - padding * 2;
+                const chartHeight = height - padding * 2;
+                
+                // Draw axes
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.beginPath();
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, height - padding);
+                ctx.lineTo(width - padding, height - padding);
+                ctx.stroke();
+                
+                // Draw data lines
+                this.chartData.datasets.forEach((dataset, datasetIndex) => {
+                    ctx.strokeStyle = dataset.borderColor;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    dataset.data.forEach((value, index) => {
+                        const x = padding + (index / (this.chartData.labels.length - 1)) * chartWidth;
+                        const y = height - padding - (value * chartHeight);
+                        
+                        if (index === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    });
+                    
+                    ctx.stroke();
+                });
             }
 
             updateStatus(type, message) {

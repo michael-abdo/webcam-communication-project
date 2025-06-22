@@ -9,7 +9,7 @@ import json
 import time
 import random
 from datetime import datetime
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -418,6 +418,38 @@ def get_analysis_results():
         'is_analyzing': video_analysis_state['is_analyzing'],
         'results': video_analysis_state['results'][-100:]  # Return last 100 results
     })
+
+@app.route('/api/video/<path:video_path>')
+def serve_video(video_path):
+    """Serve video files for the video analysis interface."""
+    # For demo purposes, we'll serve a few sample video URLs
+    # In production, this would serve actual video files from storage
+    
+    # Map video paths to sample video URLs
+    sample_videos = {
+        'test_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4',
+        'test_2.mp4': 'https://www.w3schools.com/html/movie.mp4',
+        'subject_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4',
+        'real_1.mp4': 'https://www.w3schools.com/html/movie.mp4',
+        'webcam_1.mp4': 'https://www.w3schools.com/html/mov_bbb.mp4'
+    }
+    
+    # Extract just the filename from the path
+    filename = video_path.split('/')[-1]
+    
+    # Check if we have a sample URL for this video
+    if filename in sample_videos:
+        # Redirect to the sample video URL
+        return jsonify({
+            'video_url': sample_videos[filename],
+            'type': 'redirect'
+        })
+    else:
+        # Return a default video URL
+        return jsonify({
+            'video_url': 'https://www.w3schools.com/html/mov_bbb.mp4',
+            'type': 'default'
+        })
 
 @app.errorhandler(404)
 def not_found(error):
