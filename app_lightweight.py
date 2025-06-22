@@ -272,14 +272,14 @@ def get_videos():
         config = dataset_configs['live_faces']
         # Use actual Kaggle selfie videos from directories 1-10
         live_face_files = []
-        for dir_num in range(1, 9):  # Directories 1-8
+        for dir_num in range(1, 11):  # Directories 1-10
             for video_num in [3, 4, 7, 8]:  # Each directory has these video numbers
-                live_face_files.append((f'{dir_num}/{video_num}.mp4', dir_num))
+                live_face_files.append((f'files/{dir_num}/{video_num}.mp4', dir_num, video_num))
         
-        for i, (filepath, dir_num) in enumerate(live_face_files[:8]):
+        for i, (filepath, dir_num, video_num) in enumerate(live_face_files[:32]):  # Show more videos
             videos.append({
                 'filepath': f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{filepath}',
-                'filename': f'selfie_dir{dir_num}_video{filepath.split("/")[1]}',
+                'filename': f'selfie_dir{dir_num}_video{video_num}.mp4',
                 'size_bytes': random.randint(20, 80) * 1024 * 1024,
                 'duration_seconds': random.uniform(30, 90),
                 'fps': 25.0,
@@ -454,55 +454,49 @@ def get_analysis_results():
 
 @app.route('/api/video/<path:video_path>')
 def serve_video(video_path):
-    """Serve video files - actual files in development, demo URLs in production."""
+    """Serve actual video files from datasets."""
     import os
     from pathlib import Path
     
-    # Check if we're on Heroku (production)
-    if os.environ.get('DYNO'):
-        # On Heroku, map to demo videos based on keywords in the path
-        # Using reliable video URLs that allow cross-origin access
-        if 'synthetic_tired' in video_path or 'tired' in video_path:
-            # Use Big Buck Bunny - a classic test video
-            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
-        elif 'synthetic_focused' in video_path or 'focused' in video_path:
-            # Use another test video
-            video_url = 'https://www.w3schools.com/html/movie.mp4'
-        elif 'test_face' in video_path:
-            # Use a smaller test video
-            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
-        elif 'selfie' in video_path or 'kaggle' in video_path:
-            # Use different videos for variety
-            video_urls = [
-                'https://www.w3schools.com/html/mov_bbb.mp4',
-                'https://www.w3schools.com/html/movie.mp4',
-                'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-            ]
-            # Pick one based on the path hash
-            video_url = video_urls[hash(video_path) % len(video_urls)]
-        else:
-            # Default video
-            video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
-        
-        # Return redirect URL
-        return jsonify({
-            'redirect_url': video_url,
-            'type': 'demo'
-        })
-    else:
-        # In development, try to serve actual files
-        base_dir = Path('.')
-        video_path = video_path.replace('..', '')
-        full_path = base_dir / video_path.lstrip('/')
-        
-        if full_path.exists() and full_path.is_file():
+    # Base directory for video files
+    base_dir = Path('.')
+    
+    # Security check - prevent directory traversal
+    video_path = video_path.replace('..', '')
+    
+    # Construct full path
+    full_path = base_dir / video_path.lstrip('/')
+    
+    # Try to serve actual file first (both in development and production)
+    if full_path.exists() and full_path.is_file():
+        try:
             return send_file(str(full_path), mimetype='video/mp4')
-        else:
-            # Fallback to demo video
-            return jsonify({
-                'redirect_url': 'https://www.w3schools.com/html/mov_bbb.mp4',
-                'type': 'fallback'
-            })
+        except Exception as e:
+            print(f"Error serving file {full_path}: {e}")
+    
+    # If we can't serve the actual file, return appropriate demo video
+    if 'synthetic_tired' in video_path or 'tired' in video_path:
+        video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
+    elif 'synthetic_focused' in video_path or 'focused' in video_path:
+        video_url = 'https://www.w3schools.com/html/movie.mp4'
+    elif 'test_face' in video_path:
+        video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
+    elif 'selfie' in video_path or 'kaggle' in video_path:
+        # Use different videos for variety
+        video_urls = [
+            'https://www.w3schools.com/html/mov_bbb.mp4',
+            'https://www.w3schools.com/html/movie.mp4',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        ]
+        video_url = video_urls[hash(video_path) % len(video_urls)]
+    else:
+        video_url = 'https://www.w3schools.com/html/mov_bbb.mp4'
+    
+    return jsonify({
+        'redirect_url': video_url,
+        'type': 'fallback',
+        'original_path': video_path
+    })
 
 @app.errorhandler(404)
 def not_found(error):

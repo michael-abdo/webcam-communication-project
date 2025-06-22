@@ -877,16 +877,39 @@
             
             async loadVideoPreview(videoPath) {
                 try {
-                    // Fetch video info from API
-                    const response = await fetch(`/api/video${videoPath}`);
-                    const data = await response.json();
-                    
                     // Hide placeholder, show video player
                     this.elements.videoPlaceholder.style.display = 'none';
                     this.elements.videoPlayer.style.display = 'block';
                     
-                    // Use the redirect URL from the response
-                    this.elements.videoPlayer.src = data.redirect_url;
+                    // Try to load video directly first
+                    const videoUrl = `/api/video${videoPath}`;
+                    this.elements.videoPlayer.src = videoUrl;
+                    
+                    // Check if it loads properly
+                    const checkVideoLoad = new Promise((resolve, reject) => {
+                        const video = this.elements.videoPlayer;
+                        video.onloadeddata = () => resolve('direct');
+                        video.onerror = () => reject('failed');
+                        setTimeout(() => reject('timeout'), 5000); // 5 second timeout
+                    });
+                    
+                    try {
+                        await checkVideoLoad;
+                        console.log(`Loaded video directly: ${videoUrl}`);
+                    } catch (loadError) {
+                        // If direct loading fails, try to get redirect URL
+                        try {
+                            const response = await fetch(videoUrl);
+                            if (response.headers.get('content-type')?.includes('application/json')) {
+                                const data = await response.json();
+                                this.elements.videoPlayer.src = data.redirect_url;
+                                console.log(`Loaded video via redirect: ${data.redirect_url} (type: ${data.type})`);
+                            }
+                        } catch (fetchError) {
+                            console.warn('Fallback fetch also failed:', fetchError);
+                        }
+                    }
+                    
                     this.elements.videoPlayer.load();
                     
                     // Don't autoplay until analysis starts
@@ -899,7 +922,6 @@
                         this.chartData.datasets[1].data = [];
                     }
                     
-                    console.log(`Loaded video: ${data.redirect_url} (type: ${data.type})`);
                 } catch (error) {
                     console.error('Error loading video:', error);
                     // Use fallback video on error
