@@ -899,23 +899,55 @@
                     
                     // Try to load video directly first
                     const videoUrl = `/api/video${videoPath}`;
+                    console.log(`Loading video from: ${videoUrl}`);
+                    
+                    // Add event listeners for debugging
+                    this.elements.videoPlayer.onloadstart = () => console.log('Video load started');
+                    this.elements.videoPlayer.onprogress = () => console.log('Video loading progress');
+                    this.elements.videoPlayer.onstalled = () => console.log('Video loading stalled');
+                    this.elements.videoPlayer.onsuspend = () => console.log('Video loading suspended');
+                    
                     this.elements.videoPlayer.src = videoUrl;
                     
                     // Check if it loads properly
                     const checkVideoLoad = new Promise((resolve, reject) => {
                         const video = this.elements.videoPlayer;
-                        video.onloadeddata = () => resolve('direct');
-                        video.onerror = () => reject('failed');
-                        setTimeout(() => reject('timeout'), 5000); // 5 second timeout
+                        
+                        // Handle successful load
+                        const onLoadSuccess = () => {
+                            console.log(`Video loaded successfully: ${videoUrl}`);
+                            resolve('direct');
+                        };
+                        
+                        // Use multiple events to detect successful load
+                        video.onloadeddata = onLoadSuccess;
+                        video.oncanplay = onLoadSuccess;
+                        
+                        // Handle errors
+                        video.onerror = (e) => {
+                            console.error('Video load error:', e);
+                            reject('failed');
+                        };
+                        
+                        // Increase timeout to 15 seconds for larger files
+                        setTimeout(() => {
+                            console.warn('Video load timeout after 15 seconds');
+                            reject('timeout');
+                        }, 15000);
                     });
                     
                     try {
                         await checkVideoLoad;
                         console.log(`Loaded video directly: ${videoUrl}`);
                     } catch (loadError) {
+                        console.warn(`Direct video load failed (${loadError}), trying fallback...`);
+                        
                         // If direct loading fails, try to get redirect URL
                         try {
                             const response = await fetch(videoUrl);
+                            console.log(`Fetch response: ${response.status} ${response.statusText}`);
+                            console.log(`Content-Type: ${response.headers.get('content-type')}`);
+                            
                             if (response.headers.get('content-type')?.includes('application/json')) {
                                 const data = await response.json();
                                 this.elements.videoPlayer.src = data.redirect_url;
@@ -925,9 +957,15 @@
                                 if (data.dataset_info) {
                                     this.showDatasetInfo(data.dataset_info);
                                 }
+                            } else if (response.headers.get('content-type')?.includes('video')) {
+                                // The server returned video data but browser couldn't play it
+                                console.error('Server returned video data but browser cannot play it');
+                                console.log('Falling back to default demo video');
+                                this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
                             }
                         } catch (fetchError) {
                             console.warn('Fallback fetch also failed:', fetchError);
+                            this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
                         }
                     }
                     
