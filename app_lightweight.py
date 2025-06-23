@@ -50,6 +50,8 @@ def api_home():
             'GET /api/info - System information', 
             'GET /api/metrics - Current metrics',
             'POST /api/analyze - Analyze fatigue',
+            'POST /api/analysis-result - Receive real-time analysis results',
+            'GET /api/results - Get analysis results',
             'GET /video-analysis - Video dataset analysis interface'
         ]
     })
@@ -400,11 +402,13 @@ def analyze_video():
         except (TypeError, ValueError):
             return jsonify({'error': 'Frame skip must be a valid integer'}), 400
         
-        # Start mock analysis
+        # Start real analysis session - clear previous results
         video_analysis_state['is_analyzing'] = True
         video_analysis_state['current_video'] = video_path
         video_analysis_state['frame_count'] = 0
         video_analysis_state['results'] = []
+        
+        print(f"Started analysis session for video: {video_path} (frame_skip: {frame_skip})")
         
         return jsonify({
             'status': 'started',
@@ -419,37 +423,47 @@ def analyze_video():
 def stop_analysis():
     """Stop current video analysis."""
     video_analysis_state['is_analyzing'] = False
-    return jsonify({'status': 'stopped'})
+    total_frames = video_analysis_state['frame_count']
+    print(f"Stopped analysis session. Total frames processed: {total_frames}")
+    return jsonify({'status': 'stopped', 'total_frames_processed': total_frames})
+
+@app.route('/api/analysis-result', methods=['POST'])
+def receive_analysis_result():
+    """Receive real analysis results from client-side MediaPipe processing."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Validate required fields
+        required_fields = ['frame_number', 'timestamp', 'perclos', 'fatigue_level', 'risk_score']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Store the real analysis result
+        video_analysis_state['results'].append(data)
+        video_analysis_state['frame_count'] = max(video_analysis_state['frame_count'], data['frame_number'] + 1)
+        
+        # Keep only last 100 results for memory efficiency
+        if len(video_analysis_state['results']) > 100:
+            video_analysis_state['results'] = video_analysis_state['results'][-100:]
+        
+        print(f"Received real analysis result: Frame {data['frame_number']}, PERCLOS={data['perclos']:.3f}, Fatigue={data['fatigue_level']}")
+        
+        return jsonify({'status': 'received'}), 200
+        
+    except Exception as e:
+        print(f"Error receiving analysis result: {e}")
+        return jsonify({'error': f'Failed to process result: {str(e)}'}), 500
 
 @app.route('/api/results')
 def get_analysis_results():
-    """Get current analysis results."""
-    # Simulate real-time results if analyzing
-    if video_analysis_state['is_analyzing']:
-        # Generate some mock results
-        frame_count = video_analysis_state['frame_count']
-        new_result = {
-            'frame_number': frame_count,
-            'timestamp': frame_count / 30.0,  # Assume 30 fps
-            'perclos': random.uniform(0.1, 0.4),
-            'blink_rate': random.uniform(10, 30),
-            'fatigue_level': random.choice(['ALERT', 'LOW', 'MODERATE', 'HIGH']),
-            'risk_score': random.uniform(0.1, 0.8),
-            'landmarks_detected': True,
-            'processing_time_ms': random.uniform(10, 30)
-        }
-        
-        video_analysis_state['results'].append(new_result)
-        video_analysis_state['frame_count'] += 1
-        
-        # Keep only last 100 results
-        if len(video_analysis_state['results']) > 100:
-            video_analysis_state['results'] = video_analysis_state['results'][-100:]
-    
+    """Get current analysis results (now returns real results from MediaPipe).""" 
     return jsonify({
         'total_frames': video_analysis_state['frame_count'],
         'is_analyzing': video_analysis_state['is_analyzing'],
-        'results': video_analysis_state['results'][-100:]  # Return last 100 results
+        'results': video_analysis_state['results'][-100:]  # Return last 100 real results
     })
 
 @app.route('/api/video/<path:video_path>')
