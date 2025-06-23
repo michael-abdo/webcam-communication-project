@@ -1086,9 +1086,11 @@
                     });
 
                     if (response.ok) {
-                        // Start real-time frame processing instead of polling mock results
+                        // Start real-time frame processing to generate actual data
                         this.startFrameProcessing();
-                        // Still sync video progress for UI updates
+                        // Poll server to display the real results sent by MediaPipe
+                        this.pollResults();
+                        // Sync video progress for UI updates
                         this.syncVideoWithAnalysis();
                     } else {
                         throw new Error('Failed to start analysis');
@@ -1319,19 +1321,27 @@
                 try {
                     console.log('Initializing MediaPipe Face Landmarker...');
                     
-                    // Wait for MediaPipe to be available
-                    while (!window.FaceLandmarker || !window.FilesetResolver) {
+                    // Wait for MediaPipe to be available with timeout
+                    let attempts = 0;
+                    while ((!window.FaceLandmarker || !window.FilesetResolver) && attempts < 50) {
                         await new Promise(resolve => setTimeout(resolve, 100));
+                        attempts++;
                     }
                     
+                    if (!window.FaceLandmarker || !window.FilesetResolver) {
+                        throw new Error('MediaPipe modules failed to load after 5 seconds');
+                    }
+                    
+                    console.log('MediaPipe modules loaded, creating FilesetResolver...');
                     const filesetResolver = await window.FilesetResolver.forVisionTasks(
                         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
                     );
+                    console.log('FilesetResolver created, initializing FaceLandmarker...');
                     
                     this.faceLandmarker = await window.FaceLandmarker.createFromOptions(filesetResolver, {
                         baseOptions: {
                             modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
-                            delegate: "GPU"
+                            delegate: "CPU"  // Use CPU for better compatibility
                         },
                         outputFaceBlendshapes: false,
                         outputFacialTransformationMatrixes: false,
@@ -1339,21 +1349,52 @@
                         numFaces: 1
                     });
                     
-                    console.log('MediaPipe Face Landmarker initialized successfully');
+                    console.log('✅ MediaPipe Face Landmarker initialized successfully');
+                    
+                    // Update UI to show MediaPipe is ready
+                    const statusEl = document.createElement('div');
+                    statusEl.innerHTML = '🤖 Face Detection Ready';
+                    statusEl.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #10b981; color: white; padding: 5px 10px; border-radius: 5px; z-index: 1000; font-size: 12px;';
+                    document.body.appendChild(statusEl);
+                    setTimeout(() => statusEl.remove(), 3000);
+                    
                 } catch (error) {
-                    console.error('Failed to initialize MediaPipe:', error);
+                    console.error('❌ Failed to initialize MediaPipe:', error);
                     this.faceLandmarker = null;
+                    
+                    // Show error indicator
+                    const errorEl = document.createElement('div');
+                    errorEl.innerHTML = '❌ Face Detection Failed - Using Fallback';
+                    errorEl.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; z-index: 1000; font-size: 12px;';
+                    document.body.appendChild(errorEl);
+                    setTimeout(() => errorEl.remove(), 5000);
                 }
             }
 
             // Real-time face analysis
             async processVideoFrame() {
-                if (!this.faceLandmarker || !this.isAnalyzing || this.frameProcessing) {
+                if (!this.faceLandmarker) {
+                    console.log('MediaPipe FaceLandmarker not initialized');
+                    return;
+                }
+                
+                if (!this.isAnalyzing) {
+                    console.log('Analysis not active');
+                    return;
+                }
+                
+                if (this.frameProcessing) {
+                    console.log('Frame processing already in progress');
                     return;
                 }
 
                 const video = this.elements.videoPlayer;
                 if (video.paused || video.ended) {
+                    return;  // Normal state, don't log
+                }
+                
+                if (video.videoWidth === 0 || video.videoHeight === 0) {
+                    console.log('Video not ready: dimensions are 0x0');
                     return;
                 }
 
