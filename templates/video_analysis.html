@@ -74,6 +74,9 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
+            overflow: visible; /* Allow dropdowns to expand outside panel bounds */
+            position: relative;
+            z-index: 1;
         }
 
         .panel h3 {
@@ -108,11 +111,34 @@
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.2s;
+            background: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        select {
+            /* Ensure dropdown options are visible above other elements */
+            z-index: 1000;
+            background: white;
+            appearance: menulist;
+            cursor: pointer;
         }
 
         select:focus, input:focus {
             outline: none;
             border-color: var(--primary-blue);
+            z-index: 1001;
+        }
+
+        /* Fix dropdown container overflow issues */
+        .selector-group {
+            position: relative;
+            z-index: 10;
+            overflow: visible;
+        }
+
+        .dataset-selector {
+            overflow: visible;
         }
 
         .video-grid {
@@ -399,6 +425,16 @@
             color: var(--accent-green);
         }
 
+        .status-stopped {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
         .loading-spinner {
             width: 20px;
             height: 20px;
@@ -492,6 +528,19 @@
                 justify-content: center;
             }
         }
+
+        /* Screen reader only text */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
@@ -517,7 +566,7 @@
                 <div class="dataset-selector">
                     <div class="selector-group">
                         <label for="datasetType">Dataset Type:</label>
-                        <select id="datasetType">
+                        <select id="datasetType" aria-label="Filter videos by dataset type" aria-describedby="datasetTypeHelp">
                             <option value="all">All Datasets</option>
                             <option value="test_videos">Test Videos</option>
                             <option value="live_faces">Live Faces</option>
@@ -525,20 +574,23 @@
                             <option value="webcam_samples">Webcam Samples</option>
                             <option value="processed_results">Processed Results</option>
                         </select>
+                        <div id="datasetTypeHelp" class="sr-only">Select a dataset type to filter available videos</div>
                     </div>
 
                     <div class="selector-group">
                         <label for="subjectId">Subject ID:</label>
-                        <select id="subjectId">
+                        <select id="subjectId" aria-label="Filter videos by subject identifier" aria-describedby="subjectIdHelp">
                             <option value="all">All Subjects</option>
                         </select>
+                        <div id="subjectIdHelp" class="sr-only">Filter videos by specific subject or participant</div>
                     </div>
 
                     <div class="selector-group">
                         <label for="scenario">Scenario:</label>
-                        <select id="scenario">
+                        <select id="scenario" aria-label="Filter videos by scenario type" aria-describedby="scenarioHelp">
                             <option value="all">All Scenarios</option>
                         </select>
+                        <div id="scenarioHelp" class="sr-only">Filter videos by scenario or activity type</div>
                     </div>
 
                     <div class="selector-group">
@@ -587,7 +639,8 @@
                 </button>
                 <div class="selector-group" style="min-width: 150px;">
                     <label for="frameSkip">Frame Skip:</label>
-                    <input type="number" id="frameSkip" value="1" min="1" max="10">
+                    <input type="number" id="frameSkip" value="1" min="1" max="10" aria-label="Number of frames to skip during analysis" aria-describedby="frameSkipHelp">
+                    <div id="frameSkipHelp" class="sr-only">Skip every N frames to reduce processing load. Higher values process fewer frames but run faster.</div>
                 </div>
                 <div id="analysisStatus" class="status-indicator status-idle" role="status" aria-live="polite">
                     <span aria-hidden="true">⏸️</span> Ready
@@ -599,42 +652,49 @@
             </div>
 
             <div class="analysis-display">
-                <div class="metrics-container">
+                <div class="metrics-container" role="region" aria-label="Real-time analysis metrics">
                     <h4 style="margin-bottom: 15px; color: var(--text-primary);">Current Metrics</h4>
                     <div class="metric">
                         <span class="metric-label">PERCLOS:</span>
-                        <span class="metric-value" id="currentPerclos">--</span>
+                        <span class="metric-value" id="currentPerclos" aria-label="Current PERCLOS value" aria-live="polite">--</span>
+                        <div class="sr-only">Percentage of eyelid closure over time. Higher values indicate drowsiness.</div>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Blink Rate:</span>
-                        <span class="metric-value" id="currentBlinkRate">--</span>
+                        <span class="metric-value" id="currentBlinkRate" aria-label="Current blink rate per minute" aria-live="polite">--</span>
+                        <div class="sr-only">Number of blinks per minute. Normal range is 15-20 blinks per minute.</div>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Fatigue Level:</span>
-                        <span class="metric-value" id="currentFatigueLevel">--</span>
+                        <span class="metric-value" id="currentFatigueLevel" aria-label="Current fatigue level classification" aria-live="assertive">--</span>
+                        <div class="sr-only">Classification of fatigue state: Alert, Mild, Moderate, High, or Critical.</div>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Risk Score:</span>
-                        <span class="metric-value" id="currentRiskScore">--</span>
+                        <span class="metric-value" id="currentRiskScore" aria-label="Current risk score" aria-live="polite">--</span>
+                        <div class="sr-only">Risk score from 0 to 1. Higher values indicate increased fatigue risk.</div>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Processing Time:</span>
-                        <span class="metric-value" id="processingTime">--</span>
+                        <span class="metric-value" id="processingTime" aria-label="Frame processing time in milliseconds" aria-live="polite">--</span>
+                        <div class="sr-only">Time taken to process each video frame in milliseconds.</div>
                     </div>
                 </div>
                 
                 <!-- Real-time Debug Log -->
-                <div class="debug-log-container" style="margin-top: 20px;">
+                <div class="debug-log-container" style="margin-top: 20px;" role="region" aria-label="System debug log">
                     <h4 style="margin-bottom: 10px; color: var(--text-primary); font-size: 1rem;">System Log</h4>
-                    <div id="debugLog" style="background: #1f2937; color: #10b981; font-family: 'Courier New', monospace; font-size: 11px; height: 150px; overflow-y: auto; padding: 10px; border-radius: 5px; border: 1px solid #374151; white-space: pre-wrap;"></div>
-                    <button id="clearLog" style="margin-top: 5px; padding: 3px 8px; font-size: 10px; background: #374151; color: white; border: none; border-radius: 3px; cursor: pointer;">Clear Log</button>
+                    <div id="debugLog" style="background: #1f2937; color: #10b981; font-family: 'Courier New', monospace; font-size: 11px; height: 150px; overflow-y: auto; padding: 10px; border-radius: 5px; border: 1px solid #374151; white-space: pre-wrap;" role="log" aria-live="polite" aria-label="Real-time system log messages" aria-describedby="debugLogHelp"></div>
+                    <div id="debugLogHelp" class="sr-only">Shows real-time system messages about video loading, analysis progress, and errors.</div>
+                    <button id="clearLog" style="margin-top: 5px; padding: 3px 8px; font-size: 10px; background: #374151; color: white; border: none; border-radius: 3px; cursor: pointer;" aria-label="Clear debug log messages">Clear Log</button>
                 </div>
 
-                <div class="video-player-container" style="margin-bottom: 20px;">
-                    <video id="videoPlayer" style="width: 100%; max-height: 400px; background: #000; border-radius: 8px; display: none;" controls>
+                <div class="video-player-container" style="margin-bottom: 20px;" role="region" aria-label="Video player">
+                    <video id="videoPlayer" style="width: 100%; max-height: 400px; background: #000; border-radius: 8px; display: none;" controls crossOrigin="anonymous" aria-label="Selected video for fatigue analysis" aria-describedby="videoDescription">
                         Your browser does not support the video tag.
                     </video>
-                    <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+                    <div id="videoDescription" class="sr-only">Video player for analyzing fatigue indicators in real-time. Use video controls to play, pause, or seek.</div>
+                    <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;" role="img" aria-label="Video placeholder">
                         <span aria-hidden="true">🎥</span> Select a video to begin analysis
                     </div>
                     <div id="datasetInfo" style="display: none; margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid var(--primary-blue);">
@@ -689,6 +749,8 @@
                 this.frameProcessingInterval = null;
                 this.perclosWindow = []; // 60-second sliding window
                 this.debugLog = null;
+                this.errorCount = 0;
+                this.lastErrorTime = 0;
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadDatasets();
@@ -842,6 +904,7 @@
                     const videos = await response.json();
                     this.displayVideos(videos);
                     this.updateFilterOptions(videos);
+                    this.updateSummaryStats(videos);
                 } catch (error) {
                     console.error('Error loading videos:', error);
                     this.elements.videoGrid.innerHTML = `
@@ -910,7 +973,10 @@
                 // Select current
                 card.classList.add('selected');
                 this.selectedVideo = card.dataset.path;
-                this.elements.startAnalysis.disabled = false;
+                
+                // Disable Start Analysis button until video loads successfully
+                this.elements.startAnalysis.disabled = true;
+                this.updateStatus('idle', 'Loading video...');
                 
                 // Load video preview
                 this.loadVideoPreview(card.dataset.path);
@@ -926,11 +992,42 @@
                     const videoUrl = `/api/video${videoPath}`;
                     this.log(`Loading video from: ${videoUrl}`);
                     
-                    // Add event listeners for debugging
-                    this.elements.videoPlayer.onloadstart = () => this.log('Video load started');
-                    this.elements.videoPlayer.onprogress = () => this.log('Video loading progress');
-                    this.elements.videoPlayer.onstalled = () => this.log('Video loading stalled', 'warning');
-                    this.elements.videoPlayer.onsuspend = () => this.log('Video loading suspended', 'warning');
+                    // Add debounced event listeners for debugging
+                    let lastProgressLog = 0;
+                    let stalledLogged = false;
+                    let suspendedLogged = false;
+                    
+                    this.elements.videoPlayer.onloadstart = () => {
+                        this.log('Video load started');
+                        // Reset flags for new load
+                        stalledLogged = false;
+                        suspendedLogged = false;
+                    };
+                    
+                    this.elements.videoPlayer.onprogress = () => {
+                        const now = Date.now();
+                        // Only log progress every 2 seconds to prevent spam
+                        if (now - lastProgressLog > 2000) {
+                            this.log('Video loading progress...');
+                            lastProgressLog = now;
+                        }
+                    };
+                    
+                    this.elements.videoPlayer.onstalled = () => {
+                        // Only log stalled once per load session
+                        if (!stalledLogged) {
+                            this.log('Video loading stalled', 'warning');
+                            stalledLogged = true;
+                        }
+                    };
+                    
+                    this.elements.videoPlayer.onsuspend = () => {
+                        // Only log suspended once per load session
+                        if (!suspendedLogged) {
+                            this.log('Video loading suspended', 'warning');
+                            suspendedLogged = true;
+                        }
+                    };
                     
                     this.elements.videoPlayer.src = videoUrl;
                     
@@ -964,6 +1061,7 @@
                     try {
                         await checkVideoLoad;
                         this.log(`Loaded video directly: ${videoUrl}`, 'success');
+                        await this.validateVideoAndEnableAnalysis();
                     } catch (loadError) {
                         this.log(`Direct video load failed (${loadError}), trying fallback...`, 'warning');
                         
@@ -988,9 +1086,11 @@
                                 console.log('Falling back to default demo video');
                                 this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
                             }
+                            await this.validateVideoAndEnableAnalysis();
                         } catch (fetchError) {
                             console.warn('Fallback fetch also failed:', fetchError);
                             this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                            await this.validateVideoAndEnableAnalysis();
                         }
                     }
                     
@@ -1026,6 +1126,35 @@
                 // Update scenario options
                 const scenarios = [...new Set(videos.map(v => v.scenario).filter(Boolean))];
                 this.updateSelectOptions(this.elements.scenario, scenarios);
+            }
+
+            updateSummaryStats(videos) {
+                // Calculate summary statistics from filtered videos
+                const totalVideos = videos.length;
+                const totalSizeBytes = videos.reduce((sum, video) => sum + (video.size_bytes || 0), 0);
+                const totalSizeMB = totalSizeBytes / (1024 * 1024);
+                
+                // Count unique datasets from filtered videos
+                const datasets = new Set(videos.map(v => v.dataset_type));
+                const totalDatasets = datasets.size;
+                
+                // Update the display with smooth animation
+                this.animateStatUpdate(this.metrics.totalVideos, totalVideos.toString());
+                this.animateStatUpdate(this.metrics.totalSize, `${totalSizeMB.toFixed(1)} MB`);
+                this.animateStatUpdate(this.metrics.totalDatasets, totalDatasets.toString());
+                
+                this.log(`Updated stats: ${totalVideos} videos, ${totalSizeMB.toFixed(1)} MB, ${totalDatasets} datasets`);
+            }
+
+            animateStatUpdate(element, newValue) {
+                // Add a subtle animation when stats change
+                element.style.transition = 'opacity 0.2s ease';
+                element.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.style.opacity = '1';
+                }, 100);
             }
 
             updateSelectOptions(select, options) {
@@ -1073,6 +1202,11 @@
                     return;
                 }
 
+                // Reset status flags for new analysis session
+                this.analysisStoppedByUser = false;
+                this.analysisStoppedByError = false;
+                this.errorCount = 0;
+                
                 this.isAnalyzing = true;
                 this.elements.startAnalysis.disabled = true;
                 this.elements.stopAnalysis.disabled = false;
@@ -1121,11 +1255,12 @@
 
             async stopAnalysis() {
                 try {
+                    this.analysisStoppedByUser = true; // Set flag for user-initiated stop
                     await fetch('/api/stop');
                     this.isAnalyzing = false;
                     this.elements.startAnalysis.disabled = false;
                     this.elements.stopAnalysis.disabled = true;
-                    this.updateStatus('complete', 'Stopped');
+                    this.updateStatus('stopped', 'Stopped');
                     
                     // Stop frame processing
                     this.stopFrameProcessing();
@@ -1204,7 +1339,21 @@
                         this.isAnalyzing = false;
                         this.elements.startAnalysis.disabled = false;
                         this.elements.stopAnalysis.disabled = true;
-                        this.updateStatus('complete', 'Complete');
+                        
+                        // Determine completion status based on context
+                        if (this.analysisStoppedByUser) {
+                            this.updateStatus('stopped', 'Stopped by user');
+                            this.analysisStoppedByUser = false; // Reset flag
+                        } else if (this.analysisStoppedByError) {
+                            this.updateStatus('error', 'Stopped due to errors');
+                            this.analysisStoppedByError = false; // Reset flag
+                        } else if (data.total_frames > 0 && data.results && data.results.length > 0) {
+                            // Analysis completed successfully with results
+                            this.updateStatus('complete', 'Analysis complete');
+                        } else {
+                            // Analysis ended without clear results
+                            this.updateStatus('stopped', 'Analysis ended');
+                        }
                     }
                 } catch (error) {
                     console.error('Error polling results:', error);
@@ -1324,7 +1473,9 @@
                 const icons = {
                     idle: '<span aria-hidden="true">⏸️</span>',
                     analyzing: '<div class="loading-spinner" aria-hidden="true"></div>',
-                    complete: '<span aria-hidden="true">✅</span>'
+                    complete: '<span aria-hidden="true">✅</span>',
+                    stopped: '<span aria-hidden="true">⏹️</span>',
+                    error: '<span aria-hidden="true">❌</span>'
                 };
                 
                 this.elements.analysisStatus.innerHTML = `${icons[type]} ${message}`;
@@ -1353,6 +1504,58 @@
                 
                 // Also log to console
                 console.log(`[VideoAnalysis] ${message}`);
+            }
+
+            // Video validation and button enabling
+            async validateVideoAndEnableAnalysis() {
+                return new Promise((resolve) => {
+                    const video = this.elements.videoPlayer;
+                    
+                    const checkVideoReady = () => {
+                        // Check if video has valid dimensions and duration
+                        if (video.videoWidth > 0 && video.videoHeight > 0 && 
+                            video.duration && !isNaN(video.duration) && video.duration > 0) {
+                            
+                            this.log(`Video ready: ${video.videoWidth}x${video.videoHeight}, ${video.duration.toFixed(1)}s`, 'success');
+                            this.elements.startAnalysis.disabled = false;
+                            this.updateStatus('idle', 'Ready to analyze');
+                            resolve(true);
+                        } else {
+                            // Video not ready yet, wait a bit more
+                            setTimeout(checkVideoReady, 100);
+                        }
+                    };
+                    
+                    // Add event listeners for video ready states
+                    video.onloadedmetadata = () => {
+                        this.log('Video metadata loaded');
+                        checkVideoReady();
+                    };
+                    
+                    video.oncanplay = () => {
+                        this.log('Video can start playing');
+                        checkVideoReady();
+                    };
+                    
+                    video.onerror = () => {
+                        this.log('Video failed to load', 'error');
+                        this.elements.startAnalysis.disabled = true;
+                        this.updateStatus('idle', 'Video load failed');
+                        resolve(false);
+                    };
+                    
+                    // Start checking immediately
+                    checkVideoReady();
+                    
+                    // Timeout after 10 seconds
+                    setTimeout(() => {
+                        if (this.elements.startAnalysis.disabled) {
+                            this.log('Video validation timeout', 'warning');
+                            this.updateStatus('idle', 'Video load timeout');
+                            resolve(false);
+                        }
+                    }, 10000);
+                });
             }
 
             // MediaPipe Initialization
@@ -1474,7 +1677,22 @@
                         this.log('No face detected in current frame', 'warning');
                     }
                 } catch (error) {
-                    this.log(`Error processing video frame: ${error.message}`, 'error');
+                    this.errorCount++;
+                    const now = Date.now();
+                    
+                    // Throttle error logging to prevent CPU spikes
+                    if (now - this.lastErrorTime > 1000) { // Only log every 1 second
+                        this.log(`Error processing video frame: ${error.message}`, 'error');
+                        this.lastErrorTime = now;
+                        
+                        // If too many errors, stop analysis to prevent infinite loop
+                        if (this.errorCount > 10) {
+                            this.log('Too many errors, stopping analysis to prevent CPU overload', 'error');
+                            this.analysisStoppedByError = true; // Set error flag
+                            await this.stopAnalysis();
+                            return;
+                        }
+                    }
                 } finally {
                     this.frameProcessing = false;
                 }
