@@ -471,6 +471,7 @@ def serve_video(video_path):
     """Serve actual video files from datasets."""
     import os
     from pathlib import Path
+    from flask import make_response
     
     print(f"serve_video called with path: {video_path}")
     
@@ -492,7 +493,12 @@ def serve_video(video_path):
             # Use absolute path and as_attachment=False to ensure inline display
             abs_path = full_path.absolute()
             print(f"Attempting to serve video file: {abs_path}")
-            return send_file(abs_path, mimetype='video/mp4', as_attachment=False)
+            response = make_response(send_file(abs_path, mimetype='video/mp4', as_attachment=False))
+            # Add CORS headers for video element
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Range'
+            return response
         except Exception as e:
             print(f"Error serving file {full_path}: {e}")
             import traceback
@@ -562,7 +568,11 @@ def serve_video(video_path):
     if dataset_info:
         response_data['dataset_info'] = dataset_info
     
-    return jsonify(response_data)
+    # Return JSON response with CORS headers
+    response = jsonify(response_data)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    return response
 
 @app.errorhandler(404)
 def not_found(error):

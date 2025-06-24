@@ -1098,28 +1098,38 @@
                     // Check if it loads properly
                     const checkVideoLoad = new Promise((resolve, reject) => {
                         const video = this.elements.videoPlayer;
+                        let resolved = false;
                         
                         // Handle successful load
                         const onLoadSuccess = () => {
-                            this.log(`Video loaded successfully: ${videoUrl}`, 'success');
-                            resolve('direct');
+                            if (!resolved) {
+                                resolved = true;
+                                this.log(`Video loaded successfully: ${videoUrl}`, 'success');
+                                resolve('direct');
+                            }
                         };
                         
                         // Use multiple events to detect successful load
                         video.onloadeddata = onLoadSuccess;
                         video.oncanplay = onLoadSuccess;
                         
-                        // Handle errors
+                        // Handle errors - immediately try fallback
                         video.onerror = (e) => {
-                            this.log('Video load error', 'error');
-                            reject('failed');
+                            if (!resolved) {
+                                resolved = true;
+                                this.log('Video load error - trying fallback immediately', 'error');
+                                reject('failed');
+                            }
                         };
                         
-                        // Increase timeout to 15 seconds for larger files
+                        // Reduce timeout to 5 seconds to try fallback sooner
                         setTimeout(() => {
-                            this.log('Video load timeout after 15 seconds', 'warning');
-                            reject('timeout');
-                        }, 15000);
+                            if (!resolved) {
+                                resolved = true;
+                                this.log('Video load timeout after 5 seconds', 'warning');
+                                reject('timeout');
+                            }
+                        }, 5000);
                     });
                     
                     try {
@@ -1132,31 +1142,48 @@
                         // If direct loading fails, try to get redirect URL
                         try {
                             const response = await fetch(videoUrl);
-                            console.log(`Fetch response: ${response.status} ${response.statusText}`);
-                            console.log(`Content-Type: ${response.headers.get('content-type')}`);
+                            this.log(`Fetch response: ${response.status} ${response.statusText}`);
                             
-                            if (response.headers.get('content-type')?.includes('application/json')) {
+                            if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
                                 const data = await response.json();
+                                this.log(`Using fallback video: ${data.redirect_url}`, 'info');
+                                
+                                // Clear any existing video source to force reload
+                                this.elements.videoPlayer.pause();
+                                this.elements.videoPlayer.src = '';
+                                this.elements.videoPlayer.load();
+                                
+                                // Set new source with CORS
                                 this.elements.videoPlayer.crossOrigin = "anonymous";
                                 this.elements.videoPlayer.src = data.redirect_url;
-                                console.log(`Loaded video via redirect: ${data.redirect_url} (type: ${data.type})`);
+                                this.elements.videoPlayer.load();
                                 
                                 // Show dataset info if available
                                 if (data.dataset_info) {
                                     this.showDatasetInfo(data.dataset_info);
                                 }
-                            } else if (response.headers.get('content-type')?.includes('video')) {
-                                // The server returned video data but browser couldn't play it
-                                console.error('Server returned video data but browser cannot play it');
-                                console.log('Falling back to default demo video');
-                                this.elements.videoPlayer.crossOrigin = "anonymous";
-                                this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                                
+                                // Wait for the fallback video to load
+                                await this.validateVideoAndEnableAnalysis();
+                            } else {
+                                // Use a reliable fallback video
+                                throw new Error('Unable to get fallback video URL');
                             }
-                            await this.validateVideoAndEnableAnalysis();
                         } catch (fetchError) {
-                            console.warn('Fallback fetch also failed:', fetchError);
+                            this.log('Using default fallback video', 'warning');
+                            
+                            // Use a more reliable fallback video
+                            const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
+                            
+                            // Clear and reload with fallback
+                            this.elements.videoPlayer.pause();
+                            this.elements.videoPlayer.src = '';
+                            this.elements.videoPlayer.load();
+                            
                             this.elements.videoPlayer.crossOrigin = "anonymous";
-                            this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                            this.elements.videoPlayer.src = fallbackUrl;
+                            this.elements.videoPlayer.load();
+                            
                             await this.validateVideoAndEnableAnalysis();
                         }
                     }
@@ -1174,10 +1201,16 @@
                     }
                     
                 } catch (error) {
-                    console.error('Error loading video:', error);
+                    this.log(`Error loading video: ${error.message}`, 'error');
                     // Use fallback video on error
+                    const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
+                    
+                    this.elements.videoPlayer.pause();
+                    this.elements.videoPlayer.src = '';
+                    this.elements.videoPlayer.load();
+                    
                     this.elements.videoPlayer.crossOrigin = "anonymous";
-                    this.elements.videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                    this.elements.videoPlayer.src = fallbackUrl;
                     this.elements.videoPlayer.load();
                     
                     // Still show the video player even on error
