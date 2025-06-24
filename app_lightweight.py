@@ -271,6 +271,7 @@ def get_videos():
             })
     
     if dataset_type == 'all' or dataset_type == 'live_faces':
+        print(f"DEBUG: Executing live_faces section for dataset_type={dataset_type}")
         config = dataset_configs['live_faces']
         # Use actual Kaggle selfie videos from directories 1-10
         live_face_files = []
@@ -278,6 +279,7 @@ def get_videos():
             for video_num in [3, 4, 7, 8]:  # Each directory has these video numbers
                 live_face_files.append((f'files/{dir_num}/{video_num}.mp4', dir_num, video_num))
         
+        print(f"DEBUG: Generated {len(live_face_files)} live_face_files")
         for i, (filepath, dir_num, video_num) in enumerate(live_face_files[:32]):  # Show more videos
             videos.append({
                 'filepath': f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{filepath}',
@@ -294,8 +296,10 @@ def get_videos():
                 'scenario': config['scenarios'][i % len(config['scenarios'])],
                 'quality_score': random.uniform(0.6, 0.85)
             })
+        print(f"DEBUG: Added {len([v for v in videos if v['dataset_type'] == 'live_faces'])} live_faces videos to list")
     
     if dataset_type == 'all' or dataset_type == 'real_faces':
+        print(f"DEBUG: Executing real_faces section for dataset_type={dataset_type}")
         config = dataset_configs['real_faces']
         # Use synthetic realistic face videos
         synthetic_files = [
@@ -309,6 +313,8 @@ def get_videos():
         for dir_num in range(9, 11):  # Directories 9-10
             for video_num in [3, 4, 7, 8]:
                 synthetic_files.append((f'kaggle_{dir_num}_{video_num}.mp4', 'home', random.uniform(20, 60)))
+        
+        print(f"DEBUG: Generated {len(synthetic_files)} synthetic_files")
         
         for i, (filename, scenario, duration) in enumerate(synthetic_files[:12]):
             if filename.startswith('synthetic_'):
@@ -333,6 +339,7 @@ def get_videos():
                 'scenario': scenario,
                 'quality_score': random.uniform(0.75, 0.95)
             })
+        print(f"DEBUG: Added {len([v for v in videos if v['dataset_type'] == 'real_faces'])} real_faces videos to list")
     
     if dataset_type == 'all' or dataset_type == 'webcam_samples':
         config = dataset_configs['webcam_samples']
@@ -378,6 +385,14 @@ def get_videos():
     if scenario != 'all':
         videos = [v for v in videos if v['scenario'] == scenario]
     videos = [v for v in videos if v['quality_score'] >= min_quality]
+    
+    # Debug final counts
+    dataset_counts = {}
+    for video in videos:
+        dt = video['dataset_type']
+        dataset_counts[dt] = dataset_counts.get(dt, 0) + 1
+    print(f"DEBUG: Final video counts by dataset_type: {dataset_counts}")
+    print(f"DEBUG: Total videos returned: {len(videos)}")
     
     return jsonify(videos)
 
