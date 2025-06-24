@@ -1033,13 +1033,19 @@
             
             async loadVideoPreview(videoPath) {
                 try {
+                    // First fetch video info from API to get the redirect URL
+                    const response = await fetch(`/api/video${videoPath}`);
+                    this.log(`Fetch response: ${response.status} ${response.statusText}`);
+                    
+                    const data = await response.json();
+                    
                     // Hide placeholder, show video player
                     this.elements.videoPlaceholder.style.display = 'none';
                     this.elements.videoPlayer.style.display = 'block';
                     
-                    // Try to load video directly first
-                    const videoUrl = `/api/video${videoPath}`;
-                    this.log(`Loading video from: ${videoUrl}`);
+                    // Use the redirect URL from the response
+                    const videoUrl = data.redirect_url;
+                    this.log(`Using video URL: ${videoUrl}`);
                     
                     // Clear existing event handlers to prevent duplicate logging
                     this.elements.videoPlayer.onloadstart = null;
@@ -1134,58 +1140,29 @@
                     
                     try {
                         await checkVideoLoad;
-                        this.log(`Loaded video directly: ${videoUrl}`, 'success');
+                        this.log(`Loaded video successfully: ${videoUrl}`, 'success');
                         await this.validateVideoAndEnableAnalysis();
-                    } catch (loadError) {
-                        this.log(`Direct video load failed (${loadError}), trying fallback...`, 'warning');
                         
-                        // If direct loading fails, try to get redirect URL
-                        try {
-                            const response = await fetch(videoUrl);
-                            this.log(`Fetch response: ${response.status} ${response.statusText}`);
-                            
-                            if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-                                const data = await response.json();
-                                this.log(`Using fallback video: ${data.redirect_url}`, 'info');
-                                
-                                // Clear any existing video source to force reload
-                                this.elements.videoPlayer.pause();
-                                this.elements.videoPlayer.src = '';
-                                this.elements.videoPlayer.load();
-                                
-                                // Set new source with CORS
-                                this.elements.videoPlayer.crossOrigin = "anonymous";
-                                this.elements.videoPlayer.src = data.redirect_url;
-                                this.elements.videoPlayer.load();
-                                
-                                // Show dataset info if available
-                                if (data.dataset_info) {
-                                    this.showDatasetInfo(data.dataset_info);
-                                }
-                                
-                                // Wait for the fallback video to load
-                                await this.validateVideoAndEnableAnalysis();
-                            } else {
-                                // Use a reliable fallback video
-                                throw new Error('Unable to get fallback video URL');
-                            }
-                        } catch (fetchError) {
-                            this.log('Using default fallback video', 'warning');
-                            
-                            // Use a more reliable fallback video
-                            const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
-                            
-                            // Clear and reload with fallback
-                            this.elements.videoPlayer.pause();
-                            this.elements.videoPlayer.src = '';
-                            this.elements.videoPlayer.load();
-                            
-                            this.elements.videoPlayer.crossOrigin = "anonymous";
-                            this.elements.videoPlayer.src = fallbackUrl;
-                            this.elements.videoPlayer.load();
-                            
-                            await this.validateVideoAndEnableAnalysis();
+                        // Show dataset info if available
+                        if (data.dataset_info) {
+                            this.showDatasetInfo(data.dataset_info);
                         }
+                    } catch (loadError) {
+                        this.log(`Video load failed (${loadError}), using default fallback`, 'warning');
+                        
+                        // Use a reliable fallback video
+                        const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
+                        
+                        // Clear and reload with fallback
+                        this.elements.videoPlayer.pause();
+                        this.elements.videoPlayer.src = '';
+                        this.elements.videoPlayer.load();
+                        
+                        this.elements.videoPlayer.crossOrigin = "anonymous";
+                        this.elements.videoPlayer.src = fallbackUrl;
+                        this.elements.videoPlayer.load();
+                        
+                        await this.validateVideoAndEnableAnalysis();
                     }
                     
                     this.elements.videoPlayer.load();
