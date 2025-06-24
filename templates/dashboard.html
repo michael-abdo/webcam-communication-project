@@ -167,6 +167,10 @@
                     <span>Camera Status:</span>
                     <span id="camera-status" class="metric-value">Ready</span>
                 </div>
+                <div class="metric">
+                    <span>Data Source:</span>
+                    <span id="data-source" class="metric-value">None</span>
+                </div>
             </div>
         </div>
         
@@ -275,6 +279,29 @@
                         // Update alert history
                         if (data.alert_status?.message) {
                             addAlertToHistory(data.alert_status);
+                        }
+                        
+                        // Update data source
+                        const sourceElement = document.getElementById('data-source');
+                        if (data.source === 'video') {
+                            sourceElement.textContent = 'Video Analysis';
+                            sourceElement.className = 'metric-value green';
+                        } else if (data.source === 'camera') {
+                            sourceElement.textContent = 'Live Camera';
+                            sourceElement.className = 'metric-value green';
+                        } else {
+                            sourceElement.textContent = 'None';
+                            sourceElement.className = 'metric-value';
+                        }
+                        
+                        // Update camera status based on activity
+                        const cameraElement = document.getElementById('camera-status');
+                        if (data.is_active) {
+                            cameraElement.textContent = 'Active';
+                            cameraElement.className = 'metric-value green';
+                        } else {
+                            cameraElement.textContent = 'Ready';
+                            cameraElement.className = 'metric-value';
                         }
                     }
                 })

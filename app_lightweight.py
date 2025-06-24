@@ -31,6 +31,20 @@ video_analysis_state = {
     'results': []
 }
 
+# Shared metrics state for dashboard integration
+current_metrics = {
+    'perclos': 0.0,
+    'blink_rate': 15,  # Default normal blink rate
+    'eye_openness': 1.0,
+    'is_active': False,
+    'source': 'none',  # 'video', 'camera', or 'none'
+    'last_update': datetime.now(),
+    'frame_count': 0,
+    'fps': 0.0,
+    'alert_level': 'Normal',
+    'alert_message': 'System ready'
+}
+
 @app.route('/')
 def home():
     """Home page with dashboard interface."""
@@ -330,6 +344,11 @@ def stop_analysis():
     """Stop current video analysis."""
     video_analysis_state['is_analyzing'] = False
     total_frames = video_analysis_state['frame_count']
+    
+    # Reset shared metrics when video analysis stops
+    current_metrics['is_active'] = False
+    current_metrics['source'] = 'none'
+    
     print(f"Stopped analysis session. Total frames processed: {total_frames}")
     return jsonify({'status': 'stopped', 'total_frames_processed': total_frames})
 
@@ -354,6 +373,41 @@ def receive_analysis_result():
         # Keep only last 100 results for memory efficiency
         if len(video_analysis_state['results']) > 100:
             video_analysis_state['results'] = video_analysis_state['results'][-100:]
+        
+        # Update shared metrics for dashboard integration
+        current_metrics['perclos'] = data['perclos']
+        current_metrics['is_active'] = True
+        current_metrics['source'] = 'video'
+        current_metrics['last_update'] = datetime.now()
+        current_metrics['frame_count'] = video_analysis_state['frame_count']
+        
+        # Calculate blink rate from recent results (if available in data)
+        if 'blink_rate' in data:
+            current_metrics['blink_rate'] = data['blink_rate']
+        
+        # Calculate eye openness (inverse of PERCLOS)
+        current_metrics['eye_openness'] = 1.0 - data['perclos']
+        
+        # Update alert level based on fatigue level
+        fatigue_level = data['fatigue_level']
+        if fatigue_level == 'CRITICAL':
+            current_metrics['alert_level'] = 'Critical'
+            current_metrics['alert_message'] = 'High fatigue detected! Take a break immediately.'
+        elif fatigue_level == 'HIGH':
+            current_metrics['alert_level'] = 'Warning'
+            current_metrics['alert_message'] = 'Fatigue increasing. Consider taking a break.'
+        else:
+            current_metrics['alert_level'] = 'Normal'
+            current_metrics['alert_message'] = 'Normal alertness levels.'
+        
+        # Calculate FPS if we have timing data
+        if len(video_analysis_state['results']) > 1:
+            recent_results = video_analysis_state['results'][-10:]
+            if len(recent_results) >= 2:
+                time_diff = recent_results[-1]['timestamp'] - recent_results[0]['timestamp']
+                frame_diff = recent_results[-1]['frame_number'] - recent_results[0]['frame_number']
+                if time_diff > 0:
+                    current_metrics['fps'] = frame_diff / time_diff
         
         print(f"Received real analysis result: Frame {data['frame_number']}, PERCLOS={data['perclos']:.3f}, Fatigue={data['fatigue_level']}")
         
@@ -479,6 +533,85 @@ def serve_video(video_path):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
     return response
+
+# Dashboard integration endpoints
+@app.route('/get_metrics')
+def get_metrics():
+    """Get current fatigue metrics for dashboard display."""
+    # Calculate time since last update
+    time_since_update = (datetime.now() - current_metrics['last_update']).total_seconds()
+    
+    # If no recent updates, mark as inactive
+    if time_since_update > 5:  # 5 seconds without updates
+        current_metrics['is_active'] = False
+        current_metrics['source'] = 'none'
+    
+    return jsonify({
+        'metrics': {
+            'perclos': current_metrics['perclos'],
+            'blink_rate': current_metrics['blink_rate'],
+            'eye_openness': current_metrics['eye_openness']
+        },
+        'alert_status': {
+            'level': current_metrics['alert_level'],
+            'message': current_metrics['alert_message']
+        },
+        'frame_count': current_metrics['frame_count'],
+        'fps': round(current_metrics['fps'], 1),
+        'is_active': current_metrics['is_active'],
+        'source': current_metrics['source']
+    })
+
+@app.route('/start_detection', methods=['POST'])
+def start_detection():
+    """Start fatigue detection (for dashboard compatibility)."""
+    # Note: Actual detection starts when video analysis begins
+    # This endpoint exists for dashboard compatibility
+    return jsonify({
+        'status': 'ready',
+        'message': 'Use video analysis interface to start detection'
+    })
+
+@app.route('/stop_detection', methods=['POST'])
+def stop_detection():
+    """Stop fatigue detection."""
+    # Reset metrics when stopping
+    current_metrics['is_active'] = False
+    current_metrics['source'] = 'none'
+    current_metrics['perclos'] = 0.0
+    current_metrics['eye_openness'] = 1.0
+    current_metrics['alert_level'] = 'Normal'
+    current_metrics['alert_message'] = 'Detection stopped'
+    
+    return jsonify({
+        'status': 'stopped',
+        'message': 'Fatigue detection stopped'
+    })
+
+@app.route('/reset_metrics', methods=['POST'])
+def reset_metrics():
+    """Reset all metrics to default values."""
+    current_metrics.update({
+        'perclos': 0.0,
+        'blink_rate': 15,
+        'eye_openness': 1.0,
+        'is_active': False,
+        'source': 'none',
+        'last_update': datetime.now(),
+        'frame_count': 0,
+        'fps': 0.0,
+        'alert_level': 'Normal',
+        'alert_message': 'System ready'
+    })
+    
+    # Also reset video analysis state
+    video_analysis_state['results'] = []
+    video_analysis_state['frame_count'] = 0
+    
+    return jsonify({
+        'status': 'reset',
+        'message': 'All metrics reset successfully'
+    })
 
 @app.errorhandler(404)
 def not_found(error):
