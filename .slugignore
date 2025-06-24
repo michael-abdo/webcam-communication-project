@@ -1,4 +1,10 @@
-cognitive_overload/
+cognitive_overload/docs/
+cognitive_overload/tests/
+cognitive_overload/data/processed_results/
+cognitive_overload/processing/
+cognitive_overload/validation/major_face_datasets/
+cognitive_overload/validation/webcam_liveness_kaggle/
+cognitive_overload/validation/mobiface_dataset/
 dist/
 node_modules/
 *.md
