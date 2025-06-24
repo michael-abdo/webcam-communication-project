@@ -219,6 +219,9 @@ def get_videos():
     # Generate realistic mock video data
     videos = []
     
+    # Track if we're showing all datasets
+    show_all = dataset_type == 'all' or dataset_type == ''
+    
     # Define consistent subjects and scenarios for each dataset
     dataset_configs = {
         'test_videos': {
@@ -244,7 +247,7 @@ def get_videos():
     }
     
     # Create sample videos based on dataset type
-    if dataset_type == 'all' or dataset_type == 'test_videos':
+    if show_all or dataset_type == 'test_videos':
         config = dataset_configs['test_videos']
         test_files = [
             ('test_face.mp4', 1920, 1080, 30.0, 15.2),
@@ -270,7 +273,7 @@ def get_videos():
                 'quality_score': 0.7 + (width * height / (1920 * 1080)) * 0.25
             })
     
-    if dataset_type == 'all' or dataset_type == 'live_faces':
+    if show_all or dataset_type == 'live_faces':
         config = dataset_configs['live_faces']
         # Use actual Kaggle selfie videos from deployed directories only (1,4,9,10)
         deployed_dirs = [1, 4, 9, 10]  # Only directories included in Heroku deployment
@@ -296,7 +299,7 @@ def get_videos():
                 'quality_score': random.uniform(0.6, 0.85)
             })
     
-    if dataset_type == 'all' or dataset_type == 'real_faces':
+    if show_all or dataset_type == 'real_faces':
         config = dataset_configs['real_faces']
         # Use only synthetic realistic face videos (no duplicate Kaggle videos)
         synthetic_files = [
@@ -325,7 +328,7 @@ def get_videos():
                 'quality_score': random.uniform(0.75, 0.95)
             })
     
-    if dataset_type == 'all' or dataset_type == 'webcam_samples':
+    if show_all or dataset_type == 'webcam_samples':
         config = dataset_configs['webcam_samples']
         for i in range(10):
             videos.append({
@@ -344,7 +347,7 @@ def get_videos():
                 'quality_score': random.uniform(0.55, 0.85)
             })
     
-    if dataset_type == 'all' or dataset_type == 'processed_results':
+    if show_all or dataset_type == 'processed_results':
         config = dataset_configs['processed_results']
         for i in range(6):
             videos.append({
