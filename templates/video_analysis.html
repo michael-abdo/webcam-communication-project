@@ -1033,19 +1033,13 @@
             
             async loadVideoPreview(videoPath) {
                 try {
-                    // First fetch video info from API to get the redirect URL
-                    const response = await fetch(`/api/video${videoPath}`);
-                    this.log(`Fetch response: ${response.status} ${response.statusText}`);
-                    
-                    const data = await response.json();
-                    
                     // Hide placeholder, show video player
                     this.elements.videoPlaceholder.style.display = 'none';
                     this.elements.videoPlayer.style.display = 'block';
                     
-                    // Use the redirect URL from the response
-                    const videoUrl = data.redirect_url;
-                    this.log(`Using video URL: ${videoUrl}`);
+                    // Load video directly from the API endpoint
+                    const videoUrl = `/api/video${videoPath}`;
+                    this.log(`Loading video from: ${videoUrl}`);
                     
                     // Clear existing event handlers to prevent duplicate logging
                     this.elements.videoPlayer.onloadstart = null;
@@ -1142,11 +1136,6 @@
                         await checkVideoLoad;
                         this.log(`Loaded video successfully: ${videoUrl}`, 'success');
                         await this.validateVideoAndEnableAnalysis();
-                        
-                        // Show dataset info if available
-                        if (data.dataset_info) {
-                            this.showDatasetInfo(data.dataset_info);
-                        }
                     } catch (loadError) {
                         this.log(`Video load failed: ${loadError}`, 'error');
                         this.elements.startAnalysis.disabled = true;
