@@ -5,6 +5,13 @@ cognitive_overload/processing/
 cognitive_overload/validation/major_face_datasets/
 cognitive_overload/validation/webcam_liveness_kaggle/
 cognitive_overload/validation/mobiface_dataset/
+# Keep only smaller video directories to stay within 500MB limit
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/2/
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/3/
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/5/
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/6/
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/7/
+cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/8/
 dist/
 node_modules/
 *.md
