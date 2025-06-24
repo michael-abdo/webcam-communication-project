@@ -1148,21 +1148,9 @@
                             this.showDatasetInfo(data.dataset_info);
                         }
                     } catch (loadError) {
-                        this.log(`Video load failed (${loadError}), using default fallback`, 'warning');
-                        
-                        // Use a reliable fallback video
-                        const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
-                        
-                        // Clear and reload with fallback
-                        this.elements.videoPlayer.pause();
-                        this.elements.videoPlayer.src = '';
-                        this.elements.videoPlayer.load();
-                        
-                        this.elements.videoPlayer.crossOrigin = "anonymous";
-                        this.elements.videoPlayer.src = fallbackUrl;
-                        this.elements.videoPlayer.load();
-                        
-                        await this.validateVideoAndEnableAnalysis();
+                        this.log(`Video load failed: ${loadError}`, 'error');
+                        this.elements.startAnalysis.disabled = true;
+                        this.updateStatus('idle', 'Video load failed');
                     }
                     
                     this.elements.videoPlayer.load();
@@ -1179,20 +1167,8 @@
                     
                 } catch (error) {
                     this.log(`Error loading video: ${error.message}`, 'error');
-                    // Use fallback video on error
-                    const fallbackUrl = 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
-                    
-                    this.elements.videoPlayer.pause();
-                    this.elements.videoPlayer.src = '';
-                    this.elements.videoPlayer.load();
-                    
-                    this.elements.videoPlayer.crossOrigin = "anonymous";
-                    this.elements.videoPlayer.src = fallbackUrl;
-                    this.elements.videoPlayer.load();
-                    
-                    // Still show the video player even on error
-                    this.elements.videoPlaceholder.style.display = 'none';
-                    this.elements.videoPlayer.style.display = 'block';
+                    this.elements.startAnalysis.disabled = true;
+                    this.updateStatus('idle', 'Video fetch failed');
                 }
             }
 

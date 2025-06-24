@@ -475,14 +475,14 @@ def serve_video(video_path):
     
     print(f"serve_video called with path: {video_path}")
     
-    # Base directory for video files
-    base_dir = Path('.')
+    # Base directory for video files - use absolute path to ensure it works in Heroku
+    current_dir = Path(__file__).parent.absolute()
     
     # Security check - prevent directory traversal
     video_path = video_path.replace('..', '')
     
-    # Construct full path
-    full_path = base_dir / video_path.lstrip('/')
+    # Construct full path using absolute base directory
+    full_path = current_dir / video_path.lstrip('/')
     
     print(f"Full path resolved to: {full_path}")
     print(f"Path exists: {full_path.exists()}, Is file: {full_path.is_file() if full_path.exists() else 'N/A'}")
