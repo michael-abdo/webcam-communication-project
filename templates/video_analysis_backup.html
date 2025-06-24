@@ -63,152 +63,9 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-areas: 
-                "dataset video metrics";
-            gap: 20px;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
             margin-bottom: 30px;
-        }
-        
-        .dataset-panel {
-            grid-area: dataset;
-        }
-        
-        .video-panel {
-            grid-area: video;
-        }
-        
-        .metrics-panel {
-            grid-area: metrics;
-        }
-        
-        .metrics-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .metric-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .metric-item:last-child {
-            border-bottom: none;
-        }
-        
-        .metric-label {
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        .metric-value {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-        
-        .metric-value.green {
-            color: var(--accent-green);
-        }
-        
-        .metric-value.orange {
-            color: var(--accent-orange);
-        }
-        
-        .metric-value.red {
-            color: var(--accent-red);
-        }
-        
-        /* Dashboard-style status indicators */
-        .unified-status {
-            text-align: center;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        
-        .unified-status.normal { 
-            background: rgba(16, 185, 129, 0.1); 
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-        }
-        
-        .unified-status.warning { 
-            background: rgba(245, 158, 11, 0.1); 
-            color: var(--accent-orange);
-            border: 1px solid var(--accent-orange);
-        }
-        
-        .unified-status.alert { 
-            background: rgba(239, 68, 68, 0.1); 
-            color: var(--accent-red);
-            border: 1px solid var(--accent-red);
-        }
-        
-        /* Alert history styles */
-        .alert-history {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        
-        .alert-item {
-            padding: 8px;
-            margin: 4px 0;
-            border-left: 4px solid var(--accent-orange);
-            background: var(--light-bg);
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        
-        .alert-item.critical {
-            border-left-color: var(--accent-red);
-        }
-        
-        .alert-item.normal {
-            border-left-color: var(--accent-green);
-        }
-        
-        /* Loading indicators */
-        .loading-pulse {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        .metrics-loading {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .metrics-loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
         }
 
         .panel {
@@ -630,38 +487,19 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 1200px) {
-            .dashboard {
-                grid-template-columns: 1fr 1.5fr 1fr;
-                gap: 15px;
-            }
-        }
-        
         @media (max-width: 900px) {
             .container {
                 padding: 15px;
             }
             
             .dashboard {
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas: 
-                    "dataset video"
-                    "metrics metrics";
-                gap: 15px;
-            }
-            
-            .metrics-panel {
-                grid-area: metrics;
+                gap: 20px;
             }
         }
         
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
-                grid-template-areas: 
-                    "dataset"
-                    "metrics"
-                    "video";
             }
             
             .analysis-display {
@@ -673,32 +511,11 @@
             }
             
             .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
             
             .panel {
-                padding: 15px;
-            }
-            
-            .metrics-content {
-                gap: 10px;
-            }
-            
-            .metric-item {
-                padding: 8px 0;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-            
-            .unified-status {
-                padding: 10px;
-                font-size: 0.8rem;
-            }
-            
-            .alert-history {
-                max-height: 150px;
-            }
+                padding: 20px;
             }
             
             .selector-group {
@@ -753,7 +570,7 @@
 
         <div class="dashboard">
             <!-- Dataset Selection Panel -->
-            <div class="panel dataset-panel">
+            <div class="panel">
                 <h3><span aria-hidden="true">📁</span> Dataset Selection</h3>
                 
                 <div class="dataset-selector">
@@ -809,55 +626,11 @@
             </div>
 
             <!-- Video Selection Panel -->
-            <div class="panel video-panel">
+            <div class="panel">
                 <h3><span aria-hidden="true">🎬</span> Video Selection</h3>
                 <div id="videoGrid" class="video-grid" role="list" aria-label="Available videos">
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
                         Loading videos...
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Real-time Metrics Panel -->
-            <div class="panel metrics-panel">
-                <h3><span aria-hidden="true">📊</span> Real-time Metrics</h3>
-                
-                <!-- Metrics content will be added here -->
-                <div class="metrics-content">
-                    <div class="metric-item">
-                        <span class="metric-label">PERCLOS Score:</span>
-                        <span id="unified-perclos" class="metric-value">0.00%</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-label">Blink Rate:</span>
-                        <span id="unified-blink-rate" class="metric-value">0.0/min</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-label">Eye Openness:</span>
-                        <span id="unified-eye-openness" class="metric-value">100%</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-label">Alert Level:</span>
-                        <span id="unified-alert-level" class="metric-value">Normal</span>
-                    </div>
-                    <div class="metric-item">
-                        <span class="metric-label">Data Source:</span>
-                        <span id="unified-data-source" class="metric-value">None</span>
-                    </div>
-                </div>
-                
-                <!-- Status indicator -->
-                <div id="unified-status" class="unified-status normal">
-                    System Ready - Select a video to begin analysis
-                </div>
-                
-                <!-- Alert History -->
-                <div>
-                    <h4 style="margin-bottom: 10px; color: var(--text-secondary);">Alert History</h4>
-                    <div id="unified-alert-history" class="alert-history">
-                        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-                            No alerts yet. System monitoring for fatigue indicators...
-                        </div>
                     </div>
                 </div>
             </div>
@@ -976,7 +749,6 @@
     <script>
         class VideoAnalysisInterface {
             constructor() {
-                // Video Analysis State
                 this.selectedVideo = null;
                 this.isAnalyzing = false;
                 this.analysisResults = [];
@@ -992,31 +764,6 @@
                 this.useSyntheticData = false;
                 this.analysisStoppedByUser = false;
                 this.analysisStoppedByError = false;
-                
-                // Unified Dashboard State
-                this.unifiedState = {
-                    metrics: {
-                        perclos: 0.0,
-                        blinkRate: 15,
-                        eyeOpenness: 1.0,
-                        alertLevel: 'Normal',
-                        dataSource: 'None'
-                    },
-                    session: {
-                        isActive: false,
-                        startTime: null,
-                        frameCount: 0,
-                        fps: 0.0
-                    },
-                    alerts: [],
-                    status: {
-                        level: 'normal',
-                        message: 'System Ready - Select a video to begin analysis'
-                    }
-                };
-                
-                // Dashboard polling
-                this.dashboardUpdateInterval = null;
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadDatasets();
@@ -1054,21 +801,6 @@
                     totalVideos: document.getElementById('totalVideos'),
                     totalSize: document.getElementById('totalSize'),
                     totalDatasets: document.getElementById('totalDatasets'),
-                };
-                
-                // Unified Dashboard Elements
-                this.unifiedElements = {
-                    perclos: document.getElementById('unified-perclos'),
-                    blinkRate: document.getElementById('unified-blink-rate'),
-                    eyeOpenness: document.getElementById('unified-eye-openness'),
-                    alertLevel: document.getElementById('unified-alert-level'),
-                    dataSource: document.getElementById('unified-data-source'),
-                    status: document.getElementById('unified-status'),
-                    alertHistory: document.getElementById('unified-alert-history')
-                };
-                
-                // Existing analysis metrics
-                this.analysisMetrics = {
                     currentPerclos: document.getElementById('currentPerclos'),
                     currentBlinkRate: document.getElementById('currentBlinkRate'),
                     currentFatigueLevel: document.getElementById('currentFatigueLevel'),
@@ -1291,12 +1023,8 @@
                 card.classList.add('selected');
                 this.selectedVideo = card.dataset.path;
                 
-                // Update unified state
-                this.unifiedState.status.message = 'Video selected - Loading preview...';
-                this.updateUnifiedDashboard();
-                
-                // Update button states
-                this.updateButtonStates();
+                // Disable Start Analysis button until video loads successfully
+                this.elements.startAnalysis.disabled = true;
                 this.updateStatus('idle', 'Loading video...');
                 
                 // Load video preview
@@ -1584,25 +1312,10 @@
 
                     if (response.ok) {
                         this.log('Analysis session started successfully', 'success');
-                        
-                        // Initialize unified dashboard session
-                        this.unifiedState.session.isActive = true;
-                        this.unifiedState.session.startTime = Date.now();
-                        this.unifiedState.metrics.dataSource = 'Video Analysis';
-                        this.unifiedState.status.level = 'normal';
-                        this.unifiedState.status.message = 'Analysis in progress...';
-                        
-                        // Start dashboard detection (for compatibility)
-                        try {
-                            await fetch('/start_detection', { method: 'POST' });
-                        } catch (error) {
-                            console.warn('Dashboard start detection failed:', error);
-                        }
-                        
                         // Start real-time frame processing to generate actual data
                         this.startFrameProcessing();
-                        // Start unified polling instead of separate polling
-                        this.updateAllMetrics();
+                        // Poll server to display the real results sent by MediaPipe
+                        this.pollResults();
                         // Sync video progress for UI updates
                         this.syncVideoWithAnalysis();
                     } else {
@@ -1625,25 +1338,6 @@
                     this.elements.startAnalysis.disabled = false;
                     this.elements.stopAnalysis.disabled = true;
                     this.updateStatus('stopped', 'Stopped');
-                    
-                    // Reset unified dashboard state
-                    this.unifiedState.session.isActive = false;
-                    this.unifiedState.metrics.dataSource = 'None';
-                    this.unifiedState.status.level = 'normal';
-                    this.unifiedState.status.message = 'Analysis stopped - Select a video to begin again';
-                    
-                    // Add stop event to alert history
-                    this.addAlertToHistory('normal', 'Video analysis stopped by user');
-                    
-                    // Stop dashboard detection (for compatibility)
-                    try {
-                        await fetch('/stop_detection', { method: 'POST' });
-                    } catch (error) {
-                        console.warn('Dashboard stop detection failed:', error);
-                    }
-                    
-                    // Update unified dashboard one final time
-                    this.updateUnifiedDashboard();
                     
                     // Stop frame processing
                     this.stopFrameProcessing();
@@ -1745,234 +1439,6 @@
                     }
                 } catch (error) {
                     console.error('Error polling results:', error);
-                }
-            }
-            
-            // Unified polling function that handles both video analysis and dashboard metrics
-            async updateAllMetrics() {
-                // Update video analysis results (existing functionality)
-                if (this.isAnalyzing) {
-                    await this.pollResults();
-                }
-                
-                // Update dashboard metrics with enhanced error handling
-                try {
-                    const data = await this.safeApiCall('/get_metrics');
-                    
-                    if (data && data.metrics) {
-                        // Update unified state
-                        this.unifiedState.metrics.perclos = data.metrics.perclos;
-                        this.unifiedState.metrics.blinkRate = data.metrics.blink_rate;
-                        this.unifiedState.metrics.eyeOpenness = data.metrics.eye_openness;
-                        this.unifiedState.metrics.alertLevel = data.alert_status?.level || 'Normal';
-                        this.unifiedState.metrics.dataSource = data.source || 'None';
-                        
-                        this.unifiedState.session.isActive = data.is_active;
-                        this.unifiedState.session.frameCount = data.frame_count;
-                        this.unifiedState.session.fps = data.fps;
-                        
-                        this.unifiedState.status.level = this.getStatusLevel(data.alert_status?.level);
-                        this.unifiedState.status.message = data.alert_status?.message || 'System ready';
-                        
-                        // Update unified dashboard UI
-                        this.updateUnifiedDashboard();
-                    }
-                } catch (error) {
-                    console.error('Error fetching dashboard metrics:', error);
-                }
-                
-                // Continue polling if any activity is happening
-                if (this.isAnalyzing || this.unifiedState.session.isActive) {
-                    setTimeout(() => this.updateAllMetrics(), 1000);
-                }
-            }
-            
-            // Update the unified dashboard UI elements
-            updateUnifiedDashboard() {
-                if (!this.unifiedElements.perclos) return; // Safety check
-                
-                const state = this.unifiedState;
-                
-                // Add loading state handling
-                const isLoading = state.session.isActive && state.metrics.dataSource === 'None';
-                
-                if (isLoading) {
-                    // Show loading indicators
-                    this.unifiedElements.perclos.textContent = '...';
-                    this.unifiedElements.blinkRate.textContent = '...';
-                    this.unifiedElements.eyeOpenness.textContent = '...';
-                    this.unifiedElements.alertLevel.textContent = 'Loading...';
-                    this.unifiedElements.dataSource.textContent = 'Initializing...';
-                } else {
-                    // Update metric values with smooth transitions
-                    this.animateMetricUpdate(this.unifiedElements.perclos, `${(state.metrics.perclos * 100).toFixed(2)}%`);
-                    this.animateMetricUpdate(this.unifiedElements.blinkRate, `${state.metrics.blinkRate.toFixed(1)}/min`);
-                    this.animateMetricUpdate(this.unifiedElements.eyeOpenness, `${(state.metrics.eyeOpenness * 100).toFixed(0)}%`);
-                    this.unifiedElements.alertLevel.textContent = state.metrics.alertLevel;
-                    this.unifiedElements.dataSource.textContent = state.metrics.dataSource;
-                }
-                
-                // Update metric colors based on values
-                this.updateMetricColors();
-                
-                // Update status
-                this.unifiedElements.status.textContent = state.status.message;
-                this.unifiedElements.status.className = `unified-status ${state.status.level}`;
-                
-                // Add alerts to history if needed
-                if (state.status.level !== 'normal' && state.status.message) {
-                    this.addAlertToHistory(state.status.level, state.status.message);
-                }
-            }
-            
-            // Update metric colors based on thresholds
-            updateMetricColors() {
-                const perclosValue = this.unifiedState.metrics.perclos;
-                const alertLevel = this.unifiedState.metrics.alertLevel.toLowerCase();
-                
-                // PERCLOS color coding
-                if (perclosValue < 0.15) {
-                    this.unifiedElements.perclos.className = 'metric-value green';
-                } else if (perclosValue < 0.4) {
-                    this.unifiedElements.perclos.className = 'metric-value orange';
-                } else {
-                    this.unifiedElements.perclos.className = 'metric-value red';
-                }
-                
-                // Alert level color coding
-                if (alertLevel === 'critical') {
-                    this.unifiedElements.alertLevel.className = 'metric-value red';
-                } else if (alertLevel === 'warning') {
-                    this.unifiedElements.alertLevel.className = 'metric-value orange';
-                } else {
-                    this.unifiedElements.alertLevel.className = 'metric-value green';
-                }
-                
-                // Data source color coding
-                if (this.unifiedState.metrics.dataSource === 'Video Analysis') {
-                    this.unifiedElements.dataSource.className = 'metric-value green';
-                } else {
-                    this.unifiedElements.dataSource.className = 'metric-value';
-                }
-            }
-            
-            // Convert alert level to status level for CSS classes
-            getStatusLevel(alertLevel) {
-                if (!alertLevel) return 'normal';
-                switch (alertLevel.toLowerCase()) {
-                    case 'critical': return 'alert';
-                    case 'warning': return 'warning';
-                    default: return 'normal';
-                }
-            }
-            
-            // Add alert to history
-            addAlertToHistory(level, message) {
-                // Prevent duplicate alerts
-                const lastAlert = this.unifiedState.alerts[this.unifiedState.alerts.length - 1];
-                if (lastAlert && lastAlert.message === message) return;
-                
-                const timestamp = new Date().toLocaleTimeString();
-                const alertItem = {
-                    timestamp,
-                    level,
-                    message,
-                    id: Date.now()
-                };
-                
-                this.unifiedState.alerts.push(alertItem);
-                
-                // Keep only last 10 alerts
-                if (this.unifiedState.alerts.length > 10) {
-                    this.unifiedState.alerts = this.unifiedState.alerts.slice(-10);
-                }
-                
-                // Update alert history UI
-                this.updateAlertHistoryUI();
-            }
-            
-            // Update alert history UI
-            updateAlertHistoryUI() {
-                if (!this.unifiedElements.alertHistory) return;
-                
-                const alerts = this.unifiedState.alerts;
-                if (alerts.length === 0) {
-                    this.unifiedElements.alertHistory.innerHTML = `
-                        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-                            No alerts yet. System monitoring for fatigue indicators...
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const alertsHtml = alerts.slice().reverse().map(alert => `
-                    <div class="alert-item ${alert.level}">
-                        <strong>${alert.timestamp}</strong> - ${alert.level.toUpperCase()}: ${alert.message}
-                    </div>
-                `).join('');
-                
-                this.unifiedElements.alertHistory.innerHTML = alertsHtml;
-            }
-            
-            // Animate metric updates for smooth transitions
-            animateMetricUpdate(element, newValue) {
-                if (!element) return;
-                
-                const currentValue = element.textContent;
-                if (currentValue === newValue) return;
-                
-                // Add fade effect
-                element.style.opacity = '0.6';
-                element.style.transition = 'opacity 0.2s ease';
-                
-                setTimeout(() => {
-                    element.textContent = newValue;
-                    element.style.opacity = '1';
-                }, 100);
-            }
-            
-            // Enhanced error handling for API calls
-            async safeApiCall(url, options = {}) {
-                const maxRetries = 3;
-                let lastError;
-                
-                for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                    try {
-                        const response = await fetch(url, options);
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                        }
-                        return await response.json();
-                    } catch (error) {
-                        lastError = error;
-                        if (attempt < maxRetries) {
-                            this.log(`API call failed (attempt ${attempt}/${maxRetries}): ${error.message}`, 'warning');
-                            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
-                        } else {
-                            this.log(`API call failed after ${maxRetries} attempts: ${error.message}`, 'error');
-                        }
-                    }
-                }
-                
-                throw lastError;
-            }
-            
-            // Visual consistency helper for button states
-            updateButtonStates() {
-                const isVideoSelected = this.selectedVideo !== null;
-                const isAnalyzing = this.isAnalyzing;
-                
-                // Update button visual states
-                this.elements.startAnalysis.disabled = !isVideoSelected || isAnalyzing;
-                this.elements.stopAnalysis.disabled = !isAnalyzing;
-                
-                // Update button appearance based on state
-                if (isAnalyzing) {
-                    this.elements.startAnalysis.style.opacity = '0.5';
-                    this.elements.stopAnalysis.style.opacity = '1';
-                } else {
-                    this.elements.startAnalysis.style.opacity = isVideoSelected ? '1' : '0.5';
-                    this.elements.stopAnalysis.style.opacity = '0.5';
                 }
             }
 
