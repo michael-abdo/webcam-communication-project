@@ -246,32 +246,7 @@ def get_videos():
         }
     }
     
-    # Create sample videos based on dataset type
-    if show_all or dataset_type == 'test_videos':
-        config = dataset_configs['test_videos']
-        test_files = [
-            ('test_face.mp4', 1920, 1080, 30.0, 15.2),
-            ('test_30fps.mp4', 1280, 720, 30.0, 10.5),
-            ('test_15fps.mp4', 1280, 720, 15.0, 8.3),
-            ('realistic_synthetic_face.mp4', 1920, 1080, 30.0, 12.7),
-            ('test_1280x720.mp4', 1280, 720, 30.0, 9.8)
-        ]
-        for i, (filename, width, height, fps, duration) in enumerate(test_files[:5]):
-            videos.append({
-                'filepath': f'/cognitive_overload/tests/test_videos/{filename}',
-                'filename': filename,
-                'size_bytes': int(duration * fps * width * height * 0.1),  # Estimate based on resolution
-                'duration_seconds': duration,
-                'fps': fps,
-                'width': width,
-                'height': height,
-                'total_frames': int(duration * fps),
-                'codec': 'h264',
-                'dataset_type': 'test_videos',
-                'subject_id': config['subjects'][i % len(config['subjects'])],
-                'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': 0.7 + (width * height / (1920 * 1080)) * 0.25
-            })
+    # Only include videos that actually exist in our deployment
     
     if show_all or dataset_type == 'live_faces':
         config = dataset_configs['live_faces']
@@ -299,72 +274,8 @@ def get_videos():
                 'quality_score': random.uniform(0.6, 0.85)
             })
     
-    if show_all or dataset_type == 'real_faces':
-        config = dataset_configs['real_faces']
-        # Use only synthetic realistic face videos (no duplicate Kaggle videos)
-        synthetic_files = [
-            ('synthetic_focused.mp4', 'office', 18.5),
-            ('synthetic_neutral.mp4', 'vehicle', 22.3),
-            ('synthetic_smile.mp4', 'classroom', 15.8),
-            ('synthetic_tired.mp4', 'lab', 25.2)
-        ]
-        
-        for i, (filename, scenario, duration) in enumerate(synthetic_files):
-            filepath = f'/cognitive_overload/validation/real_face_datasets/synthetic_realistic/{filename}'
-            
-            videos.append({
-                'filepath': filepath,
-                'filename': filename,
-                'size_bytes': int(duration * 30 * 1920 * 1080 * 0.1),
-                'duration_seconds': duration,
-                'fps': 30.0,
-                'width': 1920,
-                'height': 1080,
-                'total_frames': int(duration * 30),
-                'codec': 'h264',
-                'dataset_type': 'real_faces',
-                'subject_id': config['subjects'][i % len(config['subjects'])],
-                'scenario': scenario,
-                'quality_score': random.uniform(0.75, 0.95)
-            })
-    
-    if show_all or dataset_type == 'webcam_samples':
-        config = dataset_configs['webcam_samples']
-        for i in range(10):
-            videos.append({
-                'filepath': f'/data/webcam_samples/webcam_{i+1}.mp4',
-                'filename': f'webcam_{i+1}.mp4',
-                'size_bytes': random.randint(15, 60) * 1024 * 1024,
-                'duration_seconds': random.uniform(20, 80),
-                'fps': 30.0,
-                'width': 1280,
-                'height': 720,
-                'total_frames': random.randint(600, 2400),
-                'codec': 'h264',
-                'dataset_type': 'webcam_samples',
-                'subject_id': config['subjects'][i % len(config['subjects'])],
-                'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': random.uniform(0.55, 0.85)
-            })
-    
-    if show_all or dataset_type == 'processed_results':
-        config = dataset_configs['processed_results']
-        for i in range(6):
-            videos.append({
-                'filepath': f'/data/processed_results/result_{i+1}.mp4',
-                'filename': f'result_{i+1}.mp4',
-                'size_bytes': random.randint(25, 70) * 1024 * 1024,
-                'duration_seconds': random.uniform(15, 45),
-                'fps': 30.0,
-                'width': 1920,
-                'height': 1080,
-                'total_frames': random.randint(450, 1350),
-                'codec': 'h264',
-                'dataset_type': 'processed_results',
-                'subject_id': config['subjects'][i % len(config['subjects'])],
-                'scenario': config['scenarios'][i % len(config['scenarios'])],
-                'quality_score': random.uniform(0.75, 0.95)
-            })
+    # Skip webcam_samples and processed_results as these files don't exist
+    # Only live_faces videos with actual deployed files are available
     
     # Apply filters
     if subject_id != 'all':
