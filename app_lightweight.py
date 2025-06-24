@@ -271,16 +271,15 @@ def get_videos():
             })
     
     if dataset_type == 'all' or dataset_type == 'live_faces':
-        print(f"DEBUG: Executing live_faces section for dataset_type={dataset_type}")
         config = dataset_configs['live_faces']
-        # Use actual Kaggle selfie videos from directories 1-10
+        # Use actual Kaggle selfie videos from deployed directories only (1,4,9,10)
+        deployed_dirs = [1, 4, 9, 10]  # Only directories included in Heroku deployment
         live_face_files = []
-        for dir_num in range(1, 11):  # Directories 1-10
+        for dir_num in deployed_dirs:
             for video_num in [3, 4, 7, 8]:  # Each directory has these video numbers
                 live_face_files.append((f'files/{dir_num}/{video_num}.mp4', dir_num, video_num))
         
-        print(f"DEBUG: Generated {len(live_face_files)} live_face_files")
-        for i, (filepath, dir_num, video_num) in enumerate(live_face_files[:32]):  # Show more videos
+        for i, (filepath, dir_num, video_num) in enumerate(live_face_files):
             videos.append({
                 'filepath': f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{filepath}',
                 'filename': f'selfie_dir{dir_num}_video{video_num}.mp4',
@@ -296,12 +295,10 @@ def get_videos():
                 'scenario': config['scenarios'][i % len(config['scenarios'])],
                 'quality_score': random.uniform(0.6, 0.85)
             })
-        print(f"DEBUG: Added {len([v for v in videos if v['dataset_type'] == 'live_faces'])} live_faces videos to list")
     
     if dataset_type == 'all' or dataset_type == 'real_faces':
-        print(f"DEBUG: Executing real_faces section for dataset_type={dataset_type}")
         config = dataset_configs['real_faces']
-        # Use synthetic realistic face videos
+        # Use only synthetic realistic face videos (no duplicate Kaggle videos)
         synthetic_files = [
             ('synthetic_focused.mp4', 'office', 18.5),
             ('synthetic_neutral.mp4', 'vehicle', 22.3),
@@ -309,20 +306,8 @@ def get_videos():
             ('synthetic_tired.mp4', 'lab', 25.2)
         ]
         
-        # Add more Kaggle videos from other directories
-        for dir_num in range(9, 11):  # Directories 9-10
-            for video_num in [3, 4, 7, 8]:
-                synthetic_files.append((f'kaggle_{dir_num}_{video_num}.mp4', 'home', random.uniform(20, 60)))
-        
-        print(f"DEBUG: Generated {len(synthetic_files)} synthetic_files")
-        
-        for i, (filename, scenario, duration) in enumerate(synthetic_files[:12]):
-            if filename.startswith('synthetic_'):
-                filepath = f'/cognitive_overload/validation/real_face_datasets/synthetic_realistic/{filename}'
-            else:
-                dir_num = filename.split('_')[1]
-                video_num = filename.split('_')[2].replace('.mp4', '')
-                filepath = f'/cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/{dir_num}/{video_num}.mp4'
+        for i, (filename, scenario, duration) in enumerate(synthetic_files):
+            filepath = f'/cognitive_overload/validation/real_face_datasets/synthetic_realistic/{filename}'
             
             videos.append({
                 'filepath': filepath,
@@ -339,7 +324,6 @@ def get_videos():
                 'scenario': scenario,
                 'quality_score': random.uniform(0.75, 0.95)
             })
-        print(f"DEBUG: Added {len([v for v in videos if v['dataset_type'] == 'real_faces'])} real_faces videos to list")
     
     if dataset_type == 'all' or dataset_type == 'webcam_samples':
         config = dataset_configs['webcam_samples']
@@ -386,13 +370,6 @@ def get_videos():
         videos = [v for v in videos if v['scenario'] == scenario]
     videos = [v for v in videos if v['quality_score'] >= min_quality]
     
-    # Debug final counts
-    dataset_counts = {}
-    for video in videos:
-        dt = video['dataset_type']
-        dataset_counts[dt] = dataset_counts.get(dt, 0) + 1
-    print(f"DEBUG: Final video counts by dataset_type: {dataset_counts}")
-    print(f"DEBUG: Total videos returned: {len(videos)}")
     
     return jsonify(videos)
 
