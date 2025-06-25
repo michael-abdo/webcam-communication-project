@@ -863,11 +863,9 @@
             </div>
         </div>
 
-        <!-- Analysis Panel -->
-        <div class="panel analysis-panel">
-            <h3><span aria-hidden="true">⚡</span> Real-time Analysis</h3>
-            
-            <div class="controls">
+        <!-- Video Analysis Panel - Moved controls and content here -->
+        <div class="panel video-analysis-panel" style="grid-column: 1 / -1;">
+            <div class="controls" style="margin-bottom: 20px;">
                 <button id="startAnalysis" class="btn btn-primary" disabled aria-label="Start video analysis" tabindex="0">
                     <span aria-hidden="true">▶️</span> Start Analysis
                 </button>
@@ -888,63 +886,45 @@
                 <div id="progressFill" class="progress-fill" style="width: 0%"></div>
             </div>
 
-            <div class="analysis-display">
-                <div class="metrics-container" role="region" aria-label="Real-time analysis metrics">
-                    <h4 style="margin-bottom: 15px; color: var(--text-primary);">Current Metrics</h4>
-                    <div class="metric">
-                        <span class="metric-label">PERCLOS:</span>
-                        <span class="metric-value" id="currentPerclos" aria-label="Current PERCLOS value" aria-live="polite">--</span>
-                        <div class="sr-only">Percentage of eyelid closure over time. Higher values indicate drowsiness.</div>
+            <div class="analysis-display" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">
+                <div>
+                    <div class="video-player-container" style="margin-bottom: 20px;" role="region" aria-label="Video player">
+                        <video id="videoPlayer" style="width: 100%; max-height: 400px; background: #000; border-radius: 8px; display: none;" controls crossOrigin="anonymous" aria-label="Selected video for fatigue analysis" aria-describedby="videoDescription">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="videoDescription" class="sr-only">Video player for analyzing fatigue indicators in real-time. Use video controls to play, pause, or seek.</div>
+                        <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;" role="img" aria-label="Video placeholder">
+                            <span aria-hidden="true">🎥</span> Select a video to begin analysis
+                        </div>
+                        <div id="datasetInfo" style="display: none; margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid var(--primary-blue);">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">
+                                <strong>Dataset Source:</strong>
+                            </div>
+                            <div id="datasetDetails" style="font-size: 11px; color: var(--text-secondary);"></div>
+                        </div>
                     </div>
-                    <div class="metric">
-                        <span class="metric-label">Blink Rate:</span>
-                        <span class="metric-value" id="currentBlinkRate" aria-label="Current blink rate per minute" aria-live="polite">--</span>
-                        <div class="sr-only">Number of blinks per minute. Normal range is 15-20 blinks per minute.</div>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Fatigue Level:</span>
-                        <span class="metric-value" id="currentFatigueLevel" aria-label="Current fatigue level classification" aria-live="assertive">--</span>
-                        <div class="sr-only">Classification of fatigue state: Alert, Mild, Moderate, High, or Critical.</div>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Risk Score:</span>
-                        <span class="metric-value" id="currentRiskScore" aria-label="Current risk score" aria-live="polite">--</span>
-                        <div class="sr-only">Risk score from 0 to 1. Higher values indicate increased fatigue risk.</div>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-label">Processing Time:</span>
-                        <span class="metric-value" id="processingTime" aria-label="Frame processing time in milliseconds" aria-live="polite">--</span>
-                        <div class="sr-only">Time taken to process each video frame in milliseconds.</div>
+                    
+                    <div class="chart-container" id="chartContainer" style="display: none;">
+                        <canvas id="analysisChart" style="width: 100%; height: 200px;"></canvas>
                     </div>
                 </div>
                 
-                <!-- Real-time Debug Log -->
-                <div class="debug-log-container" style="margin-top: 20px;" role="region" aria-label="System debug log">
+                <!-- System Log moved to side -->
+                <div class="debug-log-container" role="region" aria-label="System debug log">
                     <h4 style="margin-bottom: 10px; color: var(--text-primary); font-size: 1rem;">System Log</h4>
-                    <div id="debugLog" style="background: #1f2937; color: #10b981; font-family: 'Courier New', monospace; font-size: 11px; height: 150px; overflow-y: auto; padding: 10px; border-radius: 5px; border: 1px solid #374151; white-space: pre-wrap;" role="log" aria-live="polite" aria-label="Real-time system log messages" aria-describedby="debugLogHelp"></div>
+                    <div id="debugLog" style="background: #1f2937; color: #10b981; font-family: 'Courier New', monospace; font-size: 11px; height: 250px; overflow-y: auto; padding: 10px; border-radius: 5px; border: 1px solid #374151; white-space: pre-wrap;" role="log" aria-live="polite" aria-label="Real-time system log messages" aria-describedby="debugLogHelp"></div>
                     <div id="debugLogHelp" class="sr-only">Shows real-time system messages about video loading, analysis progress, and errors.</div>
                     <button id="clearLog" style="margin-top: 5px; padding: 3px 8px; font-size: 10px; background: #374151; color: white; border: none; border-radius: 3px; cursor: pointer;" aria-label="Clear debug log messages">Clear Log</button>
                 </div>
-
-                <div class="video-player-container" style="margin-bottom: 20px;" role="region" aria-label="Video player">
-                    <video id="videoPlayer" style="width: 100%; max-height: 400px; background: #000; border-radius: 8px; display: none;" controls crossOrigin="anonymous" aria-label="Selected video for fatigue analysis" aria-describedby="videoDescription">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div id="videoDescription" class="sr-only">Video player for analyzing fatigue indicators in real-time. Use video controls to play, pause, or seek.</div>
-                    <div id="videoPlaceholder" style="width: 100%; height: 300px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;" role="img" aria-label="Video placeholder">
-                        <span aria-hidden="true">🎥</span> Select a video to begin analysis
-                    </div>
-                    <div id="datasetInfo" style="display: none; margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid var(--primary-blue);">
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">
-                            <strong>Dataset Source:</strong>
-                        </div>
-                        <div id="datasetDetails" style="font-size: 11px; color: var(--text-secondary);"></div>
-                    </div>
-                </div>
-                
-                <div class="chart-container" id="chartContainer" style="display: none;">
-                    <canvas id="analysisChart" style="width: 100%; height: 200px;"></canvas>
-                </div>
+            </div>
+            
+            <!-- Hidden elements for compatibility -->
+            <div style="display: none;">
+                <span id="currentPerclos">--</span>
+                <span id="currentBlinkRate">--</span>
+                <span id="currentFatigueLevel">--</span>
+                <span id="currentRiskScore">--</span>
+                <span id="processingTime">--</span>
             </div>
 
             <table class="results-table" id="resultsTable" style="display: none;" aria-label="Video analysis results">
@@ -1023,6 +1003,9 @@
                 this.loadVideos();
                 this.setupDebugLog();
                 this.initializeMediaPipe();
+                
+                // Start unified metrics polling
+                this.startUnifiedMetricsPolling();
             }
 
             initializeElements() {
@@ -1601,8 +1584,6 @@
                         
                         // Start real-time frame processing to generate actual data
                         this.startFrameProcessing();
-                        // Start unified polling instead of separate polling
-                        this.updateAllMetrics();
                         // Sync video progress for UI updates
                         this.syncVideoWithAnalysis();
                     } else {
@@ -1748,6 +1729,17 @@
                 }
             }
             
+            // Start the unified metrics polling
+            startUnifiedMetricsPolling() {
+                // Initial update
+                this.updateAllMetrics();
+                
+                // Set up continuous polling
+                setInterval(() => {
+                    this.updateAllMetrics();
+                }, 1000);
+            }
+            
             // Unified polling function that handles both video analysis and dashboard metrics
             async updateAllMetrics() {
                 // Update video analysis results (existing functionality)
@@ -1779,11 +1771,6 @@
                     }
                 } catch (error) {
                     console.error('Error fetching dashboard metrics:', error);
-                }
-                
-                // Continue polling if any activity is happening
-                if (this.isAnalyzing || this.unifiedState.session.isActive) {
-                    setTimeout(() => this.updateAllMetrics(), 1000);
                 }
             }
             
@@ -1981,13 +1968,32 @@
 
                 const latest = results[results.length - 1];
                 
-                // Update current metrics
-                this.metrics.currentPerclos.textContent = latest.perclos.toFixed(3);
-                this.metrics.currentBlinkRate.textContent = latest.blink_rate.toFixed(1);
-                this.metrics.currentFatigueLevel.textContent = latest.fatigue_level;
-                this.metrics.currentFatigueLevel.className = `metric-value fatigue-${latest.fatigue_level.toLowerCase()}`;
-                this.metrics.currentRiskScore.textContent = latest.risk_score.toFixed(3);
-                this.metrics.processingTime.textContent = `${latest.processing_time_ms.toFixed(1)} ms`;
+                // Update current metrics (hidden elements for compatibility)
+                this.analysisMetrics.currentPerclos.textContent = latest.perclos.toFixed(3);
+                this.analysisMetrics.currentBlinkRate.textContent = latest.blink_rate.toFixed(1);
+                this.analysisMetrics.currentFatigueLevel.textContent = latest.fatigue_level;
+                this.analysisMetrics.currentFatigueLevel.className = `metric-value fatigue-${latest.fatigue_level.toLowerCase()}`;
+                this.analysisMetrics.currentRiskScore.textContent = latest.risk_score.toFixed(3);
+                this.analysisMetrics.processingTime.textContent = `${latest.processing_time_ms.toFixed(1)} ms`;
+                
+                // Also update unified dashboard metrics directly for real-time display
+                if (this.unifiedElements.perclos) {
+                    this.unifiedState.metrics.perclos = latest.perclos;
+                    this.unifiedState.metrics.blinkRate = latest.blink_rate;
+                    this.unifiedState.metrics.alertLevel = latest.fatigue_level;
+                    
+                    // Map fatigue levels to eye openness (inverse of PERCLOS)
+                    this.unifiedState.metrics.eyeOpenness = 1.0 - latest.perclos;
+                    
+                    // Update the display immediately
+                    this.animateMetricUpdate(this.unifiedElements.perclos, `${(latest.perclos * 100).toFixed(2)}%`);
+                    this.animateMetricUpdate(this.unifiedElements.blinkRate, `${latest.blink_rate.toFixed(1)}/min`);
+                    this.animateMetricUpdate(this.unifiedElements.eyeOpenness, `${((1.0 - latest.perclos) * 100).toFixed(0)}%`);
+                    this.unifiedElements.alertLevel.textContent = latest.fatigue_level;
+                    
+                    // Update colors
+                    this.updateMetricColors();
+                }
 
                 // Update chart data
                 if (this.chartData) {
