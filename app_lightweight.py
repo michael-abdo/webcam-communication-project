@@ -428,14 +428,15 @@ def get_analysis_results():
 
 @app.route('/api/video/<path:video_path>')
 def serve_video(video_path):
-    """Serve actual video files from datasets."""
+    """Proxy video files with proper CORS headers for MediaPipe processing."""
     import os
     from pathlib import Path
-    from flask import make_response
+    from flask import make_response, Response
+    import requests
     
     print(f"serve_video called with path: {video_path}")
     
-    # Base directory for video files - use absolute path to ensure it works in Heroku
+    # Base directory for video files - use absolute path
     current_dir = Path(__file__).parent.absolute()
     
     # Security check - prevent directory traversal
@@ -452,23 +453,25 @@ def serve_video(video_path):
         try:
             # Use absolute path and as_attachment=False to ensure inline display
             abs_path = full_path.absolute()
-            print(f"Attempting to serve video file: {abs_path}")
+            print(f"Attempting to serve local video file: {abs_path}")
             response = make_response(send_file(abs_path, mimetype='video/mp4', as_attachment=False))
             # Add CORS headers for video element
             response.headers['Access-Control-Allow-Origin'] = '*'
             response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
             response.headers['Access-Control-Allow-Headers'] = 'Range'
+            response.headers['Accept-Ranges'] = 'bytes'
             return response
         except Exception as e:
             print(f"Error serving file {full_path}: {e}")
             import traceback
             traceback.print_exc()
     
-    # If we can't serve the actual file, return appropriate demo video with dataset info
-    dataset_info = {}
+    # If local file doesn't exist, proxy external video
+    print("Local file not found, attempting to proxy external video")
     
+    # Determine which external video to use based on path
     if 'selfies_videos_kaggle' in video_path:
-        # Use Intel IoT DevKit face detection videos - professionally produced for computer vision
+        # Use Intel IoT DevKit face detection videos
         intel_face_videos = [
             'https://github.com/intel-iot-devkit/sample-videos/raw/master/face-demographics-walking-and-pause.mp4',
             'https://github.com/intel-iot-devkit/sample-videos/raw/master/face-demographics-walking.mp4',
@@ -477,62 +480,90 @@ def serve_video(video_path):
             'https://github.com/intel-iot-devkit/sample-videos/raw/master/head-pose-face-detection-male.mp4'
         ]
         video_url = intel_face_videos[hash(video_path) % len(intel_face_videos)]
-        dataset_info = {
-            'dataset_source': 'Intel IoT DevKit Face Detection Samples',
-            'dataset_url': 'https://github.com/intel-iot-devkit/sample-videos',
-            'description': 'Professional face detection test videos for computer vision and fatigue analysis',
-            'license': 'Apache 2.0 License',
-            'note': 'High-quality face detection samples with multiple subjects and real-world scenarios',
-            'video_details': 'Videos include walking subjects, face demographics, and head pose variations'
-        }
     elif 'synthetic_tired' in video_path or 'tired' in video_path:
-        # Use head pose detection videos for synthetic tired scenarios
         video_url = 'https://github.com/intel-iot-devkit/sample-videos/raw/master/head-pose-face-detection-female.mp4'
-        dataset_info = {
-            'dataset_source': 'Intel IoT DevKit - Head Pose Detection',
-            'scenario': 'Fatigue simulation with head pose variations',
-            'license': 'Apache 2.0'
-        }
     elif 'synthetic_focused' in video_path or 'focused' in video_path:
-        # Use face demographics for synthetic focused scenarios  
         video_url = 'https://github.com/intel-iot-devkit/sample-videos/raw/master/face-demographics-walking.mp4'
-        dataset_info = {
-            'dataset_source': 'Intel IoT DevKit - Face Demographics',
-            'scenario': 'Alert subject with demographic analysis',
-            'license': 'Apache 2.0'
-        }
     elif 'test_face' in video_path:
-        # Use combined male/female for test scenarios
         video_url = 'https://github.com/intel-iot-devkit/sample-videos/raw/master/head-pose-face-detection-female-and-male.mp4'
-        dataset_info = {
-            'dataset_source': 'Intel IoT DevKit - Multi-Subject Test',
-            'scenario': 'Multiple subjects for comprehensive testing',
-            'license': 'Apache 2.0'
-        }
     else:
-        # Default to face demographics with pause for general cases
         video_url = 'https://github.com/intel-iot-devkit/sample-videos/raw/master/face-demographics-walking-and-pause.mp4'
-        dataset_info = {
-            'dataset_source': 'Intel IoT DevKit - General Face Detection',
-            'scenario': 'Walking subjects with pause moments',
-            'license': 'Apache 2.0'
+    
+    print(f"Proxying external video: {video_url}")
+    
+    try:
+        # Check if this is a range request
+        range_header = request.headers.get('Range')
+        headers = {}
+        
+        if range_header:
+            headers['Range'] = range_header
+            print(f"Range request detected: {range_header}")
+        
+        # Make request to external video with streaming
+        # Use a reasonable timeout and stream the response
+        external_response = requests.get(
+            video_url, 
+            headers=headers,
+            stream=True,
+            timeout=(5, None),  # 5 second connection timeout, no read timeout
+            allow_redirects=True
+        )
+        
+        # Check if request was successful
+        if external_response.status_code not in [200, 206]:
+            print(f"External video request failed with status: {external_response.status_code}")
+            abort(external_response.status_code)
+        
+        # Create a generator to stream the video content
+        def generate():
+            try:
+                # Stream in 64KB chunks to balance memory usage and performance
+                for chunk in external_response.iter_content(chunk_size=65536):
+                    if chunk:
+                        yield chunk
+            except Exception as e:
+                print(f"Error streaming video: {e}")
+            finally:
+                external_response.close()
+        
+        # Prepare response headers
+        response_headers = {
+            'Content-Type': external_response.headers.get('Content-Type', 'video/mp4'),
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Range',
+            'Accept-Ranges': 'bytes',
+            'Cache-Control': 'public, max-age=3600'  # Cache for 1 hour
         }
-    
-    response_data = {
-        'redirect_url': video_url,
-        'type': 'fallback',
-        'original_path': video_path
-    }
-    
-    # Add dataset info if available
-    if dataset_info:
-        response_data['dataset_info'] = dataset_info
-    
-    # Return JSON response with CORS headers
-    response = jsonify(response_data)
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
-    return response
+        
+        # Copy relevant headers from external response
+        for header in ['Content-Length', 'Content-Range', 'ETag', 'Last-Modified']:
+            if header in external_response.headers:
+                response_headers[header] = external_response.headers[header]
+        
+        # Create streaming response
+        response = Response(
+            generate(),
+            status=external_response.status_code,
+            headers=response_headers,
+            direct_passthrough=True
+        )
+        
+        print(f"Successfully proxying video with status: {external_response.status_code}")
+        return response
+        
+    except requests.exceptions.Timeout:
+        print("Timeout while fetching external video")
+        abort(504)  # Gateway Timeout
+    except requests.exceptions.ConnectionError:
+        print("Connection error while fetching external video")
+        abort(502)  # Bad Gateway
+    except Exception as e:
+        print(f"Error proxying video: {e}")
+        import traceback
+        traceback.print_exc()
+        abort(500)  # Internal Server Error
 
 # Dashboard integration endpoints
 @app.route('/get_metrics')
