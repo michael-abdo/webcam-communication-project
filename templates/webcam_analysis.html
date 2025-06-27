@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎥 Live Webcam Fatigue Analysis</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a1a; color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .main-content { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .video-section, .metrics-section { background: #2a2a2a; border-radius: 15px; padding: 25px; }
+        .video-container { position: relative; text-align: center; }
+        video, canvas { max-width: 100%; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        canvas { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+        .controls { text-align: center; margin: 20px 0; }
+        button { background: linear-gradient(45deg, #2196F3, #21CBF3); color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; margin: 0 10px; font-size: 16px; font-weight: 600; transition: all 0.3s ease; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3); }
+        button:disabled { background: #666; cursor: not-allowed; transform: none; box-shadow: none; }
+        .metric-card { background: #333; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .metric-value { font-size: 2.5em; font-weight: bold; margin: 10px 0; }
+        .metric-label { font-size: 0.9em; opacity: 0.8; }
+        .status { padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-weight: 600; }
+        .status-ready { background: rgba(33, 150, 243, 0.2); border: 2px solid #2196F3; }
+        .status-active { background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; }
+        .status-error { background: rgba(244, 67, 54, 0.2); border: 2px solid #F44336; }
+        .alert-normal { color: #4CAF50; }
+        .alert-warning { color: #FFC107; }
+        .alert-critical { color: #FF9800; }
+        .alert-emergency { color: #F44336; }
+        .performance-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 20px; }
+        .performance-stats > div { background: #333; padding: 10px; border-radius: 5px; text-align: center; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 Live Webcam Fatigue Analysis</h1>
+            <p>Real-time PERCLOS monitoring with MediaPipe face detection</p>
+        </div>
+        
+        <div id="status" class="status status-ready">Ready to start analysis - Click "Start Analysis" to begin</div>
+        
+        <div class="controls">
+            <button id="startBtn" onclick="startAnalysis()">🚀 Start Analysis</button>
+            <button id="stopBtn" onclick="stopAnalysis()" disabled>⏹️ Stop Analysis</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="video-section">
+                <h2>📹 Live Video Feed</h2>
+                <div class="video-container">
+                    <video id="input_video" width="640" height="480" autoplay muted playsinline></video>
+                    <canvas id="output_canvas" width="640" height="480"></canvas>
+                </div>
+            </div>
+            
+            <div class="metrics-section">
+                <h2>📊 Fatigue Metrics</h2>
+                
+                <div class="metric-card">
+                    <div class="metric-value" id="perclos">0.0%</div>
+                    <div class="metric-label">PERCLOS (Eye Closure)</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value alert-normal" id="fatigueLevel">ALERT</div>
+                    <div class="metric-label">Fatigue Level</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value" id="eyeOpenness">1.000</div>
+                    <div class="metric-label">Average Eye Openness</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value" id="blinkRate">0</div>
+                    <div class="metric-label">Blinks per Minute</div>
+                </div>
+                
+                <div class="performance-stats">
+                    <div><strong id="fps">0</strong><br>FPS</div>
+                    <div><strong id="faceDetected">No</strong><br>Face</div>
+                    <div><strong id="sessionTime">0:00</strong><br>Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let faceMesh;
+        let camera;
+        let isAnalyzing = false;
+        let sessionStartTime = null;
+        let frameCount = 0;
+        let lastFrameTime = performance.now();
+        
+        // Fatigue detection variables
+        let perclosHistory = [];
+        let blinkHistory = [];
+        let eyeOpennessSamples = [];
+        
+        // Eye landmark indices for MediaPipe Face Mesh
+        const LEFT_EYE_LANDMARKS = [362, 385, 387, 263, 373, 380];
+        const RIGHT_EYE_LANDMARKS = [33, 160, 158, 133, 153, 144];
+        
+        function updateStatus(message, className = 'status-ready') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + className;
+        }
+        
+        function calculateEyeAspectRatio(landmarks, eyePoints) {
+            // Calculate Eye Aspect Ratio (EAR) for fatigue detection
+            const points = eyePoints.map(idx => landmarks[idx]);
+            
+            // Vertical distances
+            const v1 = Math.sqrt(Math.pow(points[1].x - points[5].x, 2) + Math.pow(points[1].y - points[5].y, 2));
+            const v2 = Math.sqrt(Math.pow(points[2].x - points[4].x, 2) + Math.pow(points[2].y - points[4].y, 2));
+            
+            // Horizontal distance
+            const h = Math.sqrt(Math.pow(points[0].x - points[3].x, 2) + Math.pow(points[0].y - points[3].y, 2));
+            
+            // EAR calculation
+            return (v1 + v2) / (2.0 * h);
+        }
+        
+        function updateFatigueMetrics(leftEAR, rightEAR) {
+            const avgEAR = (leftEAR + rightEAR) / 2;
+            eyeOpennessSamples.push(avgEAR);
+            
+            // Keep only last 1800 samples (1 minute at 30fps)
+            if (eyeOpennessSamples.length > 1800) {
+                eyeOpennessSamples.shift();
+            }
+            
+            // Calculate PERCLOS (percentage of time eyes are 80% closed)
+            const eyeClosedThreshold = 0.2; // Threshold for "closed" eyes
+            const closedCount = eyeOpennessSamples.filter(ear => ear < eyeClosedThreshold).length;
+            const perclos = (closedCount / eyeOpennessSamples.length) * 100;
+            
+            // Determine fatigue level
+            let fatigueLevel, alertClass;
+            if (perclos < 15) {
+                fatigueLevel = 'ALERT';
+                alertClass = 'alert-normal';
+            } else if (perclos < 25) {
+                fatigueLevel = 'MILD';
+                alertClass = 'alert-warning';
+            } else if (perclos < 40) {
+                fatigueLevel = 'DROWSY';
+                alertClass = 'alert-critical';
+            } else {
+                fatigueLevel = 'CRITICAL';
+                alertClass = 'alert-emergency';
+            }
+            
+            // Update UI
+            document.getElementById('perclos').textContent = perclos.toFixed(1) + '%';
+            document.getElementById('eyeOpenness').textContent = avgEAR.toFixed(3);
+            
+            const fatigueLevelElement = document.getElementById('fatigueLevel');
+            fatigueLevelElement.textContent = fatigueLevel;
+            fatigueLevelElement.className = 'metric-value ' + alertClass;
+            
+            // Send results to server
+            sendAnalysisResult({
+                frame_number: frameCount,
+                timestamp: performance.now(),
+                perclos: perclos / 100, // Convert to 0-1 scale
+                fatigue_level: fatigueLevel,
+                risk_score: Math.min(0.95, perclos / 100),
+                eye_openness: avgEAR,
+                alert_level: alertClass.replace('alert-', '')
+            });
+        }
+        
+        async function sendAnalysisResult(data) {
+            try {
+                await fetch('/api/analysis-result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (error) {
+                console.warn('Failed to send analysis result:', error);
+            }
+        }
+        
+        function onResults(results) {
+            const canvasCtx = document.getElementById('output_canvas').getContext('2d');
+            const canvasElement = document.getElementById('output_canvas');
+            
+            // Clear canvas
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            
+            // Draw the video frame
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+            
+            if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+                const landmarks = results.multiFaceLandmarks[0];
+                
+                // Draw face mesh (minimal for performance)
+                drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
+                drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', radius: 1});
+                
+                // Calculate eye aspect ratios
+                const leftEAR = calculateEyeAspectRatio(landmarks, LEFT_EYE_LANDMARKS);
+                const rightEAR = calculateEyeAspectRatio(landmarks, RIGHT_EYE_LANDMARKS);
+                
+                // Update fatigue metrics
+                updateFatigueMetrics(leftEAR, rightEAR);
+                
+                document.getElementById('faceDetected').textContent = 'Yes';
+            } else {
+                document.getElementById('faceDetected').textContent = 'No';
+            }
+            
+            // Update FPS
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime - lastFrameTime >= 1000) {
+                const fps = Math.round(frameCount * 1000 / (currentTime - lastFrameTime));
+                document.getElementById('fps').textContent = fps;
+                frameCount = 0;
+                lastFrameTime = currentTime;
+            }
+            
+            // Update session time
+            if (sessionStartTime) {
+                const elapsed = Math.floor((currentTime - sessionStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('sessionTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            canvasCtx.restore();
+        }
+        
+        async function startAnalysis() {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            startBtn.disabled = true;
+            updateStatus('Initializing MediaPipe...', 'status-ready');
+            
+            try {
+                // Initialize MediaPipe Face Mesh
+                faceMesh = new FaceMesh({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+                });
+                
+                faceMesh.setOptions({
+                    maxNumFaces: 1,
+                    refineLandmarks: true,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+                
+                faceMesh.onResults(onResults);
+                
+                updateStatus('Requesting camera access...', 'status-ready');
+                
+                // Initialize camera
+                const videoElement = document.getElementById('input_video');
+                camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        if (isAnalyzing) {
+                            await faceMesh.send({image: videoElement});
+                        }
+                    },
+                    width: 640,
+                    height: 480
+                });
+                
+                await camera.start();
+                
+                isAnalyzing = true;
+                sessionStartTime = performance.now();
+                stopBtn.disabled = false;
+                
+                updateStatus('✅ Analysis active - PERCLOS monitoring in progress', 'status-active');
+                
+            } catch (error) {
+                console.error('Analysis start error:', error);
+                startBtn.disabled = false;
+                updateStatus('❌ Failed to start analysis: ' + error.message, 'status-error');
+            }
+        }
+        
+        function stopAnalysis() {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            isAnalyzing = false;
+            sessionStartTime = null;
+            
+            if (camera) {
+                camera.stop();
+                camera = null;
+            }
+            
+            if (faceMesh) {
+                faceMesh.close();
+                faceMesh = null;
+            }
+            
+            // Clear canvas
+            const canvasCtx = document.getElementById('output_canvas').getContext('2d');
+            canvasCtx.clearRect(0, 0, 640, 480);
+            
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            
+            updateStatus('Analysis stopped', 'status-ready');
+            
+            // Reset metrics
+            document.getElementById('perclos').textContent = '0.0%';
+            document.getElementById('fatigueLevel').textContent = 'ALERT';
+            document.getElementById('fatigueLevel').className = 'metric-value alert-normal';
+            document.getElementById('eyeOpenness').textContent = '1.000';
+            document.getElementById('fps').textContent = '0';
+            document.getElementById('faceDetected').textContent = 'No';
+            document.getElementById('sessionTime').textContent = '0:00';
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', stopAnalysis);
+    </script>
+</body>
+</html>

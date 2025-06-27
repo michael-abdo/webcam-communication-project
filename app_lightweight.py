@@ -87,148 +87,13 @@ def video_analysis():
 
 @app.route('/webcam-analysis')
 def webcam_analysis():
-    """Live webcam analysis interface - VALIDATION PHASE."""
+    """Live webcam analysis interface - PRODUCTION READY with MediaPipe."""
     system_state['requests_count'] += 1
     
     # Log access for debugging
     print(f"[{datetime.now().isoformat()}] Webcam analysis accessed - User-Agent: {request.headers.get('User-Agent')}")
     
-    # Step 1: Minimal validation HTML - just test camera access
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Webcam Analysis - Validation</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-        video { width: 100%; max-width: 640px; border: 2px solid #ddd; border-radius: 5px; }
-        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        .status { padding: 10px; border-radius: 5px; margin: 10px 0; }
-        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎥 Webcam Analysis - Validation Phase</h1>
-        <p>Testing camera access and basic functionality before full implementation.</p>
-        
-        <div id="status" class="status info">Ready to test camera access</div>
-        
-        <div>
-            <button id="startBtn" onclick="startCamera()">Start Camera</button>
-            <button id="stopBtn" onclick="stopCamera()" disabled>Stop Camera</button>
-        </div>
-        
-        <div style="margin-top: 20px;">
-            <video id="videoElement" autoplay playsinline muted></video>
-        </div>
-        
-        <div id="diagnostics" style="margin-top: 20px;">
-            <h3>Diagnostics</h3>
-            <p><strong>HTTPS:</strong> <span id="httpsStatus"></span></p>
-            <p><strong>getUserMedia Support:</strong> <span id="getUserMediaSupport"></span></p>
-            <p><strong>Browser:</strong> <span id="browserInfo"></span></p>
-        </div>
-    </div>
-
-    <script>
-        let stream = null;
-        
-        // Run diagnostics immediately
-        document.getElementById('httpsStatus').textContent = location.protocol === 'https:' ? '✅ Secure' : '❌ Insecure (camera will not work)';
-        document.getElementById('getUserMediaSupport').textContent = (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ? '✅ Supported' : '❌ Not supported';
-        document.getElementById('browserInfo').textContent = navigator.userAgent.split(' ').slice(-2).join(' ');
-        
-        function updateStatus(message, type = 'info') {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = 'status ' + type;
-        }
-        
-        async function startCamera() {
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const video = document.getElementById('videoElement');
-            
-            startBtn.disabled = true;
-            updateStatus('Requesting camera access...', 'info');
-            
-            try {
-                // Basic constraints for validation
-                const constraints = {
-                    video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: 'user'
-                    },
-                    audio: false
-                };
-                
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = stream;
-                
-                stopBtn.disabled = false;
-                updateStatus('✅ Camera access successful! Stream active.', 'success');
-                
-                // Log stream info for validation
-                const track = stream.getVideoTracks()[0];
-                const settings = track.getSettings();
-                console.log('Camera settings:', settings);
-                
-            } catch (error) {
-                console.error('Camera error:', error);
-                startBtn.disabled = false;
-                
-                let errorMessage = 'Camera access failed: ';
-                switch(error.name) {
-                    case 'NotAllowedError':
-                        errorMessage += 'Permission denied. Please allow camera access.';
-                        break;
-                    case 'NotFoundError':
-                        errorMessage += 'No camera found.';
-                        break;
-                    case 'NotReadableError':
-                        errorMessage += 'Camera is being used by another application.';
-                        break;
-                    case 'OverconstrainedError':
-                        errorMessage += 'Camera constraints cannot be satisfied.';
-                        break;
-                    default:
-                        errorMessage += error.message;
-                }
-                
-                updateStatus(errorMessage, 'error');
-            }
-        }
-        
-        function stopCamera() {
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const video = document.getElementById('videoElement');
-            
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-                video.srcObject = null;
-                
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-                updateStatus('Camera stopped', 'info');
-            }
-        }
-        
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', stopCamera);
-    </script>
-</body>
-</html>
-    """
+    return render_template('webcam_analysis.html')
 
 @app.route('/health')
 def health():
@@ -522,26 +387,37 @@ def receive_analysis_result():
         # Update shared metrics for dashboard integration
         current_metrics['perclos'] = data['perclos']
         current_metrics['is_active'] = True
-        current_metrics['source'] = 'video'
         current_metrics['last_update'] = datetime.now()
         current_metrics['frame_count'] = video_analysis_state['frame_count']
+        
+        # Detect source type based on data characteristics
+        # Webcam data typically has 'eye_openness' field, video analysis doesn't
+        if 'eye_openness' in data:
+            current_metrics['source'] = 'camera'
+            current_metrics['eye_openness'] = data['eye_openness']
+        else:
+            current_metrics['source'] = 'video'
+            # Calculate eye openness (inverse of PERCLOS) for video analysis
+            current_metrics['eye_openness'] = 1.0 - data['perclos']
         
         # Calculate blink rate from recent results (if available in data)
         if 'blink_rate' in data:
             current_metrics['blink_rate'] = data['blink_rate']
         
-        # Calculate eye openness (inverse of PERCLOS)
-        current_metrics['eye_openness'] = 1.0 - data['perclos']
-        
         # Update alert level based on fatigue level
         fatigue_level = data['fatigue_level']
-        if fatigue_level == 'CRITICAL':
+        
+        # Handle different fatigue level formats (webcam vs video)
+        if fatigue_level in ['CRITICAL', 'Critical']:
             current_metrics['alert_level'] = 'Critical'
             current_metrics['alert_message'] = 'High fatigue detected! Take a break immediately.'
-        elif fatigue_level == 'HIGH':
-            current_metrics['alert_level'] = 'Warning'
+        elif fatigue_level in ['DROWSY', 'HIGH', 'High']:
+            current_metrics['alert_level'] = 'Warning'  
             current_metrics['alert_message'] = 'Fatigue increasing. Consider taking a break.'
-        else:
+        elif fatigue_level in ['MILD', 'MODERATE', 'LOW']:
+            current_metrics['alert_level'] = 'Caution'
+            current_metrics['alert_message'] = 'Mild fatigue detected. Monitor alertness.'
+        else:  # ALERT, Normal, etc.
             current_metrics['alert_level'] = 'Normal'
             current_metrics['alert_message'] = 'Normal alertness levels.'
         
@@ -552,7 +428,13 @@ def receive_analysis_result():
                 time_diff = recent_results[-1]['timestamp'] - recent_results[0]['timestamp']
                 frame_diff = recent_results[-1]['frame_number'] - recent_results[0]['frame_number']
                 if time_diff > 0:
-                    current_metrics['fps'] = frame_diff / time_diff
+                    # Handle different timestamp formats: webcam uses milliseconds, video uses seconds
+                    if current_metrics['source'] == 'camera':
+                        # Webcam timestamps are in milliseconds (performance.now())
+                        current_metrics['fps'] = (frame_diff / time_diff) * 1000
+                    else:
+                        # Video timestamps are in seconds
+                        current_metrics['fps'] = frame_diff / time_diff
         
         print(f"Received real analysis result: Frame {data['frame_number']}, PERCLOS={data['perclos']:.3f}, Fatigue={data['fatigue_level']}")
         
