@@ -114,25 +114,24 @@ def api_info():
     return jsonify({
         'name': 'Fatigue Detection System',
         'version': system_state['version'],
-        'description': 'AI-powered fatigue detection with 100% validation accuracy',
+        'description': 'Client-side fatigue detection using MediaPipe with backend data storage',
         'features': {
-            'perclos_detection': True,
-            'blink_detection': True,
-            'real_time_alerts': True,
-            'threshold_calibration': True,
-            'performance_monitoring': True
+            'perclos_detection': 'Client-side only',
+            'blink_detection': 'Client-side only',
+            'real_time_alerts': 'Based on thresholds',
+            'threshold_calibration': False,
+            'performance_monitoring': 'Basic metrics only'
         },
         'performance': {
-            'accuracy': '100%',
-            'processing_speed': '81.8 fps',
-            'response_time': '<100ms'
+            'backend_processing': 'None - all processing is client-side',
+            'accuracy': 'Depends on MediaPipe face detection',
+            'response_time': 'Varies by client device'
         },
         'capabilities': [
-            'Real-time fatigue analysis',
-            'Progressive alert system',
-            'Customizable thresholds',
-            'Performance metrics',
-            'REST API integration'
+            'Client-side MediaPipe face detection',
+            'Threshold-based categorization',
+            'Data storage only',
+            'No server-side ML or CV'
         ]
     })
 
@@ -156,7 +155,8 @@ def api_metrics():
 
 @app.route('/api/analyze', methods=['POST'])
 def api_analyze():
-    """Analyze fatigue level from PERCLOS data."""
+    """Simple threshold categorization - NO real fatigue analysis.
+    All actual detection happens client-side with MediaPipe."""
     system_state['requests_count'] += 1
     
     try:
@@ -173,27 +173,28 @@ def api_analyze():
         if not 0 <= confidence <= 1:
             return jsonify({'error': 'Confidence must be between 0 and 1'}), 400
         
-        # Fatigue analysis logic (production-grade algorithm)
+        # Simple threshold-based categorization (NOT real fatigue analysis)
+        # All actual detection happens client-side with MediaPipe
         if perclos <= 0.15:
             fatigue_level = "ALERT"
             risk_score = perclos * 0.3
-            recommendations = ["Maintain current alertness", "Continue monitoring"]
+            recommendations = ["Low PERCLOS value received"]
         elif perclos <= 0.25:
             fatigue_level = "LOW"
             risk_score = 0.15 + (perclos - 0.15) * 2.0
-            recommendations = ["Monitor for increasing fatigue signs", "Ensure good lighting"]
+            recommendations = ["Slightly elevated PERCLOS"]
         elif perclos <= 0.40:
             fatigue_level = "MODERATE"
             risk_score = 0.35 + (perclos - 0.25) * 2.0
-            recommendations = ["Take a 10-minute break", "Check posture and screen distance"]
+            recommendations = ["Moderate PERCLOS value"]
         elif perclos <= 0.60:
             fatigue_level = "HIGH"
             risk_score = 0.65 + (perclos - 0.40) * 1.5
-            recommendations = ["Take immediate break", "Consider stopping current task", "Get fresh air"]
+            recommendations = ["High PERCLOS value"]
         else:
             fatigue_level = "CRITICAL"
             risk_score = min(0.95, 0.80 + (perclos - 0.60) * 0.375)
-            recommendations = ["Stop current activity immediately", "Rest for at least 15 minutes", "Seek safe environment"]
+            recommendations = ["Very high PERCLOS value"]
         
         # Adjust for confidence
         risk_score *= confidence
@@ -205,9 +206,8 @@ def api_analyze():
             'confidence': confidence,
             'recommendations': recommendations,
             'timestamp': datetime.now().isoformat(),
-            'processing_time_ms': 15,  # Simulated processing time
-            'algorithm_version': '2.0',
-            'accuracy': '100%'
+            'backend_note': 'No server-side processing - all detection is client-side',
+            'categorization_method': 'Simple threshold-based'
         })
         
     except Exception as e:
@@ -364,7 +364,7 @@ def stop_analysis():
 
 @app.route('/api/analysis-result', methods=['POST'])
 def receive_analysis_result():
-    """Receive real analysis results from client-side MediaPipe processing."""
+    """Store results from client-side processing. Backend does NO analysis."""
     try:
         data = request.get_json()
         if not data:

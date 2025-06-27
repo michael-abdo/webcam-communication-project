@@ -168,29 +168,12 @@
             fatigueLevelElement.textContent = fatigueLevel;
             fatigueLevelElement.className = 'metric-value ' + alertClass;
             
-            // Send results to server
-            sendAnalysisResult({
-                frame_number: frameCount,
-                timestamp: performance.now(),
-                perclos: perclos / 100, // Convert to 0-1 scale
-                fatigue_level: fatigueLevel,
-                risk_score: Math.min(0.95, perclos / 100),
-                eye_openness: avgEAR,
-                alert_level: alertClass.replace('alert-', '')
-            });
+            // Update local state only - no backend processing
+            // Backend has no real analytics, just stores values
         }
         
-        async function sendAnalysisResult(data) {
-            try {
-                await fetch('/api/analysis-result', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-            } catch (error) {
-                console.warn('Failed to send analysis result:', error);
-            }
-        }
+        // Removed sendAnalysisResult - backend has no real analytics
+        // All processing happens client-side with MediaPipe
         
         function onResults(results) {
             const canvasCtx = document.getElementById('output_canvas').getContext('2d');
