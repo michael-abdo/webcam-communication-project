@@ -65,8 +65,11 @@ def api_home():
             'GET /api/metrics - Current metrics',
             'POST /api/analyze - Analyze fatigue',
             'POST /api/analysis-result - Receive real-time analysis results',
+            'POST /api/text-analysis-result - Receive text analysis results',
             'GET /api/results - Get analysis results',
-            'GET /video-analysis - Video dataset analysis interface'
+            'GET /video-analysis - Video dataset analysis interface',
+            'GET /webcam-analysis - Live webcam fatigue detection',
+            'GET /text-analysis - Text cognitive load analysis'
         ]
     })
 
@@ -94,6 +97,33 @@ def webcam_analysis():
     print(f"[{datetime.now().isoformat()}] Webcam analysis accessed - User-Agent: {request.headers.get('User-Agent')}")
     
     return render_template('webcam_analysis.html')
+
+@app.route('/text-analysis')
+def text_analysis():
+    """Text analysis interface for NLP-based cognitive load detection."""
+    system_state['requests_count'] += 1
+    
+    # Rate limiting check (simple version - production would use Redis)
+    client_ip = request.remote_addr
+    current_time = time.time()
+    
+    # Initialize rate limit tracking if needed
+    if 'rate_limits' not in system_state:
+        system_state['rate_limits'] = {}
+    
+    # Check rate limit (10 requests per minute per IP)
+    if client_ip in system_state['rate_limits']:
+        requests_in_window = [t for t in system_state['rate_limits'][client_ip] 
+                            if current_time - t < 60]
+        if len(requests_in_window) >= 10:
+            return jsonify({'error': 'Rate limit exceeded. Please wait.'}), 429
+        system_state['rate_limits'][client_ip] = requests_in_window + [current_time]
+    else:
+        system_state['rate_limits'][client_ip] = [current_time]
+    
+    print(f"[{datetime.now().isoformat()}] Text analysis accessed - IP: {client_ip}")
+    
+    return render_template('text_analysis.html')
 
 @app.route('/health')
 def health():
@@ -444,6 +474,78 @@ def receive_analysis_result():
         print(f"Error receiving analysis result: {e}")
         return jsonify({'error': f'Failed to process result: {str(e)}'}), 500
 
+@app.route('/api/text-analysis-result', methods=['POST'])
+def receive_text_analysis_result():
+    """Store text analysis results from client-side NLP processing."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Validate required fields
+        required_fields = ['word_count', 'sentence_count', 'cognitive_load', 'timestamp']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Validate data types and ranges
+        if not isinstance(data['word_count'], (int, float)) or data['word_count'] < 0:
+            return jsonify({'error': 'Invalid word_count'}), 400
+        
+        if not isinstance(data['cognitive_load'], (int, float)) or not 0 <= data['cognitive_load'] <= 1:
+            return jsonify({'error': 'cognitive_load must be between 0 and 1'}), 400
+        
+        # Initialize text metrics in current_metrics if not exists
+        if 'text_metrics' not in current_metrics:
+            current_metrics['text_metrics'] = {
+                'word_count': 0,
+                'sentence_count': 0,
+                'avg_word_length': 0,
+                'reading_ease': 0,
+                'sentiment': 'neutral',
+                'typing_speed': 0,
+                'cognitive_load': 0,
+                'complexity': 'simple',
+                'last_update': datetime.now(),
+                'is_active': False
+            }
+        
+        # Update text metrics
+        current_metrics['text_metrics'].update({
+            'word_count': data['word_count'],
+            'sentence_count': data.get('sentence_count', 0),
+            'avg_word_length': data.get('avg_word_length', 0),
+            'reading_ease': data.get('reading_ease', 0),
+            'sentiment': data.get('sentiment', 'neutral'),
+            'typing_speed': data.get('typing_speed', 0),
+            'cognitive_load': data['cognitive_load'],
+            'complexity': data.get('complexity', 'simple'),
+            'pause_count': data.get('pause_count', 0),
+            'processing_time': data.get('processing_time', 0),
+            'last_update': datetime.now(),
+            'is_active': True
+        })
+        
+        # Update source to indicate text is active
+        if current_metrics['source'] == 'camera' or current_metrics['source'] == 'video':
+            current_metrics['source'] = 'combined'
+        else:
+            current_metrics['source'] = 'text'
+        
+        # Store text snippet if provided (first 100 chars for privacy)
+        if 'text_snippet' in data:
+            snippet = data['text_snippet'][:100] + '...' if len(data['text_snippet']) > 100 else data['text_snippet']
+            current_metrics['text_metrics']['snippet'] = snippet
+            current_metrics['text_metrics']['snippet_timestamp'] = datetime.now()
+        
+        print(f"Received text analysis: {data['word_count']} words, cognitive load: {data['cognitive_load']:.2f}")
+        
+        return jsonify({'status': 'received', 'source': current_metrics['source']}), 200
+        
+    except Exception as e:
+        print(f"Error receiving text analysis result: {e}")
+        return jsonify({'error': f'Failed to process text result: {str(e)}'}), 500
+
 @app.route('/api/results')
 def get_analysis_results():
     """Get current analysis results (now returns real results from MediaPipe).""" 
@@ -599,12 +701,21 @@ def get_metrics():
     # Calculate time since last update
     time_since_update = (datetime.now() - current_metrics['last_update']).total_seconds()
     
+    # Check text metrics timeout separately
+    if 'text_metrics' in current_metrics:
+        text_time_since_update = (datetime.now() - current_metrics['text_metrics']['last_update']).total_seconds()
+        if text_time_since_update > 5:
+            current_metrics['text_metrics']['is_active'] = False
+    
     # If no recent updates, mark as inactive
     if time_since_update > 5:  # 5 seconds without updates
         current_metrics['is_active'] = False
-        current_metrics['source'] = 'none'
+        if 'text_metrics' not in current_metrics or not current_metrics['text_metrics']['is_active']:
+            current_metrics['source'] = 'none'
+        else:
+            current_metrics['source'] = 'text'
     
-    return jsonify({
+    response = {
         'metrics': {
             'perclos': current_metrics['perclos'],
             'blink_rate': current_metrics['blink_rate'],
@@ -618,7 +729,27 @@ def get_metrics():
         'fps': round(current_metrics['fps'], 1),
         'is_active': current_metrics['is_active'],
         'source': current_metrics['source']
-    })
+    }
+    
+    # Add text metrics if available
+    if 'text_metrics' in current_metrics:
+        response['text_metrics'] = {
+            'word_count': current_metrics['text_metrics']['word_count'],
+            'cognitive_load': current_metrics['text_metrics']['cognitive_load'],
+            'sentiment': current_metrics['text_metrics']['sentiment'],
+            'typing_speed': current_metrics['text_metrics']['typing_speed'],
+            'complexity': current_metrics['text_metrics']['complexity'],
+            'is_active': current_metrics['text_metrics']['is_active']
+        }
+        
+        # Calculate combined fatigue score if both sources active
+        if current_metrics['source'] == 'combined':
+            video_fatigue = current_metrics['perclos']  # 0-1 scale
+            text_fatigue = current_metrics['text_metrics']['cognitive_load']  # 0-1 scale
+            combined_score = (0.6 * video_fatigue + 0.4 * text_fatigue)
+            response['combined_fatigue_score'] = round(combined_score, 3)
+    
+    return jsonify(response)
 
 @app.route('/start_detection', methods=['POST'])
 def start_detection():
