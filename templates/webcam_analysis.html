@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/compromise@14.10.0/builds/compromise.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a1a; color: #fff; }
@@ -35,6 +36,80 @@
         .alert-emergency { color: #F44336; }
         .performance-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 20px; }
         .performance-stats > div { background: #333; padding: 10px; border-radius: 5px; text-align: center; font-size: 0.9em; }
+        
+        /* Speech transcription styles */
+        .transcription-section { 
+            background: #2a2a2a; 
+            border-radius: 15px; 
+            padding: 20px; 
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+        .transcription-controls { 
+            display: flex; 
+            gap: 15px; 
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .transcription-area {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .transcription-area::-webkit-scrollbar { width: 8px; }
+        .transcription-area::-webkit-scrollbar-track { background: #1a1a1a; }
+        .transcription-area::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
+        .speech-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+            margin-left: 10px;
+        }
+        .speech-indicator.listening { background: #4CAF50; animation: pulse 1.5s infinite; }
+        .speech-indicator.speaking { background: #2196F3; animation: pulse 0.5s infinite; }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .language-select {
+            padding: 5px 10px;
+            background: #333;
+            border: 1px solid #666;
+            border-radius: 5px;
+            color: #fff;
+        }
+        .transcription-privacy {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid #FF9800;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .text-metrics-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .text-metrics-mini > div {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .text-metrics-mini .metric-label { font-size: 11px; opacity: 0.8; }
+        .text-metrics-mini .metric-value { font-size: 18px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -88,6 +163,54 @@
                     <div><strong id="faceDetected">No</strong><br>Face</div>
                     <div><strong id="sessionTime">0:00</strong><br>Time</div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Speech Transcription Section -->
+        <div class="transcription-section">
+            <h2>🎤 Live Speech Transcription</h2>
+            
+            <div class="transcription-controls">
+                <button id="transcriptionBtn" onclick="toggleTranscription()" disabled>
+                    <span id="transcriptionBtnText">🎤 Start Transcription</span>
+                </button>
+                <span class="speech-indicator" id="speechIndicator"></span>
+                
+                <select class="language-select" id="languageSelect">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                    <option value="de-DE">German</option>
+                    <option value="it-IT">Italian</option>
+                    <option value="pt-BR">Portuguese (Brazil)</option>
+                    <option value="zh-CN">Chinese (Mandarin)</option>
+                    <option value="ja-JP">Japanese</option>
+                    <option value="ko-KR">Korean</option>
+                </select>
+            </div>
+            
+            <div class="transcription-area" id="transcriptionArea">
+                <p id="transcriptionText">Transcription will appear here when you start speaking...</p>
+            </div>
+            
+            <div class="text-metrics-mini">
+                <div>
+                    <div class="metric-label">Words</div>
+                    <div class="metric-value" id="speechWordCount">0</div>
+                </div>
+                <div>
+                    <div class="metric-label">Sentiment</div>
+                    <div class="metric-value" id="speechSentiment">-</div>
+                </div>
+                <div>
+                    <div class="metric-label">Cognitive Load</div>
+                    <div class="metric-value" id="speechCognitiveLoad">0%</div>
+                </div>
+            </div>
+            
+            <div class="transcription-privacy">
+                🔒 Speech is processed locally in your browser. Audio is not recorded or sent to any server.
             </div>
         </div>
     </div>
@@ -168,12 +291,46 @@
             fatigueLevelElement.textContent = fatigueLevel;
             fatigueLevelElement.className = 'metric-value ' + alertClass;
             
-            // Update local state only - no backend processing
-            // Backend has no real analytics, just stores values
+            // Send video fatigue data to backend for combined metrics
+            sendVideoFatigueData({
+                perclos: perclos / 100, // Convert to 0-1 scale
+                fatigue_level: fatigueLevel,
+                risk_score: perclos / 100,
+                eye_openness: avgEAR,
+                timestamp: performance.now(),
+                frame_number: frameCount
+            });
         }
         
-        // Removed sendAnalysisResult - backend has no real analytics
-        // All processing happens client-side with MediaPipe
+        // Send video fatigue data to backend for combined metrics
+        async function sendVideoFatigueData(data) {
+            try {
+                const response = await fetch('/api/analysis-result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        frame_number: data.frame_number,
+                        timestamp: data.timestamp,
+                        perclos: data.perclos,
+                        fatigue_level: data.fatigue_level,
+                        risk_score: data.risk_score,
+                        eye_openness: data.eye_openness,
+                        blink_rate: blinkHistory.length, // Approximate blink rate
+                        source: 'camera'
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to send video fatigue data:', response.status);
+                } else {
+                    console.log('Video fatigue data sent for combined metrics');
+                }
+            } catch (error) {
+                console.error('Error sending video fatigue data:', error);
+            }
+        }
         
         function onResults(results) {
             const canvasCtx = document.getElementById('output_canvas').getContext('2d');
@@ -313,8 +470,276 @@
             document.getElementById('sessionTime').textContent = '0:00';
         }
         
+        // Speech Recognition Variables
+        let recognition = null;
+        let isTranscribing = false;
+        let transcriptionBuffer = [];
+        let speechMetricsTimeout = null;
+        
+        // Feature detection for Web Speech API
+        function checkSpeechRecognitionSupport() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                console.log('Web Speech API not supported');
+                document.getElementById('transcriptionBtn').disabled = true;
+                document.getElementById('transcriptionBtnText').textContent = '🚫 Speech Recognition Not Supported';
+                return false;
+            }
+            
+            // Enable transcription button
+            document.getElementById('transcriptionBtn').disabled = false;
+            console.log('Web Speech API supported');
+            return true;
+        }
+        
+        // Initialize speech recognition
+        function initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            // Configure recognition settings
+            recognition.continuous = true; // Keep listening
+            recognition.interimResults = true; // Show results while speaking
+            recognition.maxAlternatives = 1;
+            recognition.lang = document.getElementById('languageSelect').value;
+            
+            // Handle results
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                        // Add to buffer
+                        transcriptionBuffer.push(transcript);
+                        // Keep only last 1000 words
+                        const allWords = transcriptionBuffer.join(' ').split(' ');
+                        if (allWords.length > 1000) {
+                            const excess = allWords.length - 1000;
+                            transcriptionBuffer = [allWords.slice(excess).join(' ')];
+                        }
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                // Update display
+                const transcriptionText = document.getElementById('transcriptionText');
+                const fullText = transcriptionBuffer.join(' ') + interimTranscript;
+                transcriptionText.textContent = fullText || 'Listening...';
+                
+                // Scroll to bottom
+                const transcriptionArea = document.getElementById('transcriptionArea');
+                transcriptionArea.scrollTop = transcriptionArea.scrollHeight;
+                
+                // Analyze text with NLP
+                if (fullText.trim()) {
+                    analyzeSpeechText(fullText);
+                }
+            };
+            
+            // Handle speech detection
+            recognition.onspeechstart = () => {
+                document.getElementById('speechIndicator').classList.add('speaking');
+            };
+            
+            recognition.onspeechend = () => {
+                document.getElementById('speechIndicator').classList.remove('speaking');
+            };
+            
+            // Handle errors
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                if (event.error === 'not-allowed') {
+                    alert('Microphone access denied. Please allow microphone access to use speech transcription.');
+                    stopTranscription();
+                } else if (event.error === 'no-speech') {
+                    // Restart recognition if no speech detected
+                    if (isTranscribing) {
+                        recognition.start();
+                    }
+                }
+            };
+            
+            // Handle end
+            recognition.onend = () => {
+                if (isTranscribing) {
+                    // Restart if still transcribing
+                    recognition.start();
+                }
+            };
+        }
+        
+        // Analyze transcribed text with NLP
+        function analyzeSpeechText(text) {
+            clearTimeout(speechMetricsTimeout);
+            speechMetricsTimeout = setTimeout(() => {
+                try {
+                    // Use compromise.js for analysis
+                    const doc = nlp(text);
+                    const words = doc.terms().out('array');
+                    const wordCount = words.length;
+                    
+                    // Simple sentiment analysis
+                    const positiveWords = ['good', 'great', 'excellent', 'happy', 'wonderful', 'amazing'];
+                    const negativeWords = ['bad', 'terrible', 'awful', 'sad', 'frustrated', 'difficult'];
+                    
+                    let sentiment = 'Neutral';
+                    let sentimentScore = 0.5;
+                    const lowerText = text.toLowerCase();
+                    
+                    let positiveCount = 0;
+                    let negativeCount = 0;
+                    
+                    positiveWords.forEach(word => {
+                        if (lowerText.includes(word)) positiveCount++;
+                    });
+                    
+                    negativeWords.forEach(word => {
+                        if (lowerText.includes(word)) negativeCount++;
+                    });
+                    
+                    if (positiveCount > negativeCount) {
+                        sentiment = 'Positive';
+                        sentimentScore = Math.min(1, 0.5 + (positiveCount * 0.1));
+                    } else if (negativeCount > positiveCount) {
+                        sentiment = 'Negative';
+                        sentimentScore = Math.max(0, 0.5 - (negativeCount * 0.1));
+                    }
+                    
+                    // Calculate cognitive load based on speech patterns
+                    const sentences = doc.sentences().out('array');
+                    const avgWordsPerSentence = sentences.length > 0 ? wordCount / sentences.length : 0;
+                    
+                    // Cognitive load factors
+                    const complexityFactor = Math.min(1, avgWordsPerSentence / 20); // Longer sentences = higher load
+                    const speedFactor = 0.5; // Neutral for speech (no typing speed)
+                    const sentimentFactor = 1 - sentimentScore; // Negative sentiment = higher load
+                    
+                    const cognitiveLoad = (complexityFactor * 0.4 + speedFactor * 0.3 + sentimentFactor * 0.3);
+                    
+                    // Update UI
+                    document.getElementById('speechWordCount').textContent = wordCount;
+                    document.getElementById('speechSentiment').textContent = sentiment;
+                    document.getElementById('speechCognitiveLoad').textContent = Math.round(cognitiveLoad * 100) + '%';
+                    
+                    // Update cognitive load color
+                    const cogLoadElement = document.getElementById('speechCognitiveLoad');
+                    cogLoadElement.style.color = cognitiveLoad < 0.3 ? '#4CAF50' : 
+                                                cognitiveLoad < 0.6 ? '#FFC107' : 
+                                                cognitiveLoad < 0.8 ? '#FF9800' : '#F44336';
+                    
+                    // Send speech analysis to backend
+                    sendSpeechAnalysisResults({
+                        word_count: wordCount,
+                        sentence_count: sentences.length,
+                        avg_words_per_sentence: avgWordsPerSentence,
+                        sentiment: sentiment,
+                        sentiment_score: sentimentScore,
+                        cognitive_load: cognitiveLoad,
+                        complexity: avgWordsPerSentence > 15 ? 'complex' : avgWordsPerSentence > 10 ? 'moderate' : 'simple',
+                        timestamp: Date.now(),
+                        text_snippet: text.substring(0, 200) // First 200 chars for context
+                    });
+                    
+                } catch (error) {
+                    console.error('Error analyzing speech text:', error);
+                }
+            }, 500); // Debounce for 500ms
+        }
+        
+        // Send speech analysis results to backend
+        async function sendSpeechAnalysisResults(data) {
+            try {
+                const response = await fetch('/api/text-analysis-result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...data,
+                        source: 'speech', // Mark as speech source
+                        typing_speed: 0 // No typing speed for speech
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to send speech analysis:', response.status);
+                } else {
+                    const result = await response.json();
+                    console.log('Speech analysis sent successfully, source:', result.source);
+                }
+            } catch (error) {
+                console.error('Error sending speech analysis:', error);
+            }
+        }
+        
+        // Toggle transcription
+        function toggleTranscription() {
+            if (!isTranscribing) {
+                startTranscription();
+            } else {
+                stopTranscription();
+            }
+        }
+        
+        // Start transcription
+        async function startTranscription() {
+            try {
+                // Request microphone permission
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                if (!recognition) {
+                    initializeSpeechRecognition();
+                }
+                
+                // Update language if changed
+                recognition.lang = document.getElementById('languageSelect').value;
+                
+                // Start recognition
+                recognition.start();
+                isTranscribing = true;
+                
+                // Update UI
+                document.getElementById('transcriptionBtnText').textContent = '⏹️ Stop Transcription';
+                document.getElementById('speechIndicator').classList.add('listening');
+                document.getElementById('transcriptionText').textContent = 'Listening...';
+                
+                console.log('Started speech transcription');
+                
+            } catch (error) {
+                console.error('Error starting transcription:', error);
+                alert('Could not access microphone. Please check your permissions.');
+            }
+        }
+        
+        // Stop transcription
+        function stopTranscription() {
+            if (recognition) {
+                recognition.stop();
+            }
+            isTranscribing = false;
+            
+            // Update UI
+            document.getElementById('transcriptionBtnText').textContent = '🎤 Start Transcription';
+            document.getElementById('speechIndicator').classList.remove('listening', 'speaking');
+            
+            console.log('Stopped speech transcription');
+        }
+        
+        // Check speech recognition support on load
+        window.addEventListener('load', () => {
+            checkSpeechRecognitionSupport();
+        });
+        
         // Cleanup on page unload
-        window.addEventListener('beforeunload', stopAnalysis);
+        window.addEventListener('beforeunload', () => {
+            stopAnalysis();
+            stopTranscription();
+        });
     </script>
 </body>
 </html>
