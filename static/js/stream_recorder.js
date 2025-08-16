@@ -17,7 +17,7 @@ let durationInterval = null;
 
 // Configuration
 const CHUNK_DURATION_MS = 5000; // 5 seconds
-const MIME_TYPE = 'video/webm;codecs=vp8,opus';
+const MIME_TYPE = 'video/webm';
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', async () => {
@@ -84,10 +84,11 @@ async function startRecording() {
             return;
         }
         
-        // Create MediaRecorder
+        // Create MediaRecorder with optimized settings
         mediaRecorder = new MediaRecorder(mediaStream, {
             mimeType: MIME_TYPE,
-            videoBitsPerSecond: 2500000 // 2.5 Mbps
+            videoBitsPerSecond: 1000000, // 1 Mbps - more stable for chunks
+            audioBitsPerSecond: 128000   // 128 kbps audio
         });
         
         // Handle data available event
@@ -102,11 +103,8 @@ async function startRecording() {
             showError('Recording error: ' + event.error);
         };
         
-        // Start recording with chunking
-        mediaRecorder.start();
-        
-        // Set up chunking timer
-        setTimeout(requestChunk, CHUNK_DURATION_MS);
+        // Start recording with chunking - pass timeslice to ensure data events
+        mediaRecorder.start(CHUNK_DURATION_MS);
         
         // Update UI
         isRecording = true;
@@ -129,14 +127,10 @@ async function startRecording() {
 }
 
 /**
- * Request data chunk from MediaRecorder
+ * Request data chunk from MediaRecorder (no longer needed with timeslice)
  */
 function requestChunk() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.requestData();
-        // Schedule next chunk
-        setTimeout(requestChunk, CHUNK_DURATION_MS);
-    }
+    // This function is no longer used - chunks are generated automatically via timeslice
 }
 
 /**
