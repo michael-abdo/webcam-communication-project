@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 # AWS Configuration
 AWS_PROFILE = 'zenex'
 AWS_REGION = 'us-west-2'
-S3_BUCKET = 'webcam-streaming'
+S3_BUCKET = 'xendoex-webcam-streaming-2025'
 
 # Initialize S3 client with specific profile
 def get_s3_client():
