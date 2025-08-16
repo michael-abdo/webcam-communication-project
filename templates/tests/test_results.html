@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results - Fatigue Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 1.125rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+        
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .test-icon {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .video-icon {
+            background: linear-gradient(135deg, #dc2626 0%, #7c2d12 100%);
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 500;
+            color: #6b7280;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-active {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .answers-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title .icon {
+            margin-right: 0.5rem;
+        }
+        
+        .answer-item {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .answer-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .answer-text {
+            color: #4b5563;
+            margin-bottom: 0.75rem;
+        }
+        
+        .answer-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .events-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .events-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .events-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        
+        .event-item {
+            position: relative;
+            padding: 1rem 0;
+            margin-left: 1rem;
+        }
+        
+        .event-marker {
+            position: absolute;
+            left: -1.75rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+        
+        .event-content {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .event-type {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .event-details {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .video-chunks {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .chunks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .chunk-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .chunk-number {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .chunk-time {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .chunk-download {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .chunk-download:hover {
+            opacity: 0.9;
+        }
+        
+        .back-button {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            transition: opacity 0.2s;
+        }
+        
+        .back-button:hover {
+            opacity: 0.9;
+        }
+        
+        .export-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .export-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .export-btn:hover {
+            background: #f9fafb;
+            border-color: #2563eb;
+        }
+        
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chunks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Test Results</h1>
+        <div class="subtitle" id="testTitle">Loading test results...</div>
+    </div>
+    
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='/tests'">← Back to Tests</button>
+        
+        <div class="loading" id="loadingDiv">
+            Loading test results and video data...
+        </div>
+        
+        <div class="error" id="errorDiv" style="display: none;"></div>
+        
+        <div id="resultsContent" style="display: none;">
+            <!-- Test & Video Overview -->
+            <div class="results-grid">
+                <div class="results-card">
+                    <div class="card-header">
+                        <div class="card-icon test-icon">📝</div>
+                        <div class="card-title">Test Performance</div>
+                    </div>
+                    <div id="testStats">
+                        <!-- Test statistics will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="results-card">
+                    <div class="card-header">
+                        <div class="card-icon video-icon">🎥</div>
+                        <div class="card-title">Video Recording</div>
+                    </div>
+                    <div id="videoStats">
+                        <!-- Video statistics will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Section -->
+            <div class="export-section">
+                <div class="section-title">
+                    <span class="icon">📊</span>
+                    Export Data
+                </div>
+                <p style="color: #6b7280; margin-bottom: 1rem;">Download your test results and correlated data for analysis.</p>
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="ResultsViewer.exportJSON()">📄 Export as JSON</button>
+                    <button class="export-btn" onclick="ResultsViewer.exportCSV()">📈 Export as CSV</button>
+                    <button class="export-btn" onclick="ResultsViewer.exportEvents()">⏱️ Export Events Timeline</button>
+                </div>
+            </div>
+            
+            <!-- Answers Section -->
+            <div class="answers-section">
+                <div class="section-title">
+                    <span class="icon">💬</span>
+                    Detailed Answers
+                </div>
+                <div id="answersContainer">
+                    <!-- Answers will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Events Timeline -->
+            <div class="events-section">
+                <div class="section-title">
+                    <span class="icon">⏱️</span>
+                    Event Timeline
+                </div>
+                <div class="events-timeline" id="eventsTimeline">
+                    <!-- Events timeline will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Video Chunks -->
+            <div class="video-chunks">
+                <div class="section-title">
+                    <span class="icon">🎬</span>
+                    Video Segments
+                </div>
+                <div class="chunks-grid" id="videoChunks">
+                    <!-- Video chunks will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const ResultsViewer = {
+            sessionId: null,
+            videoSessionId: null,
+            testResults: null,
+            events: null,
+            videoChunks: null,
+            
+            async init() {
+                // Get session and video IDs from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                this.sessionId = urlParams.get('session');
+                this.videoSessionId = urlParams.get('video');
+                
+                if (!this.sessionId) {
+                    this.showError('No session ID provided in URL parameters');
+                    return;
+                }
+                
+                try {
+                    // Load test results
+                    await this.loadTestResults();
+                    
+                    // Load events if available
+                    if (this.sessionId) {
+                        await this.loadEvents();
+                    }
+                    
+                    // Load video chunks if video session exists
+                    if (this.videoSessionId) {
+                        await this.loadVideoChunks();
+                    }
+                    
+                    // Render all data
+                    this.renderResults();
+                    
+                } catch (error) {
+                    console.error('Error loading results:', error);
+                    this.showError('Failed to load test results: ' + error.message);
+                }
+            },
+            
+            async loadTestResults() {
+                const response = await fetch(`/api/tests/session/${this.sessionId}/results`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    this.testResults = data.results;
+                    console.log('Test results loaded:', this.testResults);
+                } else {
+                    throw new Error(data.message || 'Failed to load test results');
+                }
+            },
+            
+            async loadEvents() {
+                try {
+                    const response = await fetch(`/api/tests/session/${this.sessionId}/events`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.events = data;
+                        console.log('Events loaded:', this.events);
+                    }
+                } catch (error) {
+                    console.warn('Failed to load events:', error);
+                }
+            },
+            
+            async loadVideoChunks() {
+                try {
+                    const response = await fetch(`/api/video/session/${this.videoSessionId}/chunks`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.videoChunks = data;
+                        console.log('Video chunks loaded:', this.videoChunks);
+                    }
+                } catch (error) {
+                    console.warn('Failed to load video chunks:', error);
+                }
+            },
+            
+            renderResults() {
+                // Hide loading, show content
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('resultsContent').style.display = 'block';
+                
+                // Update header
+                document.getElementById('testTitle').textContent = 
+                    `${this.testResults.test_title} - ${this.formatDate(this.testResults.start_time)}`;
+                
+                // Render test statistics
+                this.renderTestStats();
+                
+                // Render video statistics
+                this.renderVideoStats();
+                
+                // Render answers
+                this.renderAnswers();
+                
+                // Render events timeline
+                this.renderEvents();
+                
+                // Render video chunks
+                this.renderVideoChunks();
+            },
+            
+            renderTestStats() {
+                const container = document.getElementById('testStats');
+                const duration = Math.floor(this.testResults.duration_seconds / 60);
+                
+                container.innerHTML = `
+                    <div class="stat-item">
+                        <span class="stat-label">Status</span>
+                        <span class="status-badge ${this.testResults.status === 'completed' ? 'status-completed' : 'status-active'}">
+                            ${this.testResults.status.charAt(0).toUpperCase() + this.testResults.status.slice(1)}
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Questions Answered</span>
+                        <span class="stat-value">${this.testResults.questions_answered} / ${this.testResults.total_questions}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Duration</span>
+                        <span class="stat-value">${duration} minutes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Start Time</span>
+                        <span class="stat-value">${this.formatTime(this.testResults.start_time)}</span>
+                    </div>
+                    ${this.testResults.end_time ? `
+                    <div class="stat-item">
+                        <span class="stat-label">End Time</span>
+                        <span class="stat-value">${this.formatTime(this.testResults.end_time)}</span>
+                    </div>
+                    ` : ''}
+                `;
+            },
+            
+            renderVideoStats() {
+                const container = document.getElementById('videoStats');
+                
+                if (this.testResults.video_session) {
+                    const videoSession = this.testResults.video_session;
+                    container.innerHTML = `
+                        <div class="stat-item">
+                            <span class="stat-label">Video Recorded</span>
+                            <span class="stat-value">✅ Yes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Video Chunks</span>
+                            <span class="stat-value">${videoSession.total_chunks || 0}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Events Logged</span>
+                            <span class="stat-value">${this.testResults.video_events_count || 0}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Session ID</span>
+                            <span class="stat-value" style="font-family: monospace; font-size: 0.875rem;">${videoSession.video_session_id}</span>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="stat-item">
+                            <span class="stat-label">Video Recorded</span>
+                            <span class="stat-value">❌ No</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Note</span>
+                            <span class="stat-value">This test was taken without video recording</span>
+                        </div>
+                    `;
+                }
+            },
+            
+            renderAnswers() {
+                const container = document.getElementById('answersContainer');
+                
+                if (!this.testResults.answers || this.testResults.answers.length === 0) {
+                    container.innerHTML = '<p style="color: #6b7280;">No answers recorded</p>';
+                    return;
+                }
+                
+                container.innerHTML = this.testResults.answers.map((answer, index) => `
+                    <div class="answer-item">
+                        <div class="question-text">Question ${index + 1}</div>
+                        <div class="answer-text"><strong>Answer:</strong> ${this.formatAnswer(answer.answer)}</div>
+                        <div class="answer-meta">
+                            <span>⏱️ ${answer.time_taken ? Math.round(answer.time_taken) + 's' : 'No time recorded'}</span>
+                            <span>🕐 ${this.formatTime(answer.timestamp)}</span>
+                            ${answer.video_session_id ? '<span>🎥 Video linked</span>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            renderEvents() {
+                const container = document.getElementById('eventsTimeline');
+                
+                if (!this.events || (!this.events.video_events?.length && !this.events.answer_events?.length)) {
+                    container.innerHTML = '<p style="color: #6b7280;">No events recorded</p>';
+                    return;
+                }
+                
+                // Combine and sort all events
+                const allEvents = [
+                    ...(this.events.video_events || []),
+                    ...(this.events.answer_events || [])
+                ].sort((a, b) => a.timestamp - b.timestamp);
+                
+                container.innerHTML = allEvents.map(event => `
+                    <div class="event-item">
+                        <div class="event-marker"></div>
+                        <div class="event-content">
+                            <div class="event-type">${this.formatEventType(event.type)}</div>
+                            <div class="event-details">
+                                ${this.formatEventDetails(event)}
+                                <br><small>⏱️ ${this.formatRelativeTime(event.relative_time_ms)}</small>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            renderVideoChunks() {
+                const container = document.getElementById('videoChunks');
+                
+                if (!this.videoChunks || !this.videoChunks.chunks?.length) {
+                    container.innerHTML = '<p style="color: #6b7280;">No video chunks available</p>';
+                    return;
+                }
+                
+                container.innerHTML = this.videoChunks.chunks.map(chunk => `
+                    <div class="chunk-item">
+                        <div class="chunk-number">Chunk ${chunk.chunk_number + 1}</div>
+                        <div class="chunk-time">${this.formatRelativeTime(chunk.relative_start_ms)} - ${this.formatRelativeTime(chunk.relative_start_ms + chunk.chunk_duration_ms)}</div>
+                        <button class="chunk-download" onclick="ResultsViewer.downloadChunk('${chunk.s3_key}')">
+                            Download
+                        </button>
+                    </div>
+                `).join('');
+            },
+            
+            // Export functions
+            exportJSON() {
+                const data = {
+                    test_results: this.testResults,
+                    events: this.events,
+                    video_chunks: this.videoChunks,
+                    exported_at: new Date().toISOString()
+                };
+                
+                this.downloadFile(
+                    JSON.stringify(data, null, 2),
+                    `test-results-${this.sessionId}.json`,
+                    'application/json'
+                );
+            },
+            
+            exportCSV() {
+                if (!this.testResults.answers) return;
+                
+                const headers = ['Question', 'Answer', 'Time Taken (s)', 'Timestamp', 'Video Linked'];
+                const rows = this.testResults.answers.map((answer, index) => [
+                    `Question ${index + 1}`,
+                    `"${this.formatAnswer(answer.answer)}"`,
+                    answer.time_taken || '',
+                    answer.timestamp,
+                    answer.video_session_id ? 'Yes' : 'No'
+                ]);
+                
+                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+                this.downloadFile(csv, `test-answers-${this.sessionId}.csv`, 'text/csv');
+            },
+            
+            exportEvents() {
+                if (!this.events) return;
+                
+                const allEvents = [
+                    ...(this.events.video_events || []),
+                    ...(this.events.answer_events || [])
+                ];
+                
+                const headers = ['Timestamp', 'Relative Time (ms)', 'Event Type', 'Details'];
+                const rows = allEvents.map(event => [
+                    new Date(event.timestamp).toISOString(),
+                    event.relative_time_ms,
+                    event.type,
+                    `"${this.formatEventDetails(event)}"`
+                ]);
+                
+                const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+                this.downloadFile(csv, `test-events-${this.sessionId}.csv`, 'text/csv');
+            },
+            
+            downloadChunk(s3Key) {
+                // This would need to be implemented with S3 download URLs
+                alert(`Download functionality for video chunks needs S3 presigned download URLs.\nS3 Key: ${s3Key}`);
+            },
+            
+            // Utility functions
+            downloadFile(content, filename, mimeType) {
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            },
+            
+            formatAnswer(answer) {
+                if (typeof answer === 'string') return answer;
+                if (typeof answer === 'number') return answer.toString();
+                if (typeof answer === 'boolean') return answer ? 'True' : 'False';
+                return JSON.stringify(answer);
+            },
+            
+            formatEventType(type) {
+                return type.split('_').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            },
+            
+            formatEventDetails(event) {
+                if (event.type === 'answer_submitted') {
+                    return `Question ${event.question_index + 1} answered`;
+                } else if (event.data) {
+                    return Object.entries(event.data).map(([key, value]) => 
+                        `${key}: ${value}`
+                    ).join(', ');
+                }
+                return 'Event details not available';
+            },
+            
+            formatDate(dateStr) {
+                return new Date(dateStr).toLocaleDateString();
+            },
+            
+            formatTime(dateStr) {
+                return new Date(dateStr).toLocaleTimeString();
+            },
+            
+            formatRelativeTime(ms) {
+                const seconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+            },
+            
+            showError(message) {
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('errorDiv').textContent = message;
+                document.getElementById('errorDiv').style.display = 'block';
+            }
+        };
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            ResultsViewer.init();
+        });
+    </script>
+</body>
+</html>

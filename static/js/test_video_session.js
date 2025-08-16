@@ -560,7 +560,9 @@ const TestVideoSession = {
      * View detailed results
      */
     viewDetailedResults() {
-        window.location.href = `/tests/results?session=${this.sessionId}&video=${this.videoSessionId}`;
+        const url = `/tests/results?session=${this.sessionId}` + 
+                   (this.videoSessionId ? `&video=${this.videoSessionId}` : '');
+        window.location.href = url;
     },
     
     /**

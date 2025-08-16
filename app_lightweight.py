@@ -73,11 +73,14 @@ def api_home():
             'GET /text-analysis - Text cognitive load analysis',
             'GET /tests - Interactive test dashboard',
             'GET /tests/session/combined - Combined test with video recording',
+            'GET /tests/results - Test results viewer with video correlation',
             'GET /api/tests/list - Get available tests',
             'GET /api/tests/<test_id> - Get test definition',
             'POST /api/tests/session/start - Start test session',
             'POST /api/tests/session/<id>/submit - Submit answer (with video events)',
             'GET /api/tests/session/<id>/results - Get test results (with video data)',
+            'GET /api/tests/session/<id>/events - Get correlated events timeline',
+            'GET /api/video/session/<id>/chunks - Get video chunks with timestamps',
             'GET /api/tests/session/<id> - Get session state'
         ]
     })
@@ -848,6 +851,12 @@ def test_session_combined():
     ensure_bucket_exists()
     
     return render_template('tests/test_session_combined.html')
+
+@app.route('/tests/results')
+def test_results():
+    """Test results viewer with video correlation."""
+    system_state['requests_count'] += 1
+    return render_template('tests/test_results.html')
 
 @app.route('/api/tests/list')
 def get_tests_list():
