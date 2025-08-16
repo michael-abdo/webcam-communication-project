@@ -85,6 +85,7 @@ def generate_presigned_post(session_id=None, chunk_number=0):
         response = s3_client.generate_presigned_post(
             Bucket=S3_BUCKET,
             Key=key,
+            Fields={'Content-Type': 'video/webm'},  # Explicit field for policy validation
             ExpiresIn=300,  # 5 minutes
             Conditions=[
                 ['starts-with', '$Content-Type', 'video/webm'],
