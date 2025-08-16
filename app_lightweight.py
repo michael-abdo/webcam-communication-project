@@ -341,43 +341,6 @@ def get_videos():
     
     return jsonify(videos)
 
-@app.route('/api/analyze', methods=['POST'])
-def analyze_video():
-    """Start video analysis."""
-    try:
-        data = request.get_json()
-        if not data or 'video_path' not in data:
-            return jsonify({'error': 'No video path provided'}), 400
-        
-        video_path = data.get('video_path')
-        frame_skip = data.get('frame_skip', 1)
-        
-        # Validate frame_skip
-        try:
-            frame_skip = int(frame_skip)
-            if frame_skip < 1:
-                return jsonify({'error': 'Frame skip must be at least 1'}), 400
-            if frame_skip > 10:
-                return jsonify({'error': 'Frame skip cannot exceed 10'}), 400
-        except (TypeError, ValueError):
-            return jsonify({'error': 'Frame skip must be a valid integer'}), 400
-        
-        # Start real analysis session - clear previous results
-        video_analysis_state['is_analyzing'] = True
-        video_analysis_state['current_video'] = video_path
-        video_analysis_state['frame_count'] = 0
-        video_analysis_state['results'] = []
-        
-        print(f"Started analysis session for video: {video_path} (frame_skip: {frame_skip})")
-        
-        return jsonify({
-            'status': 'started',
-            'video': video_path,
-            'frame_skip': frame_skip
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Failed to start analysis: {str(e)}'}), 500
 
 @app.route('/api/stop')
 def stop_analysis():
