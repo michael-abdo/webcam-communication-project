@@ -598,7 +598,7 @@ const TestVideoSession = {
         const updateTimer = () => {
             if (remaining <= 0) {
                 clearInterval(this.questionTimer);
-                timerElement.textContent = 'Time\\'s up!';
+                timerElement.textContent = 'Time\'s up!';
                 this.submitAnswer();
             } else {
                 timerElement.textContent = `${remaining}s remaining`;
@@ -679,6 +679,22 @@ const TestVideoSession = {
             total_uploaded: totalUploaded,
             test_session_id: testSessionId
         });
+    },
+    
+    /**
+     * Manual video recording controls (for buttons)
+     */
+    async startVideoRecording() {
+        if (this.videoRecorder) {
+            return await this.videoRecorder.startRecording(this.sessionId);
+        }
+        return false;
+    },
+    
+    stopVideoRecording() {
+        if (this.videoRecorder) {
+            this.videoRecorder.stopRecording();
+        }
     },
     
     /**
