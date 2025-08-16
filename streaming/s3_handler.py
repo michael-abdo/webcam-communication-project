@@ -14,15 +14,30 @@ S3_BUCKET = 'webcam-streaming'
 # Initialize S3 client with specific profile
 def get_s3_client():
     """Get S3 client with proper configuration."""
-    # In production (Heroku), use environment variables
-    # Locally, use AWS profile
-    if os.environ.get('AWS_ACCESS_KEY_ID'):
-        # Production mode - use environment variables
-        return boto3.client('s3', region_name=AWS_REGION)
-    else:
-        # Development mode - use AWS profile
-        session = boto3.Session(profile_name=AWS_PROFILE)
-        return session.client('s3', region_name=AWS_REGION)
+    try:
+        # In production (Heroku), use environment variables
+        if os.environ.get('AWS_ACCESS_KEY_ID'):
+            print("Using AWS environment variables for S3 client")
+            return boto3.client('s3', region_name=AWS_REGION)
+        else:
+            # Development mode - try AWS profile
+            try:
+                print(f"Attempting to use AWS profile: {AWS_PROFILE}")
+                session = boto3.Session(profile_name=AWS_PROFILE)
+                return session.client('s3', region_name=AWS_REGION)
+            except Exception as profile_error:
+                error_msg = (
+                    f"Failed to use AWS profile '{AWS_PROFILE}': {profile_error}\n"
+                    "AWS credentials not configured. Please either:\n"
+                    "1. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables\n"
+                    "2. Configure AWS profile 'zenex' locally\n"
+                    "For Heroku deployment, use: heroku config:set AWS_ACCESS_KEY_ID=your_key AWS_SECRET_ACCESS_KEY=your_secret"
+                )
+                print(error_msg)
+                raise Exception(error_msg)
+    except Exception as e:
+        print(f"Error creating S3 client: {e}")
+        raise
 
 def generate_presigned_post(session_id=None, chunk_number=0):
     """
@@ -33,9 +48,10 @@ def generate_presigned_post(session_id=None, chunk_number=0):
         chunk_number: Sequential chunk number for this session
         
     Returns:
-        dict: Contains 'url' and 'fields' for the presigned POST
+        dict: Contains 'url' and 'fields' for the presigned POST, or None on error
     """
     try:
+        # Attempt to get S3 client - this will raise exception if credentials missing
         s3_client = get_s3_client()
         
         # Generate session ID if not provided
@@ -66,7 +82,17 @@ def generate_presigned_post(session_id=None, chunk_number=0):
         return response
         
     except ClientError as e:
-        print(f"Error generating presigned URL: {e}")
+        error_msg = f"AWS S3 Error generating presigned URL: {e}"
+        print(error_msg)
+        # Check if it's a credentials error
+        if e.response['Error']['Code'] == 'InvalidAccessKeyId':
+            print("Invalid AWS Access Key ID - check your credentials")
+        elif e.response['Error']['Code'] == 'SignatureDoesNotMatch':
+            print("Invalid AWS Secret Access Key - check your credentials")
+        return None
+    except Exception as e:
+        # This will catch credential configuration errors from get_s3_client
+        print(f"Error in generate_presigned_post: {e}")
         return None
 
 def ensure_bucket_exists():

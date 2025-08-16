@@ -120,11 +120,26 @@ def get_presigned_url():
                 'session_id': presigned_data['session_id']
             })
         else:
-            return jsonify({'success': False, 'error': 'Failed to generate presigned URL'}), 500
+            error_msg = (
+                "Failed to generate presigned URL. This typically happens when:\n"
+                "1. AWS credentials are not configured\n"
+                "2. The S3 bucket doesn't exist or is inaccessible\n"
+                "3. IAM permissions are insufficient\n"
+                "Please check the server logs for more details."
+            )
+            return jsonify({
+                'success': False, 
+                'error': error_msg,
+                'help': 'For Heroku: Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables'
+            }), 500
             
     except Exception as e:
-        print(f"Error generating presigned URL: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        print(f"Error in presigned URL endpoint: {str(e)}")
+        return jsonify({
+            'success': False, 
+            'error': f'Server error: {str(e)}',
+            'help': 'Check server logs for detailed error information'
+        }), 500
 
 
 @app.route('/health')
