@@ -78,15 +78,36 @@ async function startRecording() {
         chunksUploaded = 0;
         uploadQueue = [];
         
-        // Check if MediaRecorder is supported
-        if (!MediaRecorder.isTypeSupported(MIME_TYPE)) {
-            showError('WebM recording not supported in this browser');
+        // Test MediaRecorder support with fallbacks
+        let selectedMimeType = MIME_TYPE;
+        const supportedTypes = [
+            'video/webm',
+            'video/webm;codecs=vp8',
+            'video/webm;codecs=vp9',
+            'video/webm;codecs=h264',
+            'video/mp4'
+        ];
+        
+        console.log('[INFO] Testing MediaRecorder MIME type support:');
+        supportedTypes.forEach(type => {
+            const supported = MediaRecorder.isTypeSupported(type);
+            console.log(`  ${type}: ${supported ? '✅' : '❌'}`);
+            if (supported && selectedMimeType === MIME_TYPE && type !== MIME_TYPE) {
+                selectedMimeType = type;
+                console.log(`[INFO] Falling back to: ${type}`);
+            }
+        });
+        
+        if (!MediaRecorder.isTypeSupported(selectedMimeType)) {
+            showError('No compatible video recording format found in this browser');
             return;
         }
         
-        // Create MediaRecorder with optimized settings
+        console.log(`[INFO] Using MIME type: ${selectedMimeType}`);
+        
+        // Create MediaRecorder with detected MIME type
         mediaRecorder = new MediaRecorder(mediaStream, {
-            mimeType: MIME_TYPE,
+            mimeType: selectedMimeType,
             videoBitsPerSecond: 1000000, // 1 Mbps - more stable for chunks
             audioBitsPerSecond: 128000   // 128 kbps audio
         });
@@ -138,6 +159,13 @@ function requestChunk() {
  */
 function handleDataAvailable(event) {
     if (event.data && event.data.size > 0) {
+        console.log(`[INFO] Chunk received: ${event.data.size} bytes, type: ${event.data.type}`);
+        
+        // Validate blob is proper WebM
+        if (!event.data.type.includes('webm')) {
+            console.warn(`[WARN] Unexpected blob type: ${event.data.type}`);
+        }
+        
         const chunk = {
             data: event.data,
             number: chunkNumber++,
@@ -150,6 +178,8 @@ function handleDataAvailable(event) {
         // Add to upload queue
         uploadQueue.push(chunk);
         processUploadQueue();
+    } else {
+        console.warn('[WARN] Empty or invalid chunk received');
     }
 }
 
