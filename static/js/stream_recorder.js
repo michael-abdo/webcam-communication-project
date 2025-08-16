@@ -290,13 +290,16 @@ async function uploadToS3(blob, presignedData) {
     
     const formData = new FormData();
     
-    // Add all fields from presigned data (skip Content-Type - let blob provide it)
+    // Add all fields from presigned data, but override Content-Type with actual blob type
     Object.entries(presignedData.fields).forEach(([key, value]) => {
-        if (key !== 'Content-Type') {
+        if (key === 'Content-Type') {
+            // Use the actual blob's Content-Type instead of the generic one from S3
+            const actualContentType = blob.type || 'video/webm';
+            console.log(`[INFO] Overriding Content-Type: ${value} -> ${actualContentType}`);
+            formData.append(key, actualContentType);
+        } else {
             console.log(`[INFO] Adding field: ${key} = ${value}`);
             formData.append(key, value);
-        } else {
-            console.log(`[INFO] Skipping Content-Type field, using blob type: ${blob.type}`);
         }
     });
     
