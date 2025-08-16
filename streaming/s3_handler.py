@@ -21,6 +21,7 @@ def get_s3_client():
             return boto3.client(
                 's3', 
                 region_name=AWS_REGION,
+                endpoint_url=f'https://s3.{AWS_REGION}.amazonaws.com',
                 config=boto3.session.Config(
                     s3={'addressing_style': 'virtual'},
                     signature_version='s3v4',
@@ -35,6 +36,7 @@ def get_s3_client():
                 return session.client(
                     's3', 
                     region_name=AWS_REGION,
+                    endpoint_url=f'https://s3.{AWS_REGION}.amazonaws.com',
                     config=boto3.session.Config(
                         s3={'addressing_style': 'virtual'},
                         signature_version='s3v4',

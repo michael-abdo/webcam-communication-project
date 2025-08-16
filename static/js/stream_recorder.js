@@ -254,7 +254,10 @@ async function uploadToS3(blob, presignedData) {
     
     const response = await fetch(presignedData.upload_url, {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'Origin': window.location.origin
+        }
     });
     
     if (!response.ok) {
