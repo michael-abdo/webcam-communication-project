@@ -81,7 +81,7 @@ def generate_presigned_post(session_id=None, chunk_number=0):
         key = f"recordings/{session_id}/{timestamp}_chunk_{chunk_number:04d}.webm"
         
         # Generate presigned POST URL
-        # Expires in 5 minutes
+        # Expires in 5 minutes  
         response = s3_client.generate_presigned_post(
             Bucket=S3_BUCKET,
             Key=key,
