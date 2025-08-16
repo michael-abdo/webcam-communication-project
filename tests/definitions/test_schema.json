@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Interactive Test Schema",
+  "description": "Schema for defining interactive tests with various question types",
+  "type": "object",
+  "required": ["test_id", "title", "description", "version", "questions"],
+  "properties": {
+    "test_id": {
+      "type": "string",
+      "description": "Unique identifier for the test",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Display title of the test"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of what the test measures"
+    },
+    "version": {
+      "type": "string",
+      "description": "Test version for tracking changes",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["cognitive", "fatigue", "attention", "memory", "reaction", "custom"],
+      "description": "Test category for organization"
+    },
+    "duration_minutes": {
+      "type": "integer",
+      "description": "Estimated time to complete the test",
+      "minimum": 1,
+      "maximum": 120
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Instructions shown before starting the test"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "randomize_questions": {
+          "type": "boolean",
+          "default": false
+        },
+        "show_progress": {
+          "type": "boolean",
+          "default": true
+        },
+        "allow_skip": {
+          "type": "boolean",
+          "default": false
+        },
+        "time_limit_seconds": {
+          "type": "integer",
+          "description": "Overall time limit for the entire test",
+          "minimum": 60
+        },
+        "passing_score": {
+          "type": "number",
+          "description": "Minimum score to pass (0-100)",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "question"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique question ID within the test"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["multiple_choice", "true_false", "text_input", "slider", "rating", "image_choice", "matrix"],
+            "description": "Type of question"
+          },
+          "question": {
+            "type": "string",
+            "description": "The question text"
+          },
+          "description": {
+            "type": "string",
+            "description": "Additional context or instructions"
+          },
+          "required": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether this question must be answered"
+          },
+          "time_limit_seconds": {
+            "type": "integer",
+            "description": "Time limit for this specific question",
+            "minimum": 5
+          },
+          "points": {
+            "type": "integer",
+            "default": 1,
+            "description": "Points awarded for correct answer"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags for categorizing questions"
+          },
+          "media": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["image", "video", "audio"]
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "alt_text": {
+                "type": "string"
+              }
+            }
+          },
+          "options": {
+            "type": "array",
+            "description": "Options for multiple choice questions",
+            "items": {
+              "type": "object",
+              "required": ["value", "label"],
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "image_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "is_correct": {
+                  "type": "boolean",
+                  "description": "For questions with correct answers"
+                }
+              }
+            }
+          },
+          "validation": {
+            "type": "object",
+            "description": "Validation rules for answers",
+            "properties": {
+              "min_length": {
+                "type": "integer",
+                "description": "Minimum text length"
+              },
+              "max_length": {
+                "type": "integer",
+                "description": "Maximum text length"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for validation"
+              },
+              "min_value": {
+                "type": "number",
+                "description": "Minimum value for sliders/ratings"
+              },
+              "max_value": {
+                "type": "number",
+                "description": "Maximum value for sliders/ratings"
+              },
+              "step": {
+                "type": "number",
+                "description": "Step size for sliders"
+              }
+            }
+          },
+          "scoring": {
+            "type": "object",
+            "description": "Custom scoring rules",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": ["exact", "partial", "weighted", "custom"]
+              },
+              "correct_answer": {
+                "type": ["string", "number", "array"]
+              },
+              "partial_credit": {
+                "type": "object",
+                "description": "Partial credit rules"
+              }
+            }
+          }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "description": "Overall test scoring configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["sum", "average", "weighted", "custom"],
+          "default": "sum"
+        },
+        "max_score": {
+          "type": "number"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Score categories or dimensions",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "question_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "weight": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "description": "Feedback configuration",
+      "properties": {
+        "show_correct_answers": {
+          "type": "boolean",
+          "default": true
+        },
+        "immediate": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show feedback after each question"
+        },
+        "final_message": {
+          "type": "object",
+          "description": "Messages based on score ranges",
+          "properties": {
+            "excellent": {
+              "type": "object",
+              "properties": {
+                "min_score": { "type": "number" },
+                "message": { "type": "string" }
+              }
+            },
+            "good": {
+              "type": "object",
+              "properties": {
+                "min_score": { "type": "number" },
+                "message": { "type": "string" }
+              }
+            },
+            "needs_improvement": {
+              "type": "object",
+              "properties": {
+                "min_score": { "type": "number" },
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

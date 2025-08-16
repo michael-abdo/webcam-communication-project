@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Session - Fatigue Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .progress-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        
+        .timer {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #4b5563;
+        }
+        
+        .timer svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .instructions-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .instructions-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .instructions-text {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .start-test-button {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .start-test-button:hover {
+            opacity: 0.9;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-number {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .question-timer {
+            font-size: 0.875rem;
+            color: #ef4444;
+            font-weight: 500;
+        }
+        
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .question-description {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        /* Question type styles */
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option-button {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option-button:hover {
+            border-color: #2563eb;
+            background-color: #f0f9ff;
+        }
+        
+        .option-button.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .slider-container {
+            margin: 2rem 0;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e5e7eb;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .rating-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .rating-button {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .rating-button:hover {
+            border-color: #2563eb;
+            transform: scale(1.05);
+        }
+        
+        .rating-button.selected {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .true-false-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .true-false-button {
+            padding: 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .true-false-button:hover {
+            border-color: #2563eb;
+        }
+        
+        .true-false-button.selected {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-button:hover {
+            background-color: #f9fafb;
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .submit-button {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+        }
+        
+        .submit-button:hover {
+            opacity: 0.9;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .results-message {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-container {
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .question-card {
+                padding: 1.5rem;
+            }
+            
+            .rating-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1 class="test-title" id="testTitle">Loading test...</h1>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0 / 0</div>
+            </div>
+            <div class="timer">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span id="sessionTimer">00:00</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Instructions Card -->
+        <div class="instructions-card" id="instructionsCard">
+            <h2>Test Instructions</h2>
+            <p class="instructions-text" id="instructionsText">Loading instructions...</p>
+            <button class="start-test-button" onclick="TestSession.startTest()">Start Test</button>
+        </div>
+        
+        <!-- Question Card -->
+        <div class="question-card" id="questionCard">
+            <div class="question-header">
+                <span class="question-number" id="questionNumber">Question 1 of 10</span>
+                <span class="question-timer" id="questionTimer"></span>
+            </div>
+            <h3 class="question-text" id="questionText">Loading question...</h3>
+            <p class="question-description" id="questionDescription"></p>
+            
+            <div id="answerContainer">
+                <!-- Dynamic answer inputs will be inserted here -->
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" id="skipButton" onclick="TestSession.skipQuestion()">Skip</button>
+                <button class="nav-button submit-button" id="submitButton" onclick="TestSession.submitAnswer()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Results Card -->
+        <div class="results-card" id="resultsCard">
+            <h2 class="results-title">Test Complete!</h2>
+            <p class="results-message" id="resultsMessage">Processing your results...</p>
+            <div class="results-actions">
+                <button class="nav-button" onclick="window.location.href='/tests'">Back to Tests</button>
+                <button class="nav-button submit-button" onclick="TestSession.viewDetailedResults()">View Results</button>
+            </div>
+        </div>
+        
+        <!-- Error Display -->
+        <div class="error" id="errorDisplay" style="display: none;"></div>
+    </div>
+    
+    <script>
+        // Test Session Manager
+        const TestSession = {
+            sessionId: null,
+            testData: null,
+            currentTest: null,
+            currentQuestionIndex: 0,
+            currentAnswer: null,
+            startTime: null,
+            questionStartTime: null,
+            sessionTimer: null,
+            questionTimer: null,
+            
+            async init() {
+                // Get session ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                this.sessionId = urlParams.get('id') || sessionStorage.getItem('test_session_id');
+                
+                if (!this.sessionId) {
+                    this.showError('No test session found');
+                    setTimeout(() => window.location.href = '/tests', 2000);
+                    return;
+                }
+                
+                // Load test data
+                const testDataStr = sessionStorage.getItem('test_data');
+                if (testDataStr) {
+                    this.testData = JSON.parse(testDataStr);
+                    await this.loadTestDefinition();
+                } else {
+                    // Fallback: load from server
+                    await this.loadSessionFromServer();
+                }
+            },
+            
+            async loadTestDefinition() {
+                try {
+                    const response = await fetch(`/api/tests/${this.testData.test_id}`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.currentTest = data.test;
+                        this.setupTest();
+                    } else {
+                        this.showError('Failed to load test definition');
+                    }
+                } catch (error) {
+                    console.error('Error loading test:', error);
+                    this.showError('Failed to load test');
+                }
+            },
+            
+            async loadSessionFromServer() {
+                try {
+                    const response = await fetch(`/api/tests/session/${this.sessionId}`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.currentQuestionIndex = data.session.current_question;
+                        // Load test definition
+                        await this.loadTestDefinition();
+                    } else {
+                        this.showError('Invalid session');
+                    }
+                } catch (error) {
+                    console.error('Error loading session:', error);
+                    this.showError('Failed to load session');
+                }
+            },
+            
+            setupTest() {
+                // Update UI with test info
+                document.getElementById('testTitle').textContent = this.currentTest.title;
+                document.getElementById('instructionsText').textContent = 
+                    this.currentTest.instructions || 'Please answer all questions to the best of your ability.';
+                
+                // Setup progress
+                this.updateProgress();
+                
+                // Start session timer
+                this.startTime = Date.now();
+                this.startSessionTimer();
+            },
+            
+            startTest() {
+                document.getElementById('instructionsCard').style.display = 'none';
+                document.getElementById('questionCard').style.display = 'block';
+                this.showQuestion(0);
+            },
+            
+            showQuestion(index) {
+                if (index >= this.currentTest.questions.length) {
+                    this.completeTest();
+                    return;
+                }
+                
+                this.currentQuestionIndex = index;
+                this.currentAnswer = null;
+                this.questionStartTime = Date.now();
+                
+                const question = this.currentTest.questions[index];
+                
+                // Update question display
+                document.getElementById('questionNumber').textContent = 
+                    `Question ${index + 1} of ${this.currentTest.questions.length}`;
+                document.getElementById('questionText').textContent = question.question;
+                document.getElementById('questionDescription').textContent = question.description || '';
+                
+                // Show/hide skip button
+                const skipButton = document.getElementById('skipButton');
+                skipButton.style.display = 
+                    this.currentTest.settings?.allow_skip ? 'block' : 'none';
+                
+                // Update submit button text
+                const submitButton = document.getElementById('submitButton');
+                submitButton.textContent = 
+                    index === this.currentTest.questions.length - 1 ? 'Finish' : 'Next';
+                
+                // Render answer input based on question type
+                this.renderAnswerInput(question);
+                
+                // Update progress
+                this.updateProgress();
+                
+                // Start question timer if needed
+                if (question.time_limit_seconds) {
+                    this.startQuestionTimer(question.time_limit_seconds);
+                }
+            },
+            
+            renderAnswerInput(question) {
+                const container = document.getElementById('answerContainer');
+                container.innerHTML = '';
+                
+                switch (question.type) {
+                    case 'multiple_choice':
+                        this.renderMultipleChoice(question, container);
+                        break;
+                    case 'true_false':
+                        this.renderTrueFalse(question, container);
+                        break;
+                    case 'text_input':
+                        this.renderTextInput(question, container);
+                        break;
+                    case 'slider':
+                        this.renderSlider(question, container);
+                        break;
+                    case 'rating':
+                        this.renderRating(question, container);
+                        break;
+                    default:
+                        container.innerHTML = '<p>Unsupported question type</p>';
+                }
+            },
+            
+            renderMultipleChoice(question, container) {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'answer-options';
+                
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'option-button';
+                    button.textContent = option.label;
+                    button.onclick = () => {
+                        // Clear previous selection
+                        optionsDiv.querySelectorAll('.option-button').forEach(btn => 
+                            btn.classList.remove('selected'));
+                        // Select this option
+                        button.classList.add('selected');
+                        this.currentAnswer = option.value;
+                    };
+                    optionsDiv.appendChild(button);
+                });
+                
+                container.appendChild(optionsDiv);
+            },
+            
+            renderTrueFalse(question, container) {
+                const tfDiv = document.createElement('div');
+                tfDiv.className = 'true-false-container';
+                
+                ['True', 'False'].forEach(value => {
+                    const button = document.createElement('button');
+                    button.className = 'true-false-button';
+                    button.textContent = value;
+                    button.onclick = () => {
+                        tfDiv.querySelectorAll('.true-false-button').forEach(btn => 
+                            btn.classList.remove('selected'));
+                        button.classList.add('selected');
+                        this.currentAnswer = value.toLowerCase();
+                    };
+                    tfDiv.appendChild(button);
+                });
+                
+                container.appendChild(tfDiv);
+            },
+            
+            renderTextInput(question, container) {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'text-input';
+                textarea.placeholder = 'Type your answer here...';
+                
+                if (question.validation?.max_length) {
+                    textarea.maxLength = question.validation.max_length;
+                }
+                
+                textarea.oninput = () => {
+                    this.currentAnswer = textarea.value;
+                };
+                
+                container.appendChild(textarea);
+            },
+            
+            renderSlider(question, container) {
+                const sliderDiv = document.createElement('div');
+                sliderDiv.className = 'slider-container';
+                
+                const min = question.validation?.min_value || 0;
+                const max = question.validation?.max_value || 10;
+                const step = question.validation?.step || 1;
+                const defaultValue = (min + max) / 2;
+                
+                // Labels
+                const labelsDiv = document.createElement('div');
+                labelsDiv.className = 'slider-labels';
+                labelsDiv.innerHTML = `<span>${min}</span><span>${max}</span>`;
+                sliderDiv.appendChild(labelsDiv);
+                
+                // Slider
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.className = 'slider';
+                slider.min = min;
+                slider.max = max;
+                slider.step = step;
+                slider.value = defaultValue;
+                
+                // Value display
+                const valueDiv = document.createElement('div');
+                valueDiv.className = 'slider-value';
+                valueDiv.textContent = defaultValue;
+                
+                slider.oninput = () => {
+                    valueDiv.textContent = slider.value;
+                    this.currentAnswer = parseFloat(slider.value);
+                };
+                
+                sliderDiv.appendChild(slider);
+                sliderDiv.appendChild(valueDiv);
+                container.appendChild(sliderDiv);
+                
+                // Set initial answer
+                this.currentAnswer = defaultValue;
+            },
+            
+            renderRating(question, container) {
+                const ratingDiv = document.createElement('div');
+                ratingDiv.className = 'rating-container';
+                
+                const min = question.validation?.min_value || 1;
+                const max = question.validation?.max_value || 5;
+                
+                // Add option labels if provided
+                if (question.options && question.options.length > 0) {
+                    const labelContainer = document.createElement('div');
+                    labelContainer.style.width = '100%';
+                    labelContainer.style.marginBottom = '1rem';
+                    
+                    question.options.forEach(option => {
+                        const label = document.createElement('div');
+                        label.style.textAlign = 'center';
+                        label.style.marginBottom = '0.5rem';
+                        label.innerHTML = `<strong>${option.value}:</strong> ${option.label}`;
+                        labelContainer.appendChild(label);
+                    });
+                    
+                    container.appendChild(labelContainer);
+                }
+                
+                for (let i = min; i <= max; i++) {
+                    const button = document.createElement('button');
+                    button.className = 'rating-button';
+                    button.textContent = i;
+                    button.onclick = () => {
+                        ratingDiv.querySelectorAll('.rating-button').forEach(btn => 
+                            btn.classList.remove('selected'));
+                        button.classList.add('selected');
+                        this.currentAnswer = i;
+                    };
+                    ratingDiv.appendChild(button);
+                }
+                
+                container.appendChild(ratingDiv);
+            },
+            
+            async submitAnswer() {
+                if (this.currentAnswer === null && 
+                    this.currentTest.questions[this.currentQuestionIndex].required !== false) {
+                    alert('Please provide an answer before continuing.');
+                    return;
+                }
+                
+                const timeTaken = (Date.now() - this.questionStartTime) / 1000;
+                
+                try {
+                    const response = await fetch(`/api/tests/session/${this.sessionId}/submit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            question_id: this.currentTest.questions[this.currentQuestionIndex].id,
+                            answer: this.currentAnswer,
+                            time_taken: timeTaken
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        if (data.is_complete) {
+                            this.completeTest();
+                        } else {
+                            this.showQuestion(this.currentQuestionIndex + 1);
+                        }
+                    } else {
+                        this.showError('Failed to submit answer');
+                    }
+                } catch (error) {
+                    console.error('Error submitting answer:', error);
+                    this.showError('Failed to submit answer');
+                }
+            },
+            
+            skipQuestion() {
+                if (confirm('Are you sure you want to skip this question?')) {
+                    this.currentAnswer = null;
+                    this.submitAnswer();
+                }
+            },
+            
+            async completeTest() {
+                // Stop timers
+                if (this.sessionTimer) clearInterval(this.sessionTimer);
+                if (this.questionTimer) clearInterval(this.questionTimer);
+                
+                // Hide question card, show results
+                document.getElementById('questionCard').style.display = 'none';
+                document.getElementById('resultsCard').style.display = 'block';
+                
+                // Load results
+                try {
+                    const response = await fetch(`/api/tests/session/${this.sessionId}/results`);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        const results = data.results;
+                        const duration = Math.floor(results.duration_seconds / 60);
+                        
+                        document.getElementById('resultsMessage').textContent = 
+                            `You completed ${results.questions_answered} out of ${results.total_questions} questions in ${duration} minutes.`;
+                        
+                        // Store results for detailed view
+                        sessionStorage.setItem('test_results', JSON.stringify(results));
+                    }
+                } catch (error) {
+                    console.error('Error loading results:', error);
+                }
+            },
+            
+            viewDetailedResults() {
+                window.location.href = `/tests/results?session=${this.sessionId}`;
+            },
+            
+            updateProgress() {
+                const progress = (this.currentQuestionIndex / this.currentTest.questions.length) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent = 
+                    `${this.currentQuestionIndex} / ${this.currentTest.questions.length}`;
+            },
+            
+            startSessionTimer() {
+                this.sessionTimer = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    document.getElementById('sessionTimer').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            },
+            
+            startQuestionTimer(seconds) {
+                if (this.questionTimer) clearInterval(this.questionTimer);
+                
+                let remaining = seconds;
+                const timerElement = document.getElementById('questionTimer');
+                
+                const updateTimer = () => {
+                    if (remaining <= 0) {
+                        clearInterval(this.questionTimer);
+                        timerElement.textContent = 'Time\'s up!';
+                        this.submitAnswer();
+                    } else {
+                        timerElement.textContent = `${remaining}s remaining`;
+                        remaining--;
+                    }
+                };
+                
+                updateTimer();
+                this.questionTimer = setInterval(updateTimer, 1000);
+            },
+            
+            showError(message) {
+                const errorDiv = document.getElementById('errorDisplay');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+        };
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            TestSession.init();
+        });
+    </script>
+</body>
+</html>

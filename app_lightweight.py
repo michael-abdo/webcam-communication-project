@@ -70,7 +70,14 @@ def api_home():
             'GET /api/results - Get analysis results',
             'GET /video-analysis - Video dataset analysis interface',
             'GET /webcam-analysis - Live webcam fatigue detection',
-            'GET /text-analysis - Text cognitive load analysis'
+            'GET /text-analysis - Text cognitive load analysis',
+            'GET /tests - Interactive test dashboard',
+            'GET /api/tests/list - Get available tests',
+            'GET /api/tests/<test_id> - Get test definition',
+            'POST /api/tests/session/start - Start test session',
+            'POST /api/tests/session/<id>/submit - Submit answer',
+            'GET /api/tests/session/<id>/results - Get test results',
+            'GET /api/tests/session/<id> - Get session state'
         ]
     })
 
@@ -781,6 +788,262 @@ def reset_metrics():
         'status': 'reset',
         'message': 'All metrics reset successfully'
     })
+
+# ====================
+# Test System Routes
+# ====================
+
+# Import test utilities
+from tests.utils.test_loader import TestLoader
+
+# Initialize test loader
+test_loader = TestLoader()
+
+# Test session storage
+test_sessions = {}
+
+@app.route('/tests')
+def tests_dashboard():
+    """Interactive test dashboard."""
+    system_state['requests_count'] += 1
+    return render_template('tests/test_dashboard.html')
+
+@app.route('/tests/session')
+def test_session():
+    """Test session interface."""
+    system_state['requests_count'] += 1
+    return render_template('tests/test_session.html')
+
+@app.route('/api/tests/list')
+def get_tests_list():
+    """Get list of available tests."""
+    try:
+        tests = test_loader.get_available_tests()
+        return jsonify({
+            'status': 'success',
+            'tests': tests,
+            'count': len(tests)
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/<test_id>')
+def get_test_definition(test_id):
+    """Get specific test definition."""
+    try:
+        test_data = test_loader.load_test(test_id)
+        if test_data:
+            return jsonify({
+                'status': 'success',
+                'test': test_data
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': f'Test {test_id} not found'
+            }), 404
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/session/start', methods=['POST'])
+def start_test_session():
+    """Start a new test session."""
+    try:
+        data = request.get_json()
+        test_id = data.get('test_id')
+        
+        if not test_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'test_id is required'
+            }), 400
+            
+        # Load test definition
+        test_data = test_loader.load_test(test_id)
+        if not test_data:
+            return jsonify({
+                'status': 'error',
+                'message': f'Test {test_id} not found'
+            }), 404
+            
+        # Create session
+        import uuid
+        session_id = str(uuid.uuid4())
+        
+        test_sessions[session_id] = {
+            'session_id': session_id,
+            'test_id': test_id,
+            'test_title': test_data.get('title'),
+            'start_time': datetime.now(),
+            'current_question': 0,
+            'answers': [],
+            'status': 'active',
+            'total_questions': len(test_data.get('questions', [])),
+            'settings': test_data.get('settings', {})
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'session_id': session_id,
+            'test': {
+                'test_id': test_id,
+                'title': test_data.get('title'),
+                'description': test_data.get('description'),
+                'instructions': test_data.get('instructions'),
+                'total_questions': len(test_data.get('questions', [])),
+                'duration_minutes': test_data.get('duration_minutes'),
+                'settings': test_data.get('settings', {})
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/session/<session_id>/submit', methods=['POST'])
+def submit_test_answer(session_id):
+    """Submit answer for current question."""
+    try:
+        if session_id not in test_sessions:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid session ID'
+            }), 404
+            
+        session = test_sessions[session_id]
+        if session['status'] != 'active':
+            return jsonify({
+                'status': 'error',
+                'message': 'Test session is not active'
+            }), 400
+            
+        data = request.get_json()
+        question_id = data.get('question_id')
+        answer = data.get('answer')
+        time_taken = data.get('time_taken', 0)
+        
+        # Record answer
+        session['answers'].append({
+            'question_id': question_id,
+            'answer': answer,
+            'time_taken': time_taken,
+            'timestamp': datetime.now()
+        })
+        
+        # Move to next question
+        session['current_question'] += 1
+        
+        # Check if test is complete
+        if session['current_question'] >= session['total_questions']:
+            session['status'] = 'completed'
+            session['end_time'] = datetime.now()
+            
+        return jsonify({
+            'status': 'success',
+            'current_question': session['current_question'],
+            'is_complete': session['status'] == 'completed'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/session/<session_id>/results')
+def get_test_results(session_id):
+    """Get test results for a session."""
+    try:
+        if session_id not in test_sessions:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid session ID'
+            }), 404
+            
+        session = test_sessions[session_id]
+        
+        # Calculate basic results
+        results = {
+            'session_id': session_id,
+            'test_id': session['test_id'],
+            'test_title': session['test_title'],
+            'status': session['status'],
+            'start_time': session['start_time'].isoformat(),
+            'end_time': session.get('end_time', datetime.now()).isoformat() if session['status'] == 'completed' else None,
+            'duration_seconds': (session.get('end_time', datetime.now()) - session['start_time']).total_seconds(),
+            'questions_answered': len(session['answers']),
+            'total_questions': session['total_questions'],
+            'answers': session['answers']
+        }
+        
+        # Add scoring if test is completed
+        if session['status'] == 'completed':
+            # Basic scoring logic (can be enhanced)
+            results['score'] = {
+                'questions_completed': len(session['answers']),
+                'completion_rate': (len(session['answers']) / session['total_questions']) * 100
+            }
+            
+        return jsonify({
+            'status': 'success',
+            'results': results
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/session/<session_id>')
+def get_test_session(session_id):
+    """Get current test session state."""
+    try:
+        if session_id not in test_sessions:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid session ID'
+            }), 404
+            
+        session = test_sessions[session_id]
+        
+        return jsonify({
+            'status': 'success',
+            'session': {
+                'session_id': session_id,
+                'test_id': session['test_id'],
+                'status': session['status'],
+                'current_question': session['current_question'],
+                'total_questions': session['total_questions'],
+                'questions_answered': len(session['answers'])
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+# Clean up old sessions periodically (keep last 100)
+def cleanup_old_sessions():
+    """Remove old test sessions to prevent memory issues."""
+    if len(test_sessions) > 100:
+        # Sort by start time and keep most recent 100
+        sorted_sessions = sorted(test_sessions.items(), 
+                               key=lambda x: x[1]['start_time'], 
+                               reverse=True)
+        test_sessions.clear()
+        for session_id, session_data in sorted_sessions[:100]:
+            test_sessions[session_id] = session_data
 
 @app.errorhandler(404)
 def not_found(error):
