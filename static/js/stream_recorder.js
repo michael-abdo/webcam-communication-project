@@ -106,17 +106,33 @@ async function startRecording() {
         console.log(`[INFO] Using MIME type: ${selectedMimeType}`);
         
         // Create MediaRecorder with detected MIME type
+        console.log('[INFO] Creating MediaRecorder with options:', {
+            mimeType: selectedMimeType,
+            videoBitsPerSecond: 1000000,
+            audioBitsPerSecond: 128000
+        });
+        
         mediaRecorder = new MediaRecorder(mediaStream, {
             mimeType: selectedMimeType,
             videoBitsPerSecond: 1000000, // 1 Mbps - more stable for chunks
             audioBitsPerSecond: 128000   // 128 kbps audio
         });
         
+        console.log('[INFO] MediaRecorder created successfully');
+        
         // Handle data available event
         mediaRecorder.ondataavailable = handleDataAvailable;
         
         // Handle recording stop
-        mediaRecorder.onstop = handleRecordingStop;
+        mediaRecorder.onstop = (event) => {
+            console.log('[INFO] MediaRecorder stopped');
+            handleRecordingStop(event);
+        };
+        
+        // Handle recording start
+        mediaRecorder.onstart = (event) => {
+            console.log('[INFO] MediaRecorder started successfully');
+        };
         
         // Handle errors
         mediaRecorder.onerror = (event) => {
@@ -125,7 +141,10 @@ async function startRecording() {
         };
         
         // Start recording with chunking - pass timeslice to ensure data events
+        console.log(`[INFO] Starting MediaRecorder with ${CHUNK_DURATION_MS}ms timeslice`);
+        console.log(`[INFO] MediaRecorder state: ${mediaRecorder.state}`);
         mediaRecorder.start(CHUNK_DURATION_MS);
+        console.log(`[INFO] MediaRecorder state after start: ${mediaRecorder.state}`);
         
         // Update UI
         isRecording = true;
