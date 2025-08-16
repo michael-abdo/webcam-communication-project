@@ -18,13 +18,29 @@ def get_s3_client():
         # In production (Heroku), use environment variables
         if os.environ.get('AWS_ACCESS_KEY_ID'):
             print("Using AWS environment variables for S3 client")
-            return boto3.client('s3', region_name=AWS_REGION)
+            return boto3.client(
+                's3', 
+                region_name=AWS_REGION,
+                config=boto3.session.Config(
+                    s3={'addressing_style': 'virtual'},
+                    signature_version='s3v4',
+                    region_name=AWS_REGION
+                )
+            )
         else:
             # Development mode - try AWS profile
             try:
                 print(f"Attempting to use AWS profile: {AWS_PROFILE}")
                 session = boto3.Session(profile_name=AWS_PROFILE)
-                return session.client('s3', region_name=AWS_REGION)
+                return session.client(
+                    's3', 
+                    region_name=AWS_REGION,
+                    config=boto3.session.Config(
+                        s3={'addressing_style': 'virtual'},
+                        signature_version='s3v4',
+                        region_name=AWS_REGION
+                    )
+                )
             except Exception as profile_error:
                 error_msg = (
                     f"Failed to use AWS profile '{AWS_PROFILE}': {profile_error}\n"
