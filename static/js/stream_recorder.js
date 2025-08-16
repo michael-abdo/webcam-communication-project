@@ -285,16 +285,22 @@ async function getPresignedUrl(chunkNumber) {
  * Upload chunk to S3 using presigned URL
  */
 async function uploadToS3(blob, presignedData) {
+    console.log(`[INFO] Uploading blob: ${blob.size} bytes, type: ${blob.type}`);
+    console.log(`[INFO] Upload URL: ${presignedData.upload_url}`);
+    
     const formData = new FormData();
     
     // Add all fields from presigned data
     Object.entries(presignedData.fields).forEach(([key, value]) => {
+        console.log(`[INFO] Adding field: ${key} = ${value}`);
         formData.append(key, value);
     });
     
     // Add file last (important for S3)
     formData.append('file', blob, 'chunk.webm');
+    console.log(`[INFO] Added file blob to FormData`);
     
+    console.log(`[INFO] Sending POST request to S3...`);
     const response = await fetch(presignedData.upload_url, {
         method: 'POST',
         body: formData,
@@ -303,10 +309,16 @@ async function uploadToS3(blob, presignedData) {
         }
     });
     
+    console.log(`[INFO] S3 response status: ${response.status}`);
+    console.log(`[INFO] S3 response headers:`, Object.fromEntries(response.headers.entries()));
+    
     if (!response.ok) {
+        const responseText = await response.text();
+        console.error(`[ERROR] S3 upload failed: ${response.status} - ${responseText}`);
         throw new Error(`S3 upload failed: ${response.status}`);
     }
     
+    console.log(`[INFO] Upload successful!`);
     return true;
 }
 
