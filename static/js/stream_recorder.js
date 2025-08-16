@@ -290,13 +290,17 @@ async function uploadToS3(blob, presignedData) {
     
     const formData = new FormData();
     
-    // Add all fields from presigned data
+    // Add all fields from presigned data (skip Content-Type - let blob provide it)
     Object.entries(presignedData.fields).forEach(([key, value]) => {
-        console.log(`[INFO] Adding field: ${key} = ${value}`);
-        formData.append(key, value);
+        if (key !== 'Content-Type') {
+            console.log(`[INFO] Adding field: ${key} = ${value}`);
+            formData.append(key, value);
+        } else {
+            console.log(`[INFO] Skipping Content-Type field, using blob type: ${blob.type}`);
+        }
     });
     
-    // Add file last (important for S3)
+    // Add file last (important for S3) - let the blob provide its own Content-Type
     formData.append('file', blob, 'chunk.webm');
     console.log(`[INFO] Added file blob to FormData`);
     

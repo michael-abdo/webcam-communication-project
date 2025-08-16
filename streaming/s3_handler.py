@@ -87,13 +87,10 @@ def generate_presigned_post(session_id=None, chunk_number=0):
             Key=key,
             ExpiresIn=300,  # 5 minutes
             Conditions=[
-                {'content-type': 'video/webm'},
+                ['starts-with', '$Content-Type', 'video/webm'],
                 ['content-length-range', 0, 50 * 1024 * 1024]  # Max 50MB
             ]
         )
-        
-        # Add additional fields for browser upload
-        response['fields']['Content-Type'] = 'video/webm'
         response['key'] = key
         response['session_id'] = session_id
         
