@@ -72,11 +72,12 @@ def api_home():
             'GET /webcam-analysis - Live webcam fatigue detection',
             'GET /text-analysis - Text cognitive load analysis',
             'GET /tests - Interactive test dashboard',
+            'GET /tests/session/combined - Combined test with video recording',
             'GET /api/tests/list - Get available tests',
             'GET /api/tests/<test_id> - Get test definition',
             'POST /api/tests/session/start - Start test session',
-            'POST /api/tests/session/<id>/submit - Submit answer',
-            'GET /api/tests/session/<id>/results - Get test results',
+            'POST /api/tests/session/<id>/submit - Submit answer (with video events)',
+            'GET /api/tests/session/<id>/results - Get test results (with video data)',
             'GET /api/tests/session/<id> - Get session state'
         ]
     })
@@ -109,11 +110,31 @@ def stream():
 
 @app.route('/api/presigned-url', methods=['POST'])
 def get_presigned_url():
-    """Generate presigned URL for direct S3 upload."""
+    """Generate presigned URL for direct S3 upload with optional test session linking."""
     try:
         data = request.get_json()
-        session_id = data.get('session_id')
+        session_id = data.get('session_id')  # video session ID
         chunk_number = data.get('chunk_number', 0)
+        test_session_id = data.get('test_session_id')  # optional test session link
+        
+        # Store video session info if not exists
+        if session_id not in video_sessions:
+            video_sessions[session_id] = {
+                'video_session_id': session_id,
+                'test_session_id': test_session_id,
+                'start_time': datetime.now(),
+                'chunks_uploaded': 0,
+                'status': 'active'
+            }
+            
+            # Create link if test session provided
+            if test_session_id and test_session_id in test_sessions:
+                test_video_links[test_session_id] = session_id
+                print(f"[VideoLink] Linked test session {test_session_id} with video session {session_id}")
+        
+        # Update chunk count
+        if session_id in video_sessions:
+            video_sessions[session_id]['chunks_uploaded'] += 1
         
         # Generate presigned POST URL
         presigned_data = generate_presigned_post(session_id, chunk_number)
@@ -802,6 +823,10 @@ test_loader = TestLoader()
 # Test session storage
 test_sessions = {}
 
+# Video session storage and linking
+video_sessions = {}
+test_video_links = {}  # Maps test_session_id -> video_session_id
+
 @app.route('/tests')
 def tests_dashboard():
     """Interactive test dashboard."""
@@ -813,6 +838,16 @@ def test_session():
     """Test session interface."""
     system_state['requests_count'] += 1
     return render_template('tests/test_session.html')
+
+@app.route('/tests/session/combined')
+def test_session_combined():
+    """Combined test session with video recording interface."""
+    system_state['requests_count'] += 1
+    
+    # Ensure S3 bucket exists for video recording
+    ensure_bucket_exists()
+    
+    return render_template('tests/test_session_combined.html')
 
 @app.route('/api/tests/list')
 def get_tests_list():
@@ -929,14 +964,32 @@ def submit_test_answer(session_id):
         question_id = data.get('question_id')
         answer = data.get('answer')
         time_taken = data.get('time_taken', 0)
+        video_session_id = data.get('video_session_id')
+        events = data.get('events', [])  # Video-correlated events
         
-        # Record answer
-        session['answers'].append({
+        # Get linked video session if available
+        linked_video_id = test_video_links.get(session_id)
+        if video_session_id:
+            linked_video_id = video_session_id
+        
+        # Record answer with video correlation
+        answer_record = {
             'question_id': question_id,
             'answer': answer,
             'time_taken': time_taken,
-            'timestamp': datetime.now()
-        })
+            'timestamp': datetime.now(),
+            'video_session_id': linked_video_id,
+            'events': events
+        }
+        
+        session['answers'].append(answer_record)
+        
+        # Store video correlation events if available
+        if linked_video_id and events:
+            if 'video_events' not in session:
+                session['video_events'] = []
+            session['video_events'].extend(events)
+            print(f"[VideoEvents] Stored {len(events)} events for test session {session_id}")
         
         # Move to next question
         session['current_question'] += 1
@@ -970,6 +1023,15 @@ def get_test_results(session_id):
             
         session = test_sessions[session_id]
         
+        # Get linked video session
+        linked_video_id = test_video_links.get(session_id)
+        video_session_info = None
+        if linked_video_id and linked_video_id in video_sessions:
+            video_session_info = video_sessions[linked_video_id].copy()
+            # Remove sensitive data and add summary
+            video_session_info.pop('status', None)
+            video_session_info['total_chunks'] = video_session_info.get('chunks_uploaded', 0)
+        
         # Calculate basic results
         results = {
             'session_id': session_id,
@@ -981,7 +1043,9 @@ def get_test_results(session_id):
             'duration_seconds': (session.get('end_time', datetime.now()) - session['start_time']).total_seconds(),
             'questions_answered': len(session['answers']),
             'total_questions': session['total_questions'],
-            'answers': session['answers']
+            'answers': session['answers'],
+            'video_session': video_session_info,
+            'video_events_count': len(session.get('video_events', []))
         }
         
         # Add scoring if test is completed
@@ -1028,6 +1092,127 @@ def get_test_session(session_id):
         })
         
     except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/tests/session/<session_id>/events')
+def get_test_session_events(session_id):
+    """Get timestamp-correlated events for a test session."""
+    try:
+        if session_id not in test_sessions:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid session ID'
+            }), 404
+            
+        session = test_sessions[session_id]
+        
+        # Get video session events
+        video_events = session.get('video_events', [])
+        
+        # Get linked video session
+        linked_video_id = test_video_links.get(session_id)
+        
+        # Correlate events with video timestamps
+        correlated_events = []
+        
+        for event in video_events:
+            correlated_event = {
+                'timestamp': event.get('timestamp'),
+                'type': event.get('type'),
+                'data': event.get('data', {}),
+                'video_session_id': event.get('video_session_id'),
+                'relative_time_ms': 0  # Will be calculated relative to test start
+            }
+            
+            # Calculate relative time from test start
+            if session['start_time'] and event.get('timestamp'):
+                test_start_ms = int(session['start_time'].timestamp() * 1000)
+                event_timestamp_ms = event.get('timestamp')
+                correlated_event['relative_time_ms'] = event_timestamp_ms - test_start_ms
+            
+            correlated_events.append(correlated_event)
+        
+        # Sort events by timestamp
+        correlated_events.sort(key=lambda x: x.get('timestamp', 0))
+        
+        # Get answer timestamps for correlation
+        answer_events = []
+        for i, answer in enumerate(session.get('answers', [])):
+            if hasattr(answer['timestamp'], 'timestamp'):
+                answer_timestamp_ms = int(answer['timestamp'].timestamp() * 1000)
+                test_start_ms = int(session['start_time'].timestamp() * 1000)
+                
+                answer_events.append({
+                    'type': 'answer_submitted',
+                    'timestamp': answer_timestamp_ms,
+                    'relative_time_ms': answer_timestamp_ms - test_start_ms,
+                    'question_id': answer.get('question_id'),
+                    'question_index': i,
+                    'time_taken': answer.get('time_taken', 0),
+                    'video_session_id': answer.get('video_session_id')
+                })
+        
+        return jsonify({
+            'status': 'success',
+            'session_id': session_id,
+            'video_session_id': linked_video_id,
+            'test_start_time': session['start_time'].isoformat(),
+            'test_duration_ms': (session.get('end_time', datetime.now()) - session['start_time']).total_seconds() * 1000,
+            'video_events': correlated_events,
+            'answer_events': answer_events,
+            'total_events': len(correlated_events) + len(answer_events)
+        })
+        
+    except Exception as e:
+        print(f"Error retrieving test session events: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/video/session/<video_session_id>/chunks')
+def get_video_session_chunks(video_session_id):
+    """Get list of video chunks for a session with timestamps."""
+    try:
+        if video_session_id not in video_sessions:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid video session ID'
+            }), 404
+            
+        video_session = video_sessions[video_session_id]
+        
+        # Generate chunk information (this would ideally come from S3 metadata)
+        chunks_info = []
+        chunks_uploaded = video_session.get('chunks_uploaded', 0)
+        
+        for chunk_num in range(chunks_uploaded):
+            # Calculate approximate timestamp for each chunk (5-second intervals)
+            chunk_start_offset_ms = chunk_num * 5000  # 5 seconds per chunk
+            session_start_ms = int(video_session['start_time'].timestamp() * 1000)
+            
+            chunks_info.append({
+                'chunk_number': chunk_num,
+                'chunk_start_time': session_start_ms + chunk_start_offset_ms,
+                'chunk_duration_ms': 5000,  # 5 seconds
+                'relative_start_ms': chunk_start_offset_ms,
+                's3_key': f"{video_session_id}/chunk_{chunk_num:04d}.webm"
+            })
+        
+        return jsonify({
+            'status': 'success',
+            'video_session_id': video_session_id,
+            'test_session_id': video_session.get('test_session_id'),
+            'video_start_time': video_session['start_time'].isoformat(),
+            'chunks': chunks_info,
+            'total_chunks': len(chunks_info)
+        })
+        
+    except Exception as e:
+        print(f"Error retrieving video chunks: {e}")
         return jsonify({
             'status': 'error',
             'message': str(e)
