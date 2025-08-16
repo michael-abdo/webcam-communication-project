@@ -1,0 +1,96 @@
+{
+  "scenarios": [
+    {
+      "id": "email_response_delay",
+      "context": {
+        "setting": "workplace",
+        "relationship": "colleague", 
+        "stakes": "moderate"
+      },
+      "story": "You sent an urgent email to your colleague Sarah asking for feedback on a document that needs to be submitted today. Three hours have passed and Sarah hasn't responded, even though you can see she has been active on the company messaging system, responding to other colleagues' questions.",
+      "attribution_options": {
+        "hostile": {
+          "title": "Intentional Disregard",
+          "description": "Sarah is deliberately ignoring my email because she doesn't want to help or doesn't think my request is important.",
+          "intent_level": "high"
+        },
+        "neutral": {
+          "title": "Circumstantial Factors", 
+          "description": "Sarah is probably busy with other urgent tasks or may have missed my email among other messages she's handling.",
+          "intent_level": "moderate"
+        },
+        "benign": {
+          "title": "Unintentional Oversight",
+          "description": "Sarah likely has a good reason - maybe she's waiting to give quality feedback, or has technical issues, or is dealing with an emergency.",
+          "intent_level": "low"
+        }
+      },
+      "bias_indicators": ["hostile_attribution", "fundamental_attribution_error"],
+      "correct_attribution": "neutral"
+    },
+    {
+      "id": "social_exclusion",
+      "context": {
+        "setting": "social",
+        "relationship": "friends",
+        "stakes": "high"
+      },
+      "story": "You notice that several of your friends went out to dinner together last weekend and posted photos on social media. You weren't invited, even though you've been part of this friend group for months and usually join their outings.",
+      "attribution_options": {
+        "hostile": {
+          "title": "Deliberate Exclusion",
+          "description": "They intentionally left me out because they don't really want me in the group or they were talking about me.",
+          "intent_level": "high"
+        },
+        "neutral": {
+          "title": "Oversight or Circumstance",
+          "description": "It was probably a last-minute plan, or they assumed I was busy, or it was a smaller gathering for a specific reason.",
+          "intent_level": "moderate"
+        },
+        "benign": {
+          "title": "Innocent Explanation",
+          "description": "There's likely a good reason - maybe it was planned around someone's schedule, or they thought I wouldn't be interested in that particular restaurant/activity.",
+          "intent_level": "low"
+        }
+      },
+      "bias_indicators": ["rejection_sensitivity", "social_attribution_bias"],
+      "correct_attribution": "neutral"
+    },
+    {
+      "id": "meeting_interruption",
+      "context": {
+        "setting": "workplace",
+        "relationship": "manager",
+        "stakes": "high"
+      },
+      "story": "During a team meeting where you're presenting your quarterly results, your manager interrupts you mid-sentence twice to ask questions, then suggests 'moving on to save time' before you've finished your main points.",
+      "attribution_options": {
+        "hostile": {
+          "title": "Undermining Behavior",
+          "description": "My manager is deliberately trying to undermine me and make me look unprepared in front of the team.",
+          "intent_level": "high"
+        },
+        "neutral": {
+          "title": "Time Management Concerns",
+          "description": "The manager is probably worried about the meeting running over and trying to keep things on schedule.",
+          "intent_level": "moderate"
+        },
+        "benign": {
+          "title": "Engagement and Efficiency",
+          "description": "My manager is engaged with my presentation and their questions show interest; they're trying to help by focusing on key points.",
+          "intent_level": "low"
+        }
+      },
+      "bias_indicators": ["authority_attribution", "performance_threat_sensitivity"],
+      "correct_attribution": "neutral"
+    }
+  ],
+  "instructions": "Read each scenario and consider what might be happening. Choose the explanation that seems most likely to you.",
+  "scoring": {
+    "hostile_weight": 1.0,
+    "neutral_weight": 0.5,
+    "benign_weight": 0.0,
+    "perspective_bonus": 0.1,
+    "confidence_factor": 0.05
+  }
+}

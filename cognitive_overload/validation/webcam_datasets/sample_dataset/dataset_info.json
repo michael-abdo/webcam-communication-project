@@ -1,0 +1,12 @@
+{
+  "name": "Webcam Sample Dataset",
+  "description": "Sample videos for validating face detection and cognitive metrics",
+  "sources": [
+    {
+      "file": "realistic_synthetic_face.mp4",
+      "type": "synthetic",
+      "description": "Synthetic face video from testing"
+    }
+  ],
+  "preparation_notes": []
+}

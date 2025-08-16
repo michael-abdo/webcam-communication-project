@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "id": "medication_percentage",
+      "text": "In a medical study, 85% of patients who took a new medication showed improvement. If 200 patients took the medication, approximately how many patients showed improvement?",
+      "correct_answer": 170,
+      "tolerance": 5,
+      "units": "patients",
+      "difficulty": "medium",
+      "skills": ["percentage_calculation", "multiplication"],
+      "population_accuracy": 78,
+      "explanation": "85% of 200 = 0.85 × 200 = 170 patients"
+    },
+    {
+      "id": "probability_reasoning",
+      "text": "A bag contains 12 red balls and 8 blue balls. If you randomly select 2 balls without replacement, what is the probability that both balls are red? (Express as a percentage, rounded to the nearest whole number)",
+      "correct_answer": 33,
+      "tolerance": 2,
+      "units": "%",
+      "difficulty": "hard",
+      "skills": ["probability", "combinations"],
+      "population_accuracy": 45,
+      "explanation": "P(both red) = (12/20) × (11/19) = 132/380 ≈ 0.347 ≈ 35%"
+    }
+  ],
+  "calibration_questions": [
+    "How confident are you that your answer is correct?",
+    "If you had to guess, what percentage of people get this question right?"
+  ],
+  "scoring": {
+    "accuracy_weight": 0.7,
+    "calibration_weight": 0.3,
+    "calculator_penalty": 0,
+    "revision_bonus": 0.05
+  }
+}

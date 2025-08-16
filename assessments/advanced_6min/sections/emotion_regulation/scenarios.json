@@ -1,0 +1,181 @@
+{
+  "scenarios": [
+    {
+      "id": "workplace_criticism",
+      "title": "Workplace Feedback Situation",
+      "description": "Your manager calls you into their office and gives you critical feedback about a project you've been working on for weeks. They point out several mistakes and suggest that your approach needs 'significant improvement.' You feel your face getting warm and your heart starts racing.",
+      "context": {
+        "setting": "workplace",
+        "intensity": "moderate_high",
+        "triggers": ["criticism", "public_evaluation", "performance_concerns"]
+      },
+      "expected_emotions": ["anger", "embarrassment", "anxiety"],
+      "adaptive_strategies": [
+        {
+          "id": "cognitive-reframing",
+          "text": "Think about what I can learn from this feedback",
+          "category": "cognitive"
+        },
+        {
+          "id": "deep-breathing",
+          "text": "Take deep breaths to calm down",
+          "category": "physiological"
+        },
+        {
+          "id": "perspective-taking",
+          "text": "Consider my manager's perspective and intentions",
+          "category": "cognitive"
+        },
+        {
+          "id": "problem-solving",
+          "text": "Focus on how to improve and fix the issues",
+          "category": "behavioral"
+        }
+      ],
+      "maladaptive_strategies": [
+        {
+          "id": "defensive-arguing",
+          "text": "Argue with the feedback and defend my work",
+          "category": "behavioral"
+        },
+        {
+          "id": "rumination",
+          "text": "Keep thinking about how unfair this is",
+          "category": "cognitive"
+        },
+        {
+          "id": "avoidance",
+          "text": "Try not to think about it and avoid the topic",
+          "category": "behavioral"
+        },
+        {
+          "id": "emotional-suppression",
+          "text": "Just push down my feelings and pretend I'm fine",
+          "category": "suppression"
+        }
+      ]
+    },
+    {
+      "id": "social_rejection",
+      "title": "Social Disappointment",
+      "description": "You text a close friend asking if they want to hang out this weekend, and they respond that they're busy. Later, you see on social media that they're at a party with other people you know, and you weren't invited.",
+      "context": {
+        "setting": "social",
+        "intensity": "moderate",
+        "triggers": ["rejection", "exclusion", "social_comparison"]
+      },
+      "expected_emotions": ["sadness", "anger", "embarrassment"],
+      "adaptive_strategies": [
+        {
+          "id": "perspective-taking",
+          "text": "Consider reasonable explanations for the situation",
+          "category": "cognitive"
+        },
+        {
+          "id": "self-compassion",
+          "text": "Remind myself that everyone faces social disappointments",
+          "category": "cognitive"
+        },
+        {
+          "id": "direct-communication",
+          "text": "Talk to my friend directly about how I feel",
+          "category": "behavioral"
+        },
+        {
+          "id": "activity-engagement",
+          "text": "Do something enjoyable to take care of myself",
+          "category": "behavioral"
+        }
+      ],
+      "maladaptive_strategies": [
+        {
+          "id": "rumination",
+          "text": "Obsess about why I wasn't included",
+          "category": "cognitive"
+        },
+        {
+          "id": "social-withdrawal",
+          "text": "Isolate myself from the friend group",
+          "category": "behavioral"
+        },
+        {
+          "id": "negative-self-talk",
+          "text": "Tell myself I'm not likeable or worthy",
+          "category": "cognitive"
+        },
+        {
+          "id": "revenge-planning",
+          "text": "Think about ways to get back at them",
+          "category": "behavioral"
+        }
+      ]
+    },
+    {
+      "id": "family_conflict",
+      "title": "Family Disagreement",
+      "description": "During a family dinner, a relative makes a comment about your life choices that feels judgmental and hurtful. They question your career decisions and compare you unfavorably to your siblings. Other family members are present and watching your reaction.",
+      "context": {
+        "setting": "family",
+        "intensity": "high",
+        "triggers": ["judgment", "comparison", "public_criticism"]
+      },
+      "expected_emotions": ["anger", "hurt", "frustration", "embarrassment"],
+      "adaptive_strategies": [
+        {
+          "id": "boundary-setting",
+          "text": "Calmly set boundaries about acceptable topics",
+          "category": "behavioral"
+        },
+        {
+          "id": "emotional-validation",
+          "text": "Acknowledge that my feelings are valid",
+          "category": "cognitive"
+        },
+        {
+          "id": "strategic-response",
+          "text": "Choose a measured response that maintains dignity",
+          "category": "behavioral"
+        },
+        {
+          "id": "support-seeking",
+          "text": "Talk to a supportive family member later",
+          "category": "social"
+        }
+      ],
+      "maladaptive_strategies": [
+        {
+          "id": "explosive-reaction",
+          "text": "Lash out angrily at the relative",
+          "category": "behavioral"
+        },
+        {
+          "id": "passive-aggression",
+          "text": "Make subtle jabs back at them",
+          "category": "behavioral"
+        },
+        {
+          "id": "complete-shutdown",
+          "text": "Stop talking and withdraw completely",
+          "category": "behavioral"
+        },
+        {
+          "id": "internalization",
+          "text": "Believe their criticism and feel worthless",
+          "category": "cognitive"
+        }
+      ]
+    }
+  ],
+  "emotion_scale": {
+    "min": 0,
+    "max": 10,
+    "emotions": ["anger", "sadness", "anxiety", "embarrassment", "frustration", "hurt"]
+  },
+  "effectiveness_scale": {
+    "min": 1,
+    "max": 10,
+    "low_label": "Still very upset",
+    "high_label": "Calm and focused"
+  },
+  "instructions": "We'll present some scenarios. Please respond honestly about how you would feel and react."
+}

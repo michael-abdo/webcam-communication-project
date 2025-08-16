@@ -1,0 +1,28 @@
+{
+  "download_session": "2025-06-20T20:42:31.138353",
+  "datasets_attempted": 4,
+  "successful_downloads": 2,
+  "manual_downloads_required": 1,
+  "results": {
+    "faces_event_streams": {
+      "success": true,
+      "message": "Downloaded successfully",
+      "path": "./major_face_datasets/faces_event_streams"
+    },
+    "mobiface": {
+      "success": true,
+      "message": "Manual download instructions created",
+      "path": "./major_face_datasets/mobiface",
+      "manual_download": true
+    },
+    "selfies_videos_kaggle": {
+      "success": false,
+      "error": "Kaggle API not configured"
+    },
+    "webcam_liveness": {
+      "success": false,
+      "error": "Kaggle API not configured"
+    }
+  },
+  "base_directory": "./major_face_datasets"
+}
