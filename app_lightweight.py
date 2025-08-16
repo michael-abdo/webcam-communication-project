@@ -11,6 +11,7 @@ import random
 from datetime import datetime
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
+from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -73,15 +74,6 @@ def api_home():
         ]
     })
 
-@app.route('/dashboard')
-def dashboard():
-    """Full dashboard interface."""
-    return render_template('dashboard.html')
-
-@app.route('/demo')
-def demo():
-    """Demo interface."""
-    return render_template('demo.html')
 
 @app.route('/video-analysis')
 def video_analysis():
@@ -98,32 +90,42 @@ def webcam_analysis():
     
     return render_template('webcam_analysis.html')
 
-@app.route('/text-analysis')
-def text_analysis():
-    """Text analysis interface for NLP-based cognitive load detection."""
+@app.route('/stream')
+def stream():
+    """Raw video/audio streaming to S3 interface."""
     system_state['requests_count'] += 1
     
-    # Rate limiting check (simple version - production would use Redis)
-    client_ip = request.remote_addr
-    current_time = time.time()
+    # Ensure S3 bucket exists on first load
+    ensure_bucket_exists()
     
-    # Initialize rate limit tracking if needed
-    if 'rate_limits' not in system_state:
-        system_state['rate_limits'] = {}
-    
-    # Check rate limit (10 requests per minute per IP)
-    if client_ip in system_state['rate_limits']:
-        requests_in_window = [t for t in system_state['rate_limits'][client_ip] 
-                            if current_time - t < 60]
-        if len(requests_in_window) >= 10:
-            return jsonify({'error': 'Rate limit exceeded. Please wait.'}), 429
-        system_state['rate_limits'][client_ip] = requests_in_window + [current_time]
-    else:
-        system_state['rate_limits'][client_ip] = [current_time]
-    
-    print(f"[{datetime.now().isoformat()}] Text analysis accessed - IP: {client_ip}")
-    
-    return render_template('text_analysis.html')
+    return render_template('stream.html')
+
+@app.route('/api/presigned-url', methods=['POST'])
+def get_presigned_url():
+    """Generate presigned URL for direct S3 upload."""
+    try:
+        data = request.get_json()
+        session_id = data.get('session_id')
+        chunk_number = data.get('chunk_number', 0)
+        
+        # Generate presigned POST URL
+        presigned_data = generate_presigned_post(session_id, chunk_number)
+        
+        if presigned_data:
+            return jsonify({
+                'success': True,
+                'upload_url': presigned_data['url'],
+                'fields': presigned_data['fields'],
+                'key': presigned_data['key'],
+                'session_id': presigned_data['session_id']
+            })
+        else:
+            return jsonify({'success': False, 'error': 'Failed to generate presigned URL'}), 500
+            
+    except Exception as e:
+        print(f"Error generating presigned URL: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 @app.route('/health')
 def health():
