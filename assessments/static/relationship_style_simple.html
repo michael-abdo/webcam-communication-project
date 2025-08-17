@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationship Style Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 4px solid #4caf50;
+        }
+        .dimension {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .dimension-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .question-number {
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .likert-scale {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .likert-option {
+            text-align: center;
+            padding: 15px 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 80px;
+        }
+        .likert-option:hover {
+            border-color: #4caf50;
+            background: #f8fff8;
+        }
+        .likert-option input[type="radio"] {
+            margin: 0;
+        }
+        .likert-option input[type="radio"]:checked + .option-content {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .option-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        .option-number {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .option-label {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.2;
+        }
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 40px auto 0;
+            padding: 15px 30px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .likert-scale {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .likert-option {
+                min-height: 60px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Relationship Style Assessment</h1>
+        
+        <div class="instructions">
+            <p>This assessment explores your attachment style and preferences in close relationships.</p>
+            <p>Rate each statement based on how well it describes you in close relationships (romantic, friendship, family).</p>
+        </div>
+
+        <form id="relationship-style-form">
+            <!-- Attachment Anxiety Dimension -->
+            <div class="dimension">
+                <div class="dimension-title">Part 1: Relationship Anxiety</div>
+                
+                <div class="question">
+                    <div class="question-number">Question 1</div>
+                    <div class="question-text">
+                        I worry about being abandoned or rejected by people close to me.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q1" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q1" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q1" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q1" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q1" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-number">Question 2</div>
+                    <div class="question-text">
+                        I need a lot of reassurance from people close to me that they care about me.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q2" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q2" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q2" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q2" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q2" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-number">Question 3</div>
+                    <div class="question-text">
+                        When someone important to me seems distant, I feel anxious or upset.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q3" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q3" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q3" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q3" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="anxiety_q3" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attachment Avoidance Dimension -->
+            <div class="dimension">
+                <div class="dimension-title">Part 2: Relationship Avoidance</div>
+                
+                <div class="question">
+                    <div class="question-number">Question 4</div>
+                    <div class="question-text">
+                        I prefer not to show how I feel deep down because I might get hurt.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q1" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q1" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q1" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q1" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q1" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-number">Question 5</div>
+                    <div class="question-text">
+                        I find it difficult to depend on others, even when I need support.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q2" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q2" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q2" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q2" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q2" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-number">Question 6</div>
+                    <div class="question-text">
+                        I try to avoid getting too close to people because it makes me uncomfortable.
+                    </div>
+                    <div class="likert-scale">
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q3" value="1" required>
+                            <div class="option-content">
+                                <div class="option-number">1</div>
+                                <div class="option-label">Strongly Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q3" value="2" required>
+                            <div class="option-content">
+                                <div class="option-number">2</div>
+                                <div class="option-label">Disagree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q3" value="3" required>
+                            <div class="option-content">
+                                <div class="option-number">3</div>
+                                <div class="option-label">Neutral</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q3" value="4" required>
+                            <div class="option-content">
+                                <div class="option-number">4</div>
+                                <div class="option-label">Agree</div>
+                            </div>
+                        </label>
+                        <label class="likert-option">
+                            <input type="radio" name="avoidance_q3" value="5" required>
+                            <div class="option-content">
+                                <div class="option-number">5</div>
+                                <div class="option-label">Strongly Agree</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Submit Assessment</button>
+            <div class="progress">Assessment: 6 questions completed</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('relationship-style-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {
+                anxiety: {
+                    q1: parseInt(formData.get('anxiety_q1')),
+                    q2: parseInt(formData.get('anxiety_q2')),
+                    q3: parseInt(formData.get('anxiety_q3'))
+                },
+                avoidance: {
+                    q1: parseInt(formData.get('avoidance_q1')),
+                    q2: parseInt(formData.get('avoidance_q2')),
+                    q3: parseInt(formData.get('avoidance_q3'))
+                },
+                timestamp: new Date().toISOString()
+            };
+            
+            // Calculate attachment dimensions
+            const anxietyScore = (responses.anxiety.q1 + responses.anxiety.q2 + responses.anxiety.q3) / 3;
+            const avoidanceScore = (responses.avoidance.q1 + responses.avoidance.q2 + responses.avoidance.q3) / 3;
+            
+            // Determine attachment style
+            let attachmentStyle = '';
+            let description = '';
+            
+            if (anxietyScore < 3 && avoidanceScore < 3) {
+                attachmentStyle = 'Secure';
+                description = 'You feel comfortable with intimacy and independence. You can effectively communicate your needs and support others.';
+            } else if (anxietyScore >= 3 && avoidanceScore < 3) {
+                attachmentStyle = 'Anxious';
+                description = 'You value close relationships but may worry about being rejected or abandoned. You seek reassurance from others.';
+            } else if (anxietyScore < 3 && avoidanceScore >= 3) {
+                attachmentStyle = 'Avoidant';
+                description = 'You value independence and may feel uncomfortable with too much closeness. You prefer to rely on yourself.';
+            } else {
+                attachmentStyle = 'Disorganized';
+                description = 'You may have mixed feelings about close relationships - wanting them but also feeling uncomfortable with intimacy.';
+            }
+            
+            let feedback = 'Relationship Style Assessment Results:\\n\\n';
+            feedback += `Attachment Style: ${attachmentStyle}\\n\\n`;
+            feedback += `${description}\\n\\n`;
+            feedback += `Anxiety Score: ${anxietyScore.toFixed(1)}/5\\n`;
+            feedback += `Avoidance Score: ${avoidanceScore.toFixed(1)}/5\\n\\n`;
+            
+            if (attachmentStyle === 'Secure') {
+                feedback += '✓ You tend to have healthy, balanced relationships with good communication skills.';
+            } else if (attachmentStyle === 'Anxious') {
+                feedback += '~ Consider practicing self-soothing techniques and building self-confidence in relationships.';
+            } else if (attachmentStyle === 'Avoidant') {
+                feedback += '~ Consider gradually opening up more to trusted people and practicing emotional expression.';
+            } else {
+                feedback += '~ Consider working on developing a more consistent approach to relationships and emotional regulation.';
+            }
+            
+            console.log('Relationship Style Responses:', responses);
+            console.log('Attachment Style:', attachmentStyle);
+            console.log('Anxiety Score:', anxietyScore);
+            console.log('Avoidance Score:', avoidanceScore);
+            
+            alert(feedback);
+            
+            // In production, would send to server:
+            // fetch('/api/quiz/relationship-style/submit', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         ...responses,
+            //         scores: { anxiety: anxietyScore, avoidance: avoidanceScore },
+            //         attachmentStyle: attachmentStyle
+            //     })
+            // });
+        });
+    </script>
+</body>
+</html>

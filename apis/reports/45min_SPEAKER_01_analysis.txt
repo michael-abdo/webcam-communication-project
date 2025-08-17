@@ -1,0 +1,214 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_01
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_01
+Total Utterances: 145
+Total Speaking Time: 1117.30 seconds
+Average Utterance Length: 7.71 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: male (confidence: 91.5%)
+Age Group: 31 - 45 (confidence: 55.5%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 98.8%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (88 utterances)
+Emotion Distribution:
+  Neutral: 71.0%
+  Happy: 24.2%
+  Angry: 4.0%
+  Sad: 0.8%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 82.3%
+Positive: 15.3%
+Negative: 2.4%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Fast: 46.8%
+  Normal: 42.7%
+  Slow: 10.5%
+Hesitation Patterns:
+  No: 77.4%
+  Yes: 22.6%
+Engagement Level:
+  Neutral: 58.1%
+  Engaged: 40.3%
+  Withdrawn: 1.6%
+Voice Strength:
+  Neutral: 88.7%
+  Strong: 10.5%
+  Weak: 0.8%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 88.7%
+Potentially Manipulated: 11.3%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[0.1s - 1.4s]: I can record.
+[3.1s - 14.7s]: And we don't have a ton of items to get to. And I might be able to do one that might be fun if we have a little bit of time.
+[16.5s - 17.7s]: So corporate events.
+[21.4s - 29.5s]: They, I think I saw a little I put this in in slack and I saw a little bit of kind of noise around it, which was good.
+[32.3s - 37.8s]: You know that the nutshell here is as we've kind of restructured and try different things.
+[39.4s - 43.4s]: The event support that we need isn't as nailed down as it needs to be.
+[46.6s - 61.7s]: Current tactic that we're going with is go to market team, signs up, and kind of sponsors that event. So you support as a PMM, your campaign manager does the campaigns for that event, et cetera, et cetera, et cetera.
+[62.9s - 71.3s]: I don't see anyone in the, maybe there are comments in the issue. I don't see the header updated yet.
+[79.3s - 80.0s]: So it looks like
+[82.8s - 89.0s]: Ty put in some folks, it looks like this looks good.
+[93.5s - 98.1s]: Let's see need support from GTM teams. So I guess the ask would be, um,
+[101.6s - 113.8s]: to work with your GTM teams. So let me ask, I saw some Slack, I think in our Slack, but did you all, were you all able to connect with like your GTM teams?
+[138.7s - 146.5s]: Yeah, do y'all um does anybody have like a regular sink still are those all been canceled or is there.
+[162.5s - 162.9s]: Cool, so.
+[164.7s - 166.2s]: I'm just trying to catch up with the thread.
+[170.2s - 179.8s]: So it looks like maybe a platform on re-invent CICD on Google Next and GitOps on KubeCon. Does that sound right?
+[184.2s - 185.7s]: Cool. So then I think
+[189.1s - 206.3s]: I think we can we can help the Corp events team, they do they do a lot of like cat herding and you know keep on tracking people down. So I think if if this team can take the mission to like try to help track that down. So if you, you know,
+[207.9s - 226.5s]: Get the commitment, specifically from your campaign managers. Hey, like we're, we're signing up for a coupon. You know, can you comment on the issue that yes, I can commit to this, etc, etc, etc. You know, So that just so that they can get that that event support, but that looks good. And I appreciate
+[228.5s - 231.8s]: Thanks for the link too, Samia, on the roles.
+[232.9s - 233.8s]: Product announcements.
+[235.6s - 240.5s]: So I appreciate Brian for adding this. I probably should have added it, but
+[249.8s - 263.3s]: So in theory, this could be the same as the GitLab-Fourteen launch, where we're saying, basically, since Thirteen.O, what kind of big improvements have we made?
+[267.4s - 274.0s]: Candidly, this is always a little bit tough, and I'm not totally sure of all of the...
+[275.9s - 299.3s]: kind of the interplay here. But I think this is kind of the general gist of this assignment is, okay, we have commit coming up. We have some amount of like, we have a stage, a metaphorical stage to say something to the world and we'll get some amount of press attention because we're having an event, right? What kind of announcements do we make?
+[301.0s - 310.6s]: At GitLab, it's really, really tough to make product announcements because our entire roadmap is completely public, yada, yada, yada. So the thought here is to
+[312.7s - 336.6s]: But also because our entire roadmap is completely public, and because we ship these tiny little MVCs, a new feature will come out, but it'll be not really usable. So it takes a while. So if you look back over the past year and say, OK, what started in the last year but now is really a full-fledged feature, what would be coming out of beta?  Right. Like if we were any other company.
+[337.2s - 348.5s]: When we started a beta program in this last year, what would be be announcing is GA at commit. That's kind of, that's kind of my thought on it. I see a couple of heads. What do you think, Cindy.
+[379.9s - 402.4s]: Absolutely. Yeah. Yeah. And vulnerability management was, was one of the, you know, the features out of, we, we looked at fourteen. Oh, so I think, yeah, this is like, let's take the stuff from fourteen. Oh, and then maybe add a few more so that we can hit kind of different areas of press or give, give our PR team. This is kind of like input into our PR team to give them fodder to go out with.
+[406.5s - 418.1s]: Yeah, ideally there's just, you know, three, you know, three items per stage. And then I think y'all made some good notes that, okay, we need to add manage. So I see manage in here. That's excellent.
+[420.5s - 422.7s]: And integrations, we don't.
+[424.1s - 426.1s]: Well, actually, we have some pretty exciting integration.
+[619.2s - 621.9s]: Is that, do we have VS code listed on here?
+[638.4s - 643.0s]: And that I think that's a that's a pretty good note as well.
+[644.6s - 657.5s]: We did that with like our our Terraform module right there was like a community module, but now it's officially supported so that's that's the you know that can be the line yes or no, whether you can use the thing.
+[659.2s - 661.6s]: for a lot of businesses. So I think that's a good one, too.
+[698.4s - 700.6s]: I think it's a little bit of a judgment call.
+[703.8s - 710.6s]: You know, for example, Cormac was saying like epic boards is something that was asked for for a long time now.
+[712.2s - 715.6s]: Depending on how it's asked for, maybe that means it's exciting or it's not, right?
+[717.4s - 725.6s]: But usually when something gets a lot of upvotes or when there's a lot of demand for it, then I would bump the excitement level on something like that.
+[727.8s - 742.8s]: Certainly it's something shipped and a lot of people are using it, the MAU, that's another good measure. I don't know that any one of those needs to kind of be exclusive. I think it's a bit of an individual judgment column, just like what is your feeling based on, you know,
+[744.5s - 748.2s]: Could be anecdotal. Like you talk to customers and they're like really hyper excited about this.
+[754.8s - 757.9s]: Or, you know, maybe not which is which is okay I think it's okay.
+[770.5s - 771.6s]: Yeah, I might.
+[774.5s - 786.6s]: I might even constrain us is we're not going to highlight low segments, but we want to see the full spectrum, especially in the case we have slim pickings. Alternately, if there are double digit entries, then we can stack rank.
+[788.2s - 788.3s]: Um,
+[790.9s - 801.2s]: So that's kind of also helpful there. So if we have three for all of these, it looks like we're going to get there. And that's going to be quite a lot of features.
+[802.8s - 806.2s]: So I might constrain it like this.
+[807.7s - 811.2s]: Maybe you can only give out one, two, or three.
+[812.8s - 818.6s]: and treat it as a stack rank rather than just like a raw excitement level that doesn't necessarily.
+[844.9s - 871.2s]: Yeah. Give this just the rough pass. And a lot of things recently have been moving between docs and spreadsheet and the spreadsheet to docs. This might end up, or some iteration of this might end up in a spreadsheet where we then try to stack rank in PR. It's like, OK, out of all of the, there's maybe ten boxes here and three each out of the thirty items, which are the top five.
+[873.8s - 879.9s]: Actually, let's just let's actually just do that. Let's just do this like top, top five overall.
+[890.3s - 908.0s]: So, so this is exactly where this is headed to is the idea that during the product keynote and then ideally during kids since keynote as well, that there's some level of like an announcement that we make that then the press cares about that announcement.
+[909.6s - 932.3s]: Again, really tough to do at GitLab because it's all been around for a while. So this is our attempt to head to that area, is to say these are the announcements of the event. And yeah, maybe it's some things that have been around for a while, but now they're at a level of maturity. Now there's reason to be excited about this. So that's kind of where it's coming from.
+[933.7s - 937.8s]: So I put a top five overall.
+[940.3s - 941.3s]: Maybe we can just...
+[943.5s - 943.7s]: You know.
+[961.7s - 961.8s]: So.
+[966.9s - 981.1s]: Maybe we can do like a five minutes kind of like just just time box and kind of look at these here. What do you all think is a top would be a top five out of the list of you know
+[983.3s - 983.9s]: Twenty or thirty.
+[1006.9s - 1007.3s]: What else?
+[1038.4s - 1051.1s]: Let's go with vulnerability management for now. I now would agree on that one, and I would say that some of these we did do some press around, and the fuzzing acquisitions was one thing, so we might not get a second chance at that.
+[1060.3s - 1062.6s]: Was it within the past year or longer?
+[1064.6s - 1066.5s]: I thought it was within the past year.
+[1093.3s - 1101.3s]: Right, that's what I was saying is that the the fuzzing we already did press on through probably will not get another chomp at that. So I think let's go with vulnerability management.
+[1149.1s - 1155.1s]: Between the proprietary ships and the vulnerability management, which would you pick is the number one out of those two?
+[1162.0s - 1170.0s]: I'm just kind of scanning the list. I would probably say like Kubernetes agent is something that we've made a lot of investment in.
+[1171.3s - 1171.6s]: Although
+[1191.4s - 1205.8s]: So I'm going to, I'm just going to call those GitOps and I'm going to put like KS agents plus as she for integrations.
+[1207.1s - 1210.7s]: It's like a bucket of capabilities that is probably worth talking about.
+[1213.8s - 1213.9s]: Is.
+[1221.5s - 1222.2s]: Cool. Well, let's.
+[1223.9s - 1228.7s]: You know, let's try to, this is due Tuesday, I think we want to try to get this done.
+[1231.1s - 1239.1s]: So maybe just review this kind of like, let's just kind of pick top five, maybe something from plan and something from CI CD.
+[1266.3s - 1271.5s]: Cool. I'm going to ping you on this Cormac to add a top five plan.
+[1277.9s - 1278.2s]: Cool.
+[1279.8s - 1280.6s]: Ah, I think.
+[1290.0s - 1295.4s]: Yeah, this is something we don't do, which I agree, like we don't we don't often.
+[1297.3s - 1301.2s]: stop as a company and just kind of look at our wins.
+[1302.2s - 1307.1s]: I was really, I don't, did y'all, did anybody miss, what do we call it?
+[1312.6s - 1334.7s]: If you missed it I recommend it. I laugh because like what assembly reminds me of is like when I was in like a young child in grade school, they'd have this big stack of like carpet. They were like squares of carpet and you go like you go into the gym and you pull off this a square of carpet and all the children would sit on a square of carpet and that was like you'd have an assembly.
+[1352.7s - 1374.1s]: Aside from the goofy name, I thought that, um, and of course we can't talk about any of it on YouTube, but  man that was like a really awesome look back at like here's some wins and here's some exciting things that we've done. And so I think we just need to get better at this as a company, I think this exercise an opportunity that I think we do a little bit of that, but this is doing it more so.
+[1375.4s - 1376.9s]: Sami you have some questions here.
+[1379.7s - 1380.4s]: For Alita? Yes.
+[1553.7s - 1564.2s]: Right. So ideally when we pick like the ten to fifteen features, those, some of those were like GitLab only some of those were like GitLab didn't have.
+[1566.0s - 1567.2s]: Well, I thought it was supposed to be nice.
+[1570.5s - 1570.8s]: Yeah.
+[1571.9s - 1572.6s]: Exactly. Yeah.
+[1573.8s - 1578.7s]: So in an ideal world, most of them are like, this is what I'm shopping for this solution.
+[1580.2s - 1591.2s]: Some of them might be GitLab only. Some of them might be like competitor only. So that somebody would look at it and be like, this looks honest and trustworthy and like an accurate assessment of the market.
+[1591.9s - 1592.5s]: Yeah, that's fair.
+[1593.7s - 1618.1s]: And then, yeah, I think Samir for this, just to kind of reiterate for this one, we're only doing these five competitors. So we'll do the other ones in a later stage. And then if the vendor bills themselves as a platform, then we should specifically call out that they have zero. So GitHub bills itself as a platform, it sells itself that way.
+[1619.9s - 1622.3s]: Same with Azure DevOps, same with JFrog.
+[1626.8s - 1635.1s]: Yeah. Jenkins CloudBees does not, but what is it? Azure DevOps, GitHub, Atlassian.
+[1636.2s - 1639.0s]: And although Atlassians, we still need to figure something out there.
+[1663.9s - 1673.2s]: So yeah, so for those platform, you know, we should call out the fact that they don't have any monitoring. If they have like zero out of fifteen, we should call that out.
+[1674.2s - 1677.6s]: Same with the configure stuff or this, you know, any those kind of capabilities.
+[1711.3s - 1713.0s]: Hi, let's see who can find it faster.
+[1721.8s - 1734.1s]: So this is why I send everything to Google Gmail, because the search is so fast. So I literally have a folder where all of my GitLab pings go.
+[1735.4s - 1738.7s]: And I can just search for infographic. Oh, I found it.
+[1740.2s - 1741.2s]: Who could look at first?
+[1763.6s - 1768.8s]: So, so we made it. We made a couple decisions along the way. So, um,
+[1771.9s - 1774.1s]: One of the decisions was to just go with stages.
+[1775.1s - 1783.9s]: It would have been like a whole nother layer of, okay, if we don't go with just the GitLab stages, the ten stages, what do we use?
+[1785.2s - 1787.8s]: That has to be determined, reconciled, all this kind of stuff.
+[1792.1s - 1811.9s]: I don't know how long it's been since we updated. Those pages have not been updated, but we are just trying to move towards some progress. So I concur that maybe configure and monitor is not as descriptive as it could be, but the place where it will. So actually, I'll share one thing.
+[1820.4s - 1837.8s]: So the way this is getting built is off of a data model. So in theory, these could change or be updated where the underlying data remains the same, right? Because we're separating presentation layer from data layer.
+[1840.9s - 1867.7s]: So it's not gonna be as hard to update in the future as it currently is where it's a mess of spaghetti code and it's like really, really difficult to update. And then the other component is then not in this iteration, we need to get something live, but in the next iteration, you'll click on verify and it'll go down to the list of the fifteen features. And that's where you can describe what the heck a verify is.  or what the heck I manage. OK, so we will have an opportunity.
+[1953.0s - 1972.3s]: Yeah, that's, that's the goal is we want, we want to generate a helpful asset for the industry. This is not just like marketing shill. This should be like a helpful page. Uh, so it's like, yeah, the goal is to have a comparison comparing DevOps tools, not a, you know, this is all of our competitors and why we're better.  Yeah.
+[1996.9s - 2018.6s]: Cool. Well,  We're almost up on time, but I did want to share one thing that kind of came in like basically Friday. It was like late Thursday for me. So this, uh, this is another thing. A lot, a lot of these things that don't have like a ton of context on, um, I just know like we're just trying to up our game. So like, Hey, let's move fast and do the best we can do.
+[2020.8s - 2028.9s]: So this is a little bit of a messaging framework. And then the assignment that was given to me was to fill in these boxes here.
+[2030.2s - 2035.0s]: So, and then this was the fodder that I got.
+[2036.5s - 2049.3s]: So there was these ones that said like from roadmap to company vision. We are transparent and a single source of truth countless possibilities. Honestly, I think this one's really like really pithy and catchy. I really like it.
+[2050.8s - 2053.9s]: I really liked what's the other one that I like that not everyone does
+[2056.8s - 2062.2s]: All in one for everyone. So I just, I don't know. I like, I just think there's something catchy about that.
+[2063.8s - 2080.0s]: But I know that kind of catchy is not everyone's cup of tea. All that's to say is the assignment here was that I took it was to write a pithy few words like punchy statement for each of these three things.
+[2081.6s - 2085.6s]: So I ended up with a single source of truth, countless possibilities. I like that a lot.
+[2086.9s - 2095.1s]: This one, I went with end to end control over your software factory, not as pithy but or like not as catchy, but
+[2103.8s - 2105.0s]: This, this was the
+[2107.3s - 2114.3s]: Honestly, so when I first got this, it didn't have this, and it didn't have anything under security.
+[2118.6s - 2142.6s]: Yeah, this is, this is mine. This is, I just put here so that I would have like the original statements, like, you know, automate nearly anything collaborate on everything. I kind of like that, but I, you know, this one, I hate scale up, speed up, test up. I don't think anybody tests up. I think that's really goofy. So I hate it. Uh, this one I love that for me, it's, I love it or hate it. Right.
+[2147.0s - 2154.2s]: So anyway, the what I love it just in five minutes now, and then we can kind of end the call is kind of like.
+[2157.1s - 2165.2s]: anything that you would change this out for, anything that you would change this out for. And then actually, let's start here. This one I couldn't pick.
+[2166.2s - 2184.6s]: And I'll tell you why. It's because I like things to have parity in their tone, right? So this is maybe like super nuanced elements of messaging, but I hate it if it's like a single source of truth that's like in noun phrase, end to end control, that's like a noun
+[2185.8s - 2197.0s]: item. So you could say with GitLab, you get a single source of truth. With GitLab, you get end to end control. And you can't say with GitLab, you get move fast with confidence.
+[2201.8s - 2212.2s]: I agree. That's, that's why I put this one at top was for that parody. And then, so it sounds like kind of y'all's thoughts are that's, that's good as well.
+[2271.6s - 2276.4s]: I'm not a big fan of the it's it's deliverables. Is there a can we say like
+[2294.4s - 2295.4s]: I like this one better.
+[2306.6s - 2312.7s]: And then the last thing I'll say is, so this was my attempt to channel my inner Ash Withers.
+[2314.4s - 2321.9s]: I think Ash is like super good at just, again, just like the catchier, like the turn of phrase element to it.
+[2324.0s - 2340.9s]: And so like this kind of idea, like single source of truth, countless possibilities, or all in one for everyone. There's something catchy about this. So here I was trying to like,  envision what is it that we actually give you with this velocity? It's like, it's velocity with confidence is what you get.
+[2347.9s - 2363.2s]: Yeah. So I was trying to, I was thinking of like, you know, if you're like, if you're in a race car and like you go like super, super fast, you're like, let's say you're in the bike race, right? And you're going so fast and somebody holds out the sign and then like half of the bike race collapses.
+[2364.9s - 2381.2s]: Right. So it's almost kind of like you can, you can keep going like faster and faster and faster. And if somebody like jumps out with a sign in the middle of the racetrack, you're not going to get tripped up by it because GitLab's, you know, it's testing is going to catch that and security is going to catch that.
+[2382.2s - 2388.9s]: All of those elements that allow you to move faster, but to do so with confidence, because otherwise you're like the faster you go, then it gets more dangerous.
+[2390.3s - 2394.9s]: So trying to encapsulate that in this, like, that was kind of where I was like, stay on track, but I didn't like it either.
+[2408.1s - 2420.8s]: So I don't think I like that one. And then I think between these two, I like move fast with confidence, but I don't like the verbiage of it because it doesn't have parity. So that's where I think.
+[2452.5s - 2469.2s]: This gets into the no trade-offs. The engineer in me says, there's never no trade-offs. That's like saying like, one hundred percent secure, complete. This is why we always say mitigate, right? We always say less risk.
+[2492.7s - 2494.0s]: Oh, is that, was that from?
+[2495.2s - 2496.0s]: No, but it could have been.
+[2506.6s - 2512.3s]: I often say, thank you, little eight pound, five ounce baby Jesus with the golden diapers.
+[2513.3s - 2519.9s]: I say that so often that I just think everybody has seen Talladega Nights, but then I realized that people that haven't are like, playing is really weird.
+[2525.1s - 2526.5s]: There's so much room for activities.
+[2528.8s - 2541.0s]: Okay. Um, I'm going to go with, uh, more speed, less risk. And, um, I think this is due at the end of the day. So any additional thoughts I'm actually going to untag.
+[2547.1s - 2552.8s]: Awesome. Well, uh, this was kind of fun to do a little bit of like working together session and, uh,
+[2555.5s - 2556.1s]: Keep it rocking.
+
+SUMMARY
+-------
+- Demographics: 31 - 45 male
+- Primary emotional tone: neutral
+- Speaking style: fast pace
+- Engagement level: neutral
+
+============================================================

@@ -1,0 +1,105 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_08
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_08
+Total Utterances: 38
+Total Speaking Time: 127.36 seconds
+Average Utterance Length: 3.35 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: male (confidence: 94.8%)
+Age Group: 31 - 45 (confidence: 91.5%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 100.0%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (17 utterances)
+Emotion Distribution:
+  Neutral: 53.1%
+  Happy: 34.4%
+  Angry: 12.5%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 71.9%
+Positive: 21.9%
+Negative: 6.2%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Fast: 65.6%
+  Normal: 25.0%
+  Slow: 9.4%
+Hesitation Patterns:
+  No: 90.6%
+  Yes: 9.4%
+Engagement Level:
+  Neutral: 68.8%
+  Engaged: 31.2%
+Voice Strength:
+  Neutral: 90.6%
+  Strong: 6.2%
+  Weak: 3.1%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 87.5%
+Potentially Manipulated: 12.5%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[120.9s - 131.7s]: Yeah, same. Not in, not in real time, but source feedback. I got one person to respond so far. So it may end up Cindy being you and I just picking the one that we want to do and then they can back us up.
+[135.0s - 136.0s]: If we don't get any more feedback.
+[180.9s - 182.9s]: Yep. That's where we were last I heard.
+[1071.0s - 1073.1s]: It was last summer, right?
+[1241.1s - 1243.1s]: Plan editor is definitely an option for CI CD.
+[1282.7s - 1286.7s]: Man, it's a pretty heavy, pretty heavy list. Just looking at it, you know, it's pretty cool.
+[1335.3s - 1352.5s]: Yeah. So that's to put everyone in the gym or like convert the half cafeteria gym, you know, take away the big barrier between it so that we can have more room and then take those carpets that have never been cleaned and just, you know, sit on them and it'll be, it'll be great.
+[1465.0s - 1467.0s]: Yeah, I think it was copy pasted.
+[1507.6s - 1510.3s]: So just pick the ones out of that list that apply to our stage.
+[1567.4s - 1570.2s]: None of them should be GitLab only, right? It should be all through the lens of.
+[1572.6s - 1573.8s]: It should be like market lens.
+[1680.9s - 1693.6s]: And B, I think if we took that a step further, it'd be good to even describe it in a way that doesn't just say our product stage and use like a value-based description of what monitor and configure mean, because otherwise we're just, no, that's not going to do any good for us.
+[1698.5s - 1698.8s]: Not yet.
+[1701.1s - 1701.2s]: No.
+[1705.6s - 1708.9s]: Or you can throw it in the notes if you find it.
+[1714.7s - 1717.0s]: I guarantee you not with the amount of tabs I have open.
+[1867.7s - 1878.5s]: Because I was about to say, you're going to hate me for this. But we're being cyclical about the same problem we had, which being the audience coming in and not knowing anything about these specific stages.
+[1886.2s - 1887.2s]: Are they playing better?
+[1892.4s - 1894.8s]: But quick question. I'm not going to be a Debbie Downer. That's it.
+[1906.1s - 1907.9s]: I don't know.
+[1909.6s - 1910.6s]: I like the fact that
+[1990.0s - 1995.9s]: It is easy on the eyes. There's something to be said for that. So, yeah.
+[2143.5s - 2145.3s]: Um, I love how you just like, bam.
+[2287.1s - 2292.9s]: You could say IP here, but it just doesn't sound right. And that's always, it's always shorthand. Yeah.
+[2395.0s - 2398.6s]: Did you just open the door for NASCAR partnership?
+[2400.9s - 2403.4s]: NASCAR goes fast and turns left because it get loud.
+[2436.2s - 2441.2s]: Like I'd see a lot of competitors and vendors using it. I really liked the first one. Just more speed, less risk.
+[2442.0s - 2444.0s]: No trade-offs, you know, just that's how it is.
+[2449.0s - 2450.5s]: That's one of my go-tos. I love that one.
+[2469.3s - 2470.1s]: You never say no.
+[2471.9s - 2473.4s]: I mean, not everything, you know.
+[2479.1s - 2479.2s]: Hmm.
+[2482.0s - 2482.6s]: Wait, yeah.
+[2500.2s - 2502.5s]: That's the homework for this weekend.
+[2503.6s - 2506.1s]: We talk about it on Monday in our little social port.
+[2541.0s - 2546.3s]: I mean, it's strong. All those are, you know, cool. Those are good.
+[2554.1s - 2555.1s]: Keep a razzle dazzle.
+[2558.6s - 2559.8s]: Good to see everybody. See you soon.
+
+SUMMARY
+-------
+- Demographics: 31 - 45 male
+- Primary emotional tone: neutral
+- Speaking style: fast pace
+- Engagement level: neutral
+
+============================================================

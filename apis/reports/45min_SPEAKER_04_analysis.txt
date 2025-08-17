@@ -1,0 +1,73 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_04
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_04
+Total Utterances: 14
+Total Speaking Time: 164.33 seconds
+Average Utterance Length: 11.74 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: male (confidence: 92.8%)
+Age Group: 18 - 22 (confidence: 48.4%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 99.8%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (14 utterances)
+Emotion Distribution:
+  Neutral: 100.0%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 100.0%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Normal: 64.3%
+  Slow: 21.4%
+  Fast: 14.3%
+Hesitation Patterns:
+  No: 100.0%
+Engagement Level:
+  Neutral: 100.0%
+Voice Strength:
+  Neutral: 100.0%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 92.9%
+Potentially Manipulated: 7.1%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[149.5s - 155.3s]: Yeah, we're on like a two week cadence. Okay.
+[426.2s - 433.9s]: So we have the Jira stuff is pretty good. There's a couple of things in integrations with VS code that could be notable by
+[437.3s - 462.9s]: Can I show what I did for SCM just to get some general feedback on it? And if someone hasn't done it, maybe that'll also kick in. I was going Cindy's direction here, which was thinking, you know, a lot of, and then I called them key iterations, the sort of specific things. So I listed a few specific things like three or four per each as key iterations, but I called them something overall. So we would have like one thing to call them.
+[465.1s - 468.5s]: There's several key iterations aligned with Git Ali cluster.
+[470.0s - 490.8s]: Several that roll up to a research-based user experience. And I was thinking like, I was shy on calling out UX as a bucket, except that actually that's super typical, right? Like Windows-Eleven or anybody who's rolling stuff out, they almost always have UX as one of their three things. And then they mentioned a longer list of stuff that aligns to that.
+[493.1s - 522.6s]: You know, forgave myself for doing something. And at first I was kind of like shy about calling out UX and bucketing some things there. But actually when I looked around, that's pretty much how everybody does a big launch. And in terms of the excitement level that also like I went in thinking this is just a two. I guess part of it is like, I feel like we're almost fixing something that's broken. And that's not something you want to shout from the rooftops about, but actually some of that stuff's really cool. So I gave it a three.  excitement level, I wasn't sure exactly where to place things.
+[523.7s - 535.6s]: But I figured I wouldn't like to Cindy's comment have something that's a one here anyway. But I the only way I could make sense of like the iterations was to bucket them as something.
+[536.7s - 540.4s]: And so that's kind of how I came down on it. Thanks about that.
+[544.8s - 545.8s]: Yeah, I like that.
+[624.1s - 635.1s]: I didn't add it, but I can I can add that in. I've got good notes on that. The extension that had been around for a while became official was kind of one of the things, but there's some other stuff that's a little juicier than that.
+[825.9s - 843.7s]: And I had I started by just looking at what was considered a key feature over the past year from from create. And there are at least a dozen things that I'm not mentioning.  that could be on the list. Like I could give you ten things instead of three.
+[880.6s - 889.9s]: We did this one is a PR driven to some degree. What about like a new Ben Christie's product keynote at commit. Are we telling this with that.
+[987.0s - 997.5s]: I would say if UX does end up being a flag that we fly, that's an easy one because there's more than just maps to the create stage that would be considered UX improvement.
+[1136.0s - 1142.6s]: Okay. Send grip that get picked up as a line item and a couple of the pieces about get that fourteen.
+
+SUMMARY
+-------
+- Demographics: 18 - 22 male
+- Primary emotional tone: neutral
+- Speaking style: normal pace
+- Engagement level: neutral
+
+============================================================

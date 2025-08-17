@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open-Minded Thinking Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .scale-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            flex: 1;
+        }
+        .scale-option {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+        }
+        .scale-option input[type="radio"] {
+            display: none;
+        }
+        .scale-option label {
+            display: block;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #666;
+        }
+        .scale-option input[type="radio"]:checked + label {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+        .scale-option label:hover {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 30px auto 0;
+            padding: 12px 30px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Actively Open-Minded Thinking</h1>
+        <p class="instructions">Please indicate how much you agree or disagree with each statement.</p>
+
+        <form id="aot-form">
+            <!-- Question 1 -->
+            <div class="question">
+                <div class="question-text">
+                    1. People should take into consideration evidence that goes against their beliefs.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q1_1" name="q1" value="1" required>
+                        <label for="q1_1">1</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_2" name="q1" value="2" required>
+                        <label for="q1_2">2</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_3" name="q1" value="3" required>
+                        <label for="q1_3">3</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_4" name="q1" value="4" required>
+                        <label for="q1_4">4</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_5" name="q1" value="5" required>
+                        <label for="q1_5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question">
+                <div class="question-text">
+                    2. It is important to persevere in your beliefs even when evidence is brought to bear against them.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q2_1" name="q2" value="1" required>
+                        <label for="q2_1">1</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_2" name="q2" value="2" required>
+                        <label for="q2_2">2</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_3" name="q2" value="3" required>
+                        <label for="q2_3">3</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_4" name="q2" value="4" required>
+                        <label for="q2_4">4</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_5" name="q2" value="5" required>
+                        <label for="q2_5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question">
+                <div class="question-text">
+                    3. One should disregard evidence that conflicts with your established beliefs.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q3_1" name="q3" value="1" required>
+                        <label for="q3_1">1</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_2" name="q3" value="2" required>
+                        <label for="q3_2">2</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_3" name="q3" value="3" required>
+                        <label for="q3_3">3</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_4" name="q3" value="4" required>
+                        <label for="q3_4">4</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_5" name="q3" value="5" required>
+                        <label for="q3_5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question">
+                <div class="question-text">
+                    4. Beliefs should always be revised in response to new information or evidence.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q4_1" name="q4" value="1" required>
+                        <label for="q4_1">1</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q4_2" name="q4" value="2" required>
+                        <label for="q4_2">2</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q4_3" name="q4" value="3" required>
+                        <label for="q4_3">3</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q4_4" name="q4" value="4" required>
+                        <label for="q4_4">4</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q4_5" name="q4" value="5" required>
+                        <label for="q4_5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question">
+                <div class="question-text">
+                    5. Changing your mind is a sign of weakness.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q5_1" name="q5" value="1" required>
+                        <label for="q5_1">1</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q5_2" name="q5" value="2" required>
+                        <label for="q5_2">2</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q5_3" name="q5" value="3" required>
+                        <label for="q5_3">3</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q5_4" name="q5" value="4" required>
+                        <label for="q5_4">4</label>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q5_5" name="q5" value="5" required>
+                        <label for="q5_5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Submit Responses</button>
+            <div class="progress">Question 5 of 5</div>
+        </form>
+    </div>
+
+    <script>
+        // Questions that need reverse scoring
+        const reverseScored = ['q2', 'q3', 'q5'];
+
+        document.getElementById('aot-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {};
+            let totalScore = 0;
+            
+            // Collect and score responses
+            for (let i = 1; i <= 5; i++) {
+                const questionName = `q${i}`;
+                const value = parseInt(formData.get(questionName));
+                
+                // Reverse score if needed
+                let score = value;
+                if (reverseScored.includes(questionName)) {
+                    score = 6 - value;
+                }
+                
+                responses[questionName] = {
+                    raw_value: value,
+                    scored_value: score
+                };
+                totalScore += score;
+            }
+            
+            // Calculate average AOT score
+            const aotScore = totalScore / 5;
+            
+            const results = {
+                responses: responses,
+                total_score: totalScore,
+                aot_score: aotScore,
+                bias_resistance: aotScore > 3.5 ? 'high' : aotScore > 2.5 ? 'moderate' : 'low',
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('AOT Results:', results);
+            
+            // Simple feedback
+            let feedback = '';
+            if (aotScore > 3.5) {
+                feedback = 'High open-mindedness: You show strong resistance to cognitive biases.';
+            } else if (aotScore > 2.5) {
+                feedback = 'Moderate open-mindedness: You have some resistance to biases but could benefit from practice.';
+            } else {
+                feedback = 'Low open-mindedness: You may be susceptible to confirmation bias and other cognitive biases.';
+            }
+            
+            alert(`Assessment complete!\n\nYour AOT Score: ${aotScore.toFixed(2)}/5\n${feedback}`);
+            
+            // In production, would send to server:
+            // fetch('/api/quiz/aot/submit', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify(results)
+            // });
+        });
+    </script>
+</body>
+</html>

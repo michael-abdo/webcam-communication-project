@@ -1,0 +1,187 @@
+{
+  "scenarios": [
+    {
+      "id": "unfair_criticism",
+      "title": "Unfair Criticism",
+      "description": "Your manager publicly criticizes your project in front of the entire team, calling it \"poorly thought out\" and \"unprofessional.\" You feel this criticism is unfair and exaggerated, especially given that you followed all the guidelines provided and the project met its initial objectives.",
+      "emotion_type": "anger_frustration",
+      "intensity_scale": {
+        "min": 0,
+        "max": 10,
+        "low_label": "Calm",
+        "high_label": "Very Upset"
+      },
+      "strategies": [
+        {
+          "id": "reappraisal",
+          "name": "Cognitive Reappraisal",
+          "description": "Try to reframe the situation - maybe my manager is under pressure, or this feedback could help me improve future projects",
+          "type": "adaptive",
+          "category": "cognitive"
+        },
+        {
+          "id": "suppression",
+          "name": "Emotional Suppression",
+          "description": "Keep my emotions hidden and act professionally, not letting anyone see how upset I am",
+          "type": "maladaptive",
+          "category": "regulatory"
+        },
+        {
+          "id": "expression",
+          "name": "Direct Expression",
+          "description": "Speak up immediately to defend my work and challenge the unfair criticism",
+          "type": "maladaptive",
+          "category": "expressive"
+        },
+        {
+          "id": "seeking_support",
+          "name": "Seeking Support",
+          "description": "Talk to trusted colleagues or friends about the situation to process my emotions",
+          "type": "adaptive",
+          "category": "social"
+        }
+      ]
+    },
+    {
+      "id": "deadline_pressure",
+      "title": "Overwhelming Deadline",
+      "description": "You've just been told that a major project deadline has been moved up by two weeks, meaning you now have to complete in 3 days what you planned to do over the next 2.5 weeks. Your workload is already at capacity, and you're not sure how you'll manage to deliver quality work under this new timeline.",
+      "emotion_type": "stress_anxiety",
+      "intensity_scale": {
+        "min": 0,
+        "max": 10,
+        "low_label": "Calm",
+        "high_label": "Very Stressed"
+      },
+      "strategies": [
+        {
+          "id": "problem_solving",
+          "name": "Problem-Focused Coping",
+          "description": "Immediately start planning and prioritizing - break down tasks and see what can be streamlined or delegated",
+          "type": "adaptive",
+          "category": "problem_focused"
+        },
+        {
+          "id": "acceptance",
+          "name": "Acceptance & Adaptation",
+          "description": "Accept that the situation is challenging but focus on doing my best within the constraints",
+          "type": "adaptive",
+          "category": "cognitive"
+        },
+        {
+          "id": "avoidance",
+          "name": "Avoidance",
+          "description": "Try not to think about the deadline too much and work on other tasks first",
+          "type": "maladaptive",
+          "category": "avoidant"
+        },
+        {
+          "id": "emotional_expression",
+          "name": "Emotional Venting",
+          "description": "Express my frustration to my manager about the unrealistic timeline",
+          "type": "maladaptive",
+          "category": "expressive"
+        }
+      ]
+    },
+    {
+      "id": "team_conflict",
+      "title": "Team Conflict",
+      "description": "During a team meeting, a colleague takes credit for an idea you proposed weeks ago and presents it as their own innovation. When you try to speak up, they interrupt and dismiss your input. Other team members seem to go along with their version of events.",
+      "emotion_type": "anger_betrayal",
+      "intensity_scale": {
+        "min": 0,
+        "max": 10,
+        "low_label": "Calm",
+        "high_label": "Very Angry"
+      },
+      "strategies": [
+        {
+          "id": "diplomatic_response",
+          "name": "Diplomatic Response",
+          "description": "Calmly mention my earlier contribution and suggest we collaborate on developing the idea further",
+          "type": "adaptive",
+          "category": "social"
+        },
+        {
+          "id": "direct_confrontation",
+          "name": "Direct Confrontation",
+          "description": "Clearly state that this was my idea and provide evidence of when I first proposed it",
+          "type": "mixed",
+          "category": "assertive"
+        },
+        {
+          "id": "strategic_withdrawal",
+          "name": "Strategic Withdrawal",
+          "description": "Let it go for now but document everything and address it privately with my manager later",
+          "type": "adaptive",
+          "category": "strategic"
+        },
+        {
+          "id": "emotional_distance",
+          "name": "Emotional Distance",
+          "description": "Detach emotionally and view this as a learning experience about office politics",
+          "type": "adaptive",
+          "category": "cognitive"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "adaptive_strategies": {
+      "list": ["reappraisal", "seeking_support", "problem_solving", "acceptance", "diplomatic_response", "strategic_withdrawal", "emotional_distance"],
+      "weight": 1.0
+    },
+    "maladaptive_strategies": {
+      "list": ["suppression", "expression", "avoidance", "emotional_expression"],
+      "weight": -0.5
+    },
+    "mixed_strategies": {
+      "list": ["direct_confrontation"],
+      "weight": 0.0
+    },
+    "intensity_scoring": {
+      "low_reactivity": {
+        "range": [0, 4],
+        "description": "Low emotional reactivity - tends to stay calm under pressure",
+        "score": 1.0
+      },
+      "moderate_reactivity": {
+        "range": [5, 7],
+        "description": "Moderate emotional reactivity - typical stress responses",
+        "score": 0.5
+      },
+      "high_reactivity": {
+        "range": [8, 10],
+        "description": "High emotional reactivity - consider stress management techniques",
+        "score": 0.0
+      }
+    },
+    "composite_score": {
+      "strategy_weight": 0.7,
+      "intensity_weight": 0.3,
+      "interpretation": {
+        "excellent": {
+          "range": [0.8, 1.0],
+          "description": "Strong emotion regulation skills with adaptive strategies and controlled reactivity"
+        },
+        "good": {
+          "range": [0.6, 0.79],
+          "description": "Good emotion regulation with mostly adaptive approaches"
+        },
+        "moderate": {
+          "range": [0.4, 0.59],
+          "description": "Moderate emotion regulation - mix of adaptive and less effective strategies"
+        },
+        "needs_improvement": {
+          "range": [0.0, 0.39],
+          "description": "Consider developing more adaptive emotion regulation strategies"
+        }
+      }
+    }
+  },
+  "instructions": "This assessment evaluates how you manage difficult emotions in workplace situations. For each scenario, rate your initial emotional intensity and select your preferred coping strategy.",
+  "time_limit": 120,
+  "category": "personality_assessment"
+}
+ENDJSON < /dev/null

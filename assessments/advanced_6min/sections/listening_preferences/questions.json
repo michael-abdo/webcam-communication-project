@@ -1,0 +1,105 @@
+{
+  "scenarios": [
+    {
+      "id": "colleague_problem",
+      "context": "workplace",
+      "description": "A colleague comes to you with a problem they're facing at work. They seem frustrated and have been talking for a few minutes about various challenges they're experiencing with a project deadline and team dynamics.",
+      "response_options": {
+        "action-oriented": {
+          "response": "Let's break this down into specific issues and create an action plan. First, what's the most urgent problem we need to solve?",
+          "focus": "problem-solving"
+        },
+        "time-oriented": {
+          "response": "I have about 10 minutes right now. Can you give me the key points so we can figure out the best next steps?",
+          "focus": "efficiency"
+        },
+        "people-oriented": {
+          "response": "That sounds really frustrating. How are you feeling about all this? Sometimes it helps just to talk it through.",
+          "focus": "relationship"
+        },
+        "content-oriented": {
+          "response": "Tell me more details about the project requirements and team structure. I want to fully understand the situation before we discuss solutions.",
+          "focus": "information"
+        }
+      }
+    },
+    {
+      "id": "friend_exciting_news",
+      "context": "social",
+      "description": "A friend calls you excitedly to share news about a major life decision they're considering - moving to another country for a job opportunity.",
+      "response_options": {
+        "action-oriented": {
+          "response": "What's your timeline for making this decision? Let's list out the pros and cons.",
+          "focus": "decision-making"
+        },
+        "time-oriented": {
+          "response": "Give me the highlights - what's the job, where is it, and when do you need to decide?",
+          "focus": "key-facts"
+        },
+        "people-oriented": {
+          "response": "Wow, how are you feeling about this opportunity? This must be both exciting and scary!",
+          "focus": "emotions"
+        },
+        "content-oriented": {
+          "response": "Tell me everything - what's the company, the role, the location, the culture there?",
+          "focus": "comprehensive-details"
+        }
+      }
+    }
+  ],
+  "preferences": {
+    "talking_preference": {
+      "get-to-point": "time-oriented",
+      "provide-context": "content-oriented",
+      "share-feelings": "people-oriented",
+      "organized-thoughts": "action-oriented"
+    },
+    "comfort_preference": {
+      "solving-problems": "action-oriented",
+      "exploring-ideas": "content-oriented",
+      "connecting-emotionally": "people-oriented",
+      "staying-focused": "time-oriented"
+    },
+    "disinterest_triggers": {
+      "too-emotional": ["action-oriented", "time-oriented"],
+      "too-detailed": ["time-oriented", "action-oriented"],
+      "no-action": ["action-oriented"],
+      "too-rushed": ["content-oriented", "people-oriented"]
+    }
+  },
+  "listening_styles": {
+    "action-oriented": {
+      "name": "Action-Oriented Listener",
+      "characteristics": ["Solution-focused", "Direct", "Pragmatic", "Results-driven"],
+      "strengths": ["Quick problem-solving", "Clear direction", "Decisive"],
+      "challenges": ["May miss emotional nuances", "Can seem impatient"],
+      "coaching": "Practice active listening and emotional awareness"
+    },
+    "time-oriented": {
+      "name": "Time-Oriented Listener",
+      "characteristics": ["Efficient", "Organized", "Scheduled", "Concise"],
+      "strengths": ["Time management", "Focus", "Productivity"],
+      "challenges": ["May rush important conversations", "Can miss details"],
+      "coaching": "Allow more time for complex discussions"
+    },
+    "people-oriented": {
+      "name": "People-Oriented Listener",
+      "characteristics": ["Empathetic", "Supportive", "Relationship-focused", "Patient"],
+      "strengths": ["Building trust", "Emotional intelligence", "Creating connection"],
+      "challenges": ["May avoid difficult decisions", "Can get too involved"],
+      "coaching": "Balance empathy with objective problem-solving"
+    },
+    "content-oriented": {
+      "name": "Content-Oriented Listener",
+      "characteristics": ["Analytical", "Thorough", "Detail-focused", "Curious"],
+      "strengths": ["Deep understanding", "Critical thinking", "Comprehensive analysis"],
+      "challenges": ["May overwhelm others with questions", "Can be slow to act"],
+      "coaching": "Practice summarizing and prioritizing information"
+    }
+  },
+  "scoring": {
+    "primary_weight": 2,
+    "preference_weight": 1,
+    "flexibility_threshold": 0.05
+  }
+}

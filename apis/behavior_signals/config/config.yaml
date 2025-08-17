@@ -1,0 +1,20 @@
+api:
+  key: "f38d44bfe4ae7c915e2be3ec32c2101f"
+  client_id: "10000127"
+  base_url: "https://api.behavioralsignals.com"
+  
+timeouts:
+  api_submission: 120       # 2 minutes
+  api_check_interval: 5     # 5 seconds
+  max_wait: 600            # 10 minutes
+  
+paths:
+  # Shared data directory paths (processed by shared_processing)
+  shared_converted: "../../../shared_processing/data/converted"  # MP3 files from shared processing
+  shared_samples: "../../../shared_processing/data/samples"      # Sample files from shared processing  
+  shared_chunks: "../../../shared_processing/data/chunks"        # Chunk files from shared processing
+  
+  # API-specific result paths
+  results: "data/results"
+  reports: "data/reports"
+  jobs: "data/jobs"

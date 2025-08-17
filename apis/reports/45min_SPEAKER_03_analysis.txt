@@ -1,0 +1,64 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_03
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_03
+Total Utterances: 5
+Total Speaking Time: 19.86 seconds
+Average Utterance Length: 3.97 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: male (confidence: 89.6%)
+Age Group: 46 - 65 (confidence: 60.3%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 100.0%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (2 utterances)
+Emotion Distribution:
+  Neutral: 66.7%
+  Happy: 33.3%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 66.7%
+Positive: 33.3%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Slow: 66.7%
+  Normal: 33.3%
+Hesitation Patterns:
+  No: 100.0%
+Engagement Level:
+  Neutral: 100.0%
+Voice Strength:
+  Neutral: 100.0%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 100.0%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[180.2s - 180.3s]: Yep.
+[1307.8s - 1309.2s]: Assembly, the assembly?
+[2232.2s - 2245.6s]: Cindy's last blog post had a really good turn of phrase that I stole for forgive that for to me when she was out. It was like secure the software factory and all the stuff that you're making it. She said it really elegant.
+[2249.8s - 2254.3s]: Yeah. I thought it was good to emphasize both because they mean different things. It's nice. Yeah.
+[2448.4s - 2448.9s]: I don't know.
+
+SUMMARY
+-------
+- Demographics: 46 - 65 male
+- Primary emotional tone: neutral
+- Speaking style: slow pace
+- Engagement level: neutral
+
+============================================================

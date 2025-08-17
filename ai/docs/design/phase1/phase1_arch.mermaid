@@ -1,0 +1,172 @@
+flowchart TD
+    A["data/raw/celebrities/celebrity_labels.csv<br/>src/xenodex/data/preprocessing.py"] --> B["config/model_configs/f_t_detector.yaml<br/>src/xenodex/models/f_t_detector.py"]
+    
+    B --> C["src/xenodex/training/trainer.py<br/>src/xenodex/training/iteration_manager.py<br/>Iteration 1: 80% target"]
+    
+    C --> EVAL1["src/xenodex/training/evaluator.py<br/>evaluate_results_with_bottleneck_detection()"]
+    
+    EVAL1 --> D1{"src/xenodex/training/evaluator.py<br/>check_accuracy_improvement()"}
+    
+    D1 -->|No| PLATEAU1["src/xenodex/training/plateau_detector.py<br/>detect_plateau()"]
+    D1 -->|Yes| D2{"src/xenodex/training/evaluator.py<br/>check_accuracy_threshold()"}
+    
+    PLATEAU1 --> BN1{"src/xenodex/training/bottleneck_detector.py<br/>analyze_confidence_errors()"}
+    
+    BN1 -->|Yes| FIX1["src/xenodex/training/bottleneck_detector.py<br/>calibrate_confidence_thresholds()"]
+    BN1 -->|No| BN2{"src/xenodex/training/bottleneck_detector.py<br/>analyze_celebrity_bias()"}
+    
+    BN2 -->|Yes| FIX2["src/xenodex/training/bottleneck_detector.py<br/>expand_dataset_diversity()"]
+    BN2 -->|No| BN3{"src/xenodex/training/bottleneck_detector.py<br/>check_overfitting_gap()"}
+    
+    BN3 -->|Yes| FIX3["src/xenodex/training/bottleneck_detector.py<br/>apply_regularization()"]
+    BN3 -->|No| BN4{"src/xenodex/training/bottleneck_detector.py<br/>check_class_imbalance()"}
+    
+    BN4 -->|Yes| FIX4["src/xenodex/training/bottleneck_detector.py<br/>resample_training_data()"]
+    BN4 -->|No| CONTINUE1["src/xenodex/training/trainer.py<br/>proceed_to_next_iteration()"]
+    
+    FIX1 --> E
+    FIX2 --> E
+    FIX3 --> E
+    FIX4 --> E
+    CONTINUE1 --> E
+    
+    D2 -->|No| E["src/xenodex/training/trainer.py<br/>src/xenodex/training/iteration_manager.py<br/>Iteration 2: 90% target"]
+    D2 -->|Yes| OVERFIT1["src/xenodex/training/overfitting_validator.py<br/>run_overfitting_validation_suite()"]
+    
+    OVERFIT1 --> SPLIT1["src/xenodex/training/overfitting_validator.py<br/>celebrity_based_splitting_test()"]
+    
+    SPLIT1 --> CV1["src/xenodex/training/overfitting_validator.py<br/>cross_validation_test()"]
+    
+    CV1 --> ABL1["src/xenodex/training/overfitting_validator.py<br/>ablation_test()"]
+    
+    ABL1 --> OVERFIT_CHECK1{"src/xenodex/training/overfitting_validator.py<br/>evaluate_all_tests_passed()"}
+    
+    OVERFIT_CHECK1 -->|No| OVERFIT_FIX1["src/xenodex/training/bottleneck_detector.py<br/>reduce_model_complexity()"]
+    
+    OVERFIT_FIX1 --> E
+    
+    OVERFIT_CHECK1 -->|Yes| TARGET1{"src/xenodex/training/evaluator.py<br/>check_target_accuracy()"}
+    
+    TARGET1 -->|No| E
+    TARGET1 -->|Yes| J["src/xenodex/training/trainer.py<br/>transition_to_phase_2()"]
+    
+    E --> EVAL2["src/xenodex/training/evaluator.py<br/>evaluate_results_with_bottleneck_detection()"]
+    
+    EVAL2 --> F1{"src/xenodex/training/evaluator.py<br/>check_accuracy_improvement()"}
+    
+    F1 -->|No| PLATEAU2["src/xenodex/training/plateau_detector.py<br/>check_iteration_count()"]
+    F1 -->|Yes| F2{"src/xenodex/training/evaluator.py<br/>check_accuracy_threshold()"}
+    
+    PLATEAU2 --> CHECK1{"src/xenodex/training/iteration_manager.py<br/>check_failure_conditions()"}
+    
+    CHECK1 -->|Yes| FAIL1["src/xenodex/training/failure_handler.py<br/>handle_ft_baseline_failure()"]
+    CHECK1 -->|No| G
+    
+    F2 -->|No| G["src/xenodex/training/trainer.py<br/>src/xenodex/training/iteration_manager.py<br/>Iteration 3: 95% target"]
+    F2 -->|Yes| OVERFIT2["src/xenodex/training/overfitting_validator.py<br/>run_overfitting_validation_suite()"]
+    
+    OVERFIT2 --> SPLIT2["src/xenodex/training/overfitting_validator.py<br/>celebrity_based_splitting_test()"]
+    
+    SPLIT2 --> CV2["src/xenodex/training/overfitting_validator.py<br/>cross_validation_test()"]
+    
+    CV2 --> ABL2["src/xenodex/training/overfitting_validator.py<br/>ablation_test()"]
+    
+    ABL2 --> OVERFIT_CHECK2{"src/xenodex/training/overfitting_validator.py<br/>evaluate_all_tests_passed()"}
+    
+    OVERFIT_CHECK2 -->|No| OVERFIT_FIX2["src/xenodex/training/bottleneck_detector.py<br/>reduce_model_complexity()"]
+    
+    OVERFIT_FIX2 --> G
+    
+    OVERFIT_CHECK2 -->|Yes| J
+    
+    G --> EVAL3["src/xenodex/training/evaluator.py<br/>evaluate_results_with_bottleneck_detection()"]
+    
+    EVAL3 --> H1{"src/xenodex/training/evaluator.py<br/>check_accuracy_improvement()"}
+    
+    H1 -->|No| CHECK2{"src/xenodex/training/iteration_manager.py<br/>check_failure_conditions()"}
+    H1 -->|Yes| H2{"src/xenodex/training/evaluator.py<br/>check_accuracy_threshold()"}
+    
+    CHECK2 -->|Yes| FAIL2["src/xenodex/training/failure_handler.py<br/>handle_ft_baseline_failure()"]
+    CHECK2 -->|No| FORCE1{"src/xenodex/training/cost_tracker.py<br/>check_cost_time_thresholds()"}
+    
+    FORCE1 -->|Yes| FAIL2
+    FORCE1 -->|No| J
+    
+    H2 -->|No| FAIL2
+    H2 -->|Yes| OVERFIT3["src/xenodex/training/overfitting_validator.py<br/>run_overfitting_validation_suite()"]
+    
+    OVERFIT3 --> SPLIT3["src/xenodex/training/overfitting_validator.py<br/>celebrity_based_splitting_test()"]
+    
+    SPLIT3 --> CV3["src/xenodex/training/overfitting_validator.py<br/>cross_validation_test()"]
+    
+    CV3 --> ABL3["src/xenodex/training/overfitting_validator.py<br/>ablation_test()"]
+    
+    ABL3 --> OVERFIT_CHECK3{"src/xenodex/training/overfitting_validator.py<br/>evaluate_all_tests_passed()"}
+    
+    OVERFIT_CHECK3 -->|No| OVERFIT_FIX3["src/xenodex/training/failure_handler.py<br/>handle_ensemble_requirement()"]
+    
+    OVERFIT_FIX3 --> FAIL2
+    
+    OVERFIT_CHECK3 -->|Yes| J
+    
+    J --> K["config/model_configs/di_de_detector.yaml<br/>src/xenodex/models/di_de_detector.py"]
+    
+    K --> L["src/xenodex/training/trainer.py<br/>src/xenodex/training/iteration_manager.py<br/>Di/De Training: 90% target"]
+    
+    L --> EVAL4["src/xenodex/training/evaluator.py<br/>evaluate_results_with_bottleneck_detection()"]
+    
+    EVAL4 --> L1{"src/xenodex/training/evaluator.py<br/>check_accuracy_improvement()"}
+    
+    L1 -->|No| PLATEAU3["src/xenodex/training/plateau_detector.py<br/>analyze_dide_patterns()"]
+    L1 -->|Yes| L2{"src/xenodex/training/evaluator.py<br/>check_dide_accuracy_threshold()"}
+    
+    PLATEAU3 --> BN5{"src/xenodex/training/bottleneck_detector.py<br/>compare_with_ft_patterns()"}
+    
+    BN5 -->|Yes| FIX5["src/xenodex/training/bottleneck_detector.py<br/>apply_ft_fixes()"]
+    BN5 -->|No| FIX6["src/xenodex/training/bottleneck_detector.py<br/>apply_dide_specific_fixes()"]
+    
+    FIX5 --> L3["src/xenodex/training/trainer.py<br/>src/xenodex/training/iteration_manager.py<br/>Di/De Iterations 2-3: 95% target"]
+    FIX6 --> L3
+    
+    L2 -->|No| L3
+    L2 -->|Yes| O["config/model_configs/ensemble.yaml<br/>src/xenodex/models/ensemble.py"]
+    
+    L3 --> EVAL5["src/xenodex/training/evaluator.py<br/>evaluate_results_with_bottleneck_detection()"]
+    
+    EVAL5 --> M1{"src/xenodex/training/evaluator.py<br/>check_dide_final_accuracy()"}
+    
+    M1 -->|No| N["src/xenodex/training/failure_handler.py<br/>handle_baseline_failure()"]
+    M1 -->|Yes| O
+    
+    O --> P["src/xenodex/models/ensemble.py<br/>src/xenodex/training/trainer.py<br/>Combine F/T + Di/De"]
+    
+    P --> EVAL6["src/xenodex/training/evaluator.py<br/>evaluate_ensemble_performance()"]
+    
+    EVAL6 --> Q{"src/xenodex/training/evaluator.py<br/>check_system_accuracy()"}
+    
+    Q -->|No| R["src/xenodex/training/failure_handler.py<br/>scale_to_full_ensemble()"]
+    
+    Q -->|Yes| S["src/xenodex/training/trainer.py<br/>finalize_successful_system()"]
+    
+    S --> T["src/xenodex/models/<br/>future_detectors/<br/>Observer, Oi/Oe, N/S"]
+    
+    FAIL1 --> U["src/xenodex/training/failure_handler.py<br/>suggest_alternative_approaches()"]
+    FAIL2 --> U
+    N --> U
+    R --> U
+    
+    style FAIL1 fill:#ffcccc
+    style FAIL2 fill:#ffcccc
+    style N fill:#ffcccc  
+    style R fill:#ffcccc
+    style S fill:#ccffcc
+    style U fill:#fff2cc
+    style FIX1 fill:#ffe6cc
+    style FIX2 fill:#ffe6cc
+    style FIX3 fill:#ffe6cc
+    style FIX4 fill:#ffe6cc
+    style FIX5 fill:#ffe6cc
+    style FIX6 fill:#ffe6cc
+    style OVERFIT_FIX1 fill:#ffe6cc
+    style OVERFIT_FIX2 fill:#ffe6cc
+    style OVERFIT_FIX3 fill:#ffcccc

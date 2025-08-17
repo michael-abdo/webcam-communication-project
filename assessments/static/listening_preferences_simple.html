@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listening Preferences Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 4px solid #4caf50;
+        }
+        .scenario {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .scenario-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .scenario-text {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 25px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        .listening-question {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .listening-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .listening-option {
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .listening-option:hover {
+            border-color: #4caf50;
+            background: #f8fff8;
+        }
+        .listening-option input[type="radio"] {
+            margin-top: 2px;
+            transform: scale(1.2);
+        }
+        .listening-option input[type="radio"]:checked + .option-content {
+            color: #4caf50;
+            font-weight: 500;
+        }
+        .option-content {
+            flex: 1;
+        }
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .option-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .option-example {
+            font-size: 13px;
+            color: #888;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 40px auto 0;
+            padding: 15px 30px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listening Preferences Assessment</h1>
+        
+        <div class="instructions">
+            <p>This assessment explores your preferred listening style when others share problems or concerns with you.</p>
+            <p>For each scenario, choose the response that best reflects what you would naturally want to do.</p>
+        </div>
+
+        <form id="listening-preferences-form">
+            <!-- Scenario 1: Friend's Work Stress -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 1: Friend's Work Stress</div>
+                
+                <div class="scenario-text">
+                    Your close friend calls you feeling overwhelmed and stressed about their workload. They say: "I have three major projects due this week, my boss keeps adding more tasks, and I don't know how I'm going to get everything done. I'm feeling really anxious and can't sleep well."
+                </div>
+                
+                <div class="listening-question">What would be your most natural response?</div>
+                <div class="listening-options">
+                    <label class="listening-option">
+                        <input type="radio" name="scenario1_response" value="emotional_support" required>
+                        <div class="option-content">
+                            <div class="option-title">Emotional Support & Validation</div>
+                            <div class="option-description">Focus on acknowledging their feelings and providing comfort</div>
+                            <div class="option-example">"That sounds really stressful. It's completely understandable that you're feeling anxious about all this."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario1_response" value="problem_solving" required>
+                        <div class="option-content">
+                            <div class="option-title">Problem-Solving & Advice</div>
+                            <div class="option-description">Offer practical solutions and strategies to address the situation</div>
+                            <div class="option-example">"Let's think about this systematically. Could you prioritize the projects by deadline? Maybe delegate some tasks?"</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario1_response" value="perspective_taking" required>
+                        <div class="option-content">
+                            <div class="option-title">Perspective & Reframing</div>
+                            <div class="option-description">Help them see the situation from a different angle</div>
+                            <div class="option-example">"This is temporary - remember how you handled that big project last month? You're more capable than you think."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario1_response" value="active_listening" required>
+                        <div class="option-content">
+                            <div class="option-title">Active Listening & Exploration</div>
+                            <div class="option-description">Ask questions to help them explore their feelings and thoughts</div>
+                            <div class="option-example">"Tell me more about what's making this feel so overwhelming. What's the hardest part for you right now?"</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Partner's Family Conflict -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 2: Partner's Family Conflict</div>
+                
+                <div class="scenario-text">
+                    Your romantic partner is upset about a disagreement with their family. They share: "My parents are pressuring me to visit for the holidays, but I really don't want to deal with all the family drama right now. They're making me feel guilty for wanting some space, and I'm torn between what I need and what they expect."
+                </div>
+                
+                <div class="listening-question">What would be your most natural response?</div>
+                <div class="listening-options">
+                    <label class="listening-option">
+                        <input type="radio" name="scenario2_response" value="emotional_support" required>
+                        <div class="option-content">
+                            <div class="option-title">Emotional Support & Validation</div>
+                            <div class="option-description">Focus on understanding and validating their emotional experience</div>
+                            <div class="option-example">"It sounds like you're in a really difficult position. Family pressure can be so hard to navigate."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario2_response" value="problem_solving" required>
+                        <div class="option-content">
+                            <div class="option-title">Problem-Solving & Advice</div>
+                            <div class="option-description">Suggest concrete ways to handle the family situation</div>
+                            <div class="option-example">"Maybe you could suggest a compromise - like a shorter visit or video call instead? Or set some boundaries about the conversation topics."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario2_response" value="perspective_taking" required>
+                        <div class="option-content">
+                            <div class="option-title">Perspective & Reframing</div>
+                            <div class="option-description">Help them consider different viewpoints on the situation</div>
+                            <div class="option-example">"Your parents probably miss you and don't realize the pressure they're putting on you. At the same time, your need for space is completely valid."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario2_response" value="active_listening" required>
+                        <div class="option-content">
+                            <div class="option-title">Active Listening & Exploration</div>
+                            <div class="option-description">Help them process their thoughts and feelings through questions</div>
+                            <div class="option-example">"What would feel right for you in this situation? What are you most worried about if you don't visit?"</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Scenario 3: Colleague's Career Disappointment -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 3: Colleague's Career Disappointment</div>
+                
+                <div class="scenario-text">
+                    A colleague you're friendly with mentions during lunch: "I just found out I didn't get the promotion I've been working toward for the past year. They gave it to someone with less experience. I'm questioning whether I'm cut out for this career path and wondering if I should start looking elsewhere."
+                </div>
+                
+                <div class="listening-question">What would be your most natural response?</div>
+                <div class="listening-options">
+                    <label class="listening-option">
+                        <input type="radio" name="scenario3_response" value="emotional_support" required>
+                        <div class="option-content">
+                            <div class="option-title">Emotional Support & Validation</div>
+                            <div class="option-description">Acknowledge their disappointment and provide emotional comfort</div>
+                            <div class="option-example">"I'm so sorry - that must be incredibly disappointing after all your hard work. It's natural to question things when something like this happens."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario3_response" value="problem_solving" required>
+                        <div class="option-content">
+                            <div class="option-title">Problem-Solving & Advice</div>
+                            <div class="option-description">Offer practical next steps for their career</div>
+                            <div class="option-example">"Have you considered asking for feedback on why you didn't get it? That could help you prepare for the next opportunity. Or maybe explore roles in other departments?"</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario3_response" value="perspective_taking" required>
+                        <div class="option-content">
+                            <div class="option-title">Perspective & Reframing</div>
+                            <div class="option-description">Help them see their situation in a broader context</div>
+                            <div class="option-example">"Sometimes these setbacks redirect us toward better opportunities. Your skills and dedication haven't disappeared - this might not be the right fit or timing."</div>
+                        </div>
+                    </label>
+                    <label class="listening-option">
+                        <input type="radio" name="scenario3_response" value="active_listening" required>
+                        <div class="option-content">
+                            <div class="option-title">Active Listening & Exploration</div>
+                            <div class="option-description">Help them explore their thoughts and feelings about the situation</div>
+                            <div class="option-example">"What aspects of this career path do you still find meaningful? When you imagine looking elsewhere, what would you be hoping to find?"</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">Submit Assessment</button>
+            <div class="progress">Assessment: 3 scenarios completed</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('listening-preferences-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {
+                scenario1: formData.get('scenario1_response'),
+                scenario2: formData.get('scenario2_response'),
+                scenario3: formData.get('scenario3_response'),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Calculate listening style preferences
+            const styleCounts = {
+                emotional_support: 0,
+                problem_solving: 0,
+                perspective_taking: 0,
+                active_listening: 0
+            };
+            
+            // Count responses for each style
+            Object.values(responses).forEach(response => {
+                if (response && styleCounts.hasOwnProperty(response)) {
+                    styleCounts[response]++;
+                }
+            });
+            
+            // Determine primary listening style
+            const maxCount = Math.max(...Object.values(styleCounts));
+            const primaryStyles = Object.keys(styleCounts).filter(style => styleCounts[style] === maxCount);
+            
+            let primaryStyle = primaryStyles[0]; // If tied, take first one
+            let styleDescription = '';
+            
+            switch(primaryStyle) {
+                case 'emotional_support':
+                    styleDescription = 'You tend to focus on emotional validation and providing comfort. You excel at making others feel heard and understood.';
+                    break;
+                case 'problem_solving':
+                    styleDescription = 'You naturally offer practical solutions and advice. You excel at helping others find concrete ways to address their challenges.';
+                    break;
+                case 'perspective_taking':
+                    styleDescription = 'You help others reframe situations and see different viewpoints. You excel at providing context and broader perspective.';
+                    break;
+                case 'active_listening':
+                    styleDescription = 'You focus on helping others explore their own thoughts and feelings. You excel at asking thoughtful questions and facilitating self-discovery.';
+                    break;
+            }
+            
+            let feedback = 'Listening Preferences Assessment Results:\\n\\n';
+            feedback += `Primary Listening Style: ${primaryStyle.replace('_', ' ').replace(/\\b\\w/g, l => l.toUpperCase())}\\n\\n`;
+            feedback += `${styleDescription}\\n\\n`;
+            
+            feedback += 'Response Distribution:\\n';
+            feedback += `• Emotional Support: ${styleCounts.emotional_support}/3\\n`;
+            feedback += `• Problem Solving: ${styleCounts.problem_solving}/3\\n`;
+            feedback += `• Perspective Taking: ${styleCounts.perspective_taking}/3\\n`;
+            feedback += `• Active Listening: ${styleCounts.active_listening}/3\\n\\n`;
+            
+            if (primaryStyles.length > 1) {
+                feedback += `Note: You showed equal preference for multiple styles, indicating flexibility in your listening approach.\\n\\n`;
+            }
+            
+            feedback += 'Tip: The most effective listeners often adapt their style based on what the speaker needs in the moment.';
+            
+            console.log('Listening Preferences Responses:', responses);
+            console.log('Style Counts:', styleCounts);
+            console.log('Primary Style:', primaryStyle);
+            
+            alert(feedback);
+            
+            // In production, would send to server:
+            // fetch('/api/quiz/listening-preferences/submit', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         ...responses,
+            //         styleCounts: styleCounts,
+            //         primaryStyle: primaryStyle
+            //     })
+            // });
+        });
+    </script>
+</body>
+</html>
