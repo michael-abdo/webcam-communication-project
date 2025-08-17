@@ -106,7 +106,7 @@ async def home():
                 <li class="assessment-item">
                     <h3>Full Advanced Assessment (6 minutes)</h3>
                     <p>Personality and behavioral assessment including emotion regulation and decision biases.</p>
-                    <a href="#" class="btn" style="background: #ccc; cursor: not-allowed;">Coming Soon</a>
+                    <a href="/assessment/advanced" class="btn">Start Advanced Assessment</a>
                 </li>
             </ul>
         </div>
@@ -161,6 +161,42 @@ async def nfc_assessment():
 async def anchoring_assessment():
     """Serve the anchoring test page"""
     with open("assessments/static/anchoring_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/advanced", response_class=HTMLResponse)
+async def advanced_assessment():
+    """Serve the full Advanced assessment page"""
+    with open("assessments/static/advanced_assessment.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/emotion-regulation", response_class=HTMLResponse)
+async def emotion_regulation_assessment():
+    """Serve the emotion regulation assessment page"""
+    with open("assessments/static/emotion_regulation_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/relationship-style", response_class=HTMLResponse)
+async def relationship_style_assessment():
+    """Serve the relationship style assessment page"""
+    with open("assessments/static/relationship_style_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/listening-preferences", response_class=HTMLResponse)
+async def listening_preferences_assessment():
+    """Serve the listening preferences assessment page"""
+    with open("assessments/static/listening_preferences_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/loss-aversion", response_class=HTMLResponse)
+async def loss_aversion_assessment():
+    """Serve the loss aversion assessment page"""
+    with open("assessments/static/loss_aversion_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/perspective-taking", response_class=HTMLResponse)
+async def perspective_taking_assessment():
+    """Serve the perspective taking assessment page"""
+    with open("assessments/static/perspective_taking_simple.html", "r") as f:
         return HTMLResponse(content=f.read())
 
 @app.get("/api/quiz/questions/{section}")
