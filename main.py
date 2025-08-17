@@ -17,6 +17,8 @@ templates = Jinja2Templates(directory="assessments/templates")
 
 # Create results directory if it doesn't exist
 Path("assessments/results").mkdir(parents=True, exist_ok=True)
+Path("assessments/results/core").mkdir(parents=True, exist_ok=True)
+Path("assessments/results/advanced").mkdir(parents=True, exist_ok=True)
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
@@ -199,6 +201,52 @@ async def perspective_taking_assessment():
     with open("assessments/static/perspective_taking_simple.html", "r") as f:
         return HTMLResponse(content=f.read())
 
+@app.get("/results/core/{user_id}", response_class=HTMLResponse)
+async def core_results(user_id: str):
+    """Serve the Core assessment results page"""
+    try:
+        with open("assessments/static/results_core.html", "r") as f:
+            content = f.read()
+            # Replace placeholder with actual user_id for JavaScript
+            content = content.replace("{{USER_ID}}", user_id)
+            return HTMLResponse(content=content)
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Results page not found</h1>", status_code=404)
+
+@app.get("/results/advanced/{user_id}", response_class=HTMLResponse)
+async def advanced_results(user_id: str):
+    """Serve the Advanced assessment results page"""
+    try:
+        with open("assessments/static/results_advanced.html", "r") as f:
+            content = f.read()
+            # Replace placeholder with actual user_id for JavaScript
+            content = content.replace("{{USER_ID}}", user_id)
+            return HTMLResponse(content=content)
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Results page not found</h1>", status_code=404)
+
+@app.get("/api/results/core/{user_id}")
+async def get_core_results(user_id: str):
+    """Get Core assessment results data"""
+    try:
+        with open(f"assessments/results/core/{user_id}.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"error": "User results not found", "user_id": user_id}
+    except json.JSONDecodeError:
+        return {"error": "Invalid results data", "user_id": user_id}
+
+@app.get("/api/results/advanced/{user_id}")
+async def get_advanced_results(user_id: str):
+    """Get Advanced assessment results data"""
+    try:
+        with open(f"assessments/results/advanced/{user_id}.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"error": "User results not found", "user_id": user_id}
+    except json.JSONDecodeError:
+        return {"error": "Invalid results data", "user_id": user_id}
+
 @app.get("/api/quiz/questions/{section}")
 async def get_questions(section: str):
     """Get questions for a specific section"""
@@ -223,10 +271,20 @@ async def submit_quiz(request: Request):
     # Add timestamp
     data["timestamp"] = datetime.now().isoformat()
     
-    # Save to results file
-    filename = f"assessments/results/response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    with open(filename, "w") as f:
-        json.dump(data, f, indent=2)
+    # Determine assessment type and user ID
+    assessment_type = data.get("assessmentType", "unknown")
+    user_id = data.get("userId", "anonymous")
+    
+    # Save to user-specific results file
+    if assessment_type in ["core", "advanced"]:
+        user_filename = f"assessments/results/{assessment_type}/{user_id}.json"
+        with open(user_filename, "w") as f:
+            json.dump(data, f, indent=2)
+    else:
+        # Fallback to old timestamp-based naming for unknown types
+        filename = f"assessments/results/response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=2)
     
     # Calculate basic scores (example for CRT)
     if "quiz_type" in data and data["quiz_type"] == "crt":

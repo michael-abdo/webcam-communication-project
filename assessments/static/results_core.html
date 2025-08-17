@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Assessment Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .results-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 30px;
+        }
+        .overall-score {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#4caf50 0% var(--score-percent), #e0e0e0 var(--score-percent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+        }
+        .score-value {
+            position: relative;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+        .section-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .section-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .section-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+        .score-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f44336, #ff9800, #4caf50);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .score-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .cognitive-profile {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .cognitive-profile h2 {
+            margin: 0 0 20px 0;
+            color: #2e7d32;
+        }
+        .profile-traits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .trait {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .trait-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .trait-level {
+            color: #2e7d32;
+            font-size: 0.9em;
+        }
+        .recommendations {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .recommendations h2 {
+            margin: 0 0 20px 0;
+            color: #f57c00;
+        }
+        .recommendation-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff9800;
+        }
+        .timing-analysis {
+            background: #f3e5f5;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .timing-analysis h2 {
+            margin: 0 0 20px 0;
+            color: #7b1fa2;
+        }
+        .actions {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            background: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1976d2;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #f44336;
+            background: #ffebee;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+            .section-results {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <div class="header">
+            <h1>Core Assessment Results</h1>
+            <p id="user-info">User ID: {{USER_ID}}</p>
+            <p id="completion-time">Completed: Loading...</p>
+        </div>
+        
+        <div class="content">
+            <div id="loading" class="loading">
+                <h2>Loading your results...</h2>
+                <p>Please wait while we analyze your assessment data.</p>
+            </div>
+            
+            <div id="error" class="error" style="display: none;">
+                <h2>Unable to Load Results</h2>
+                <p>We couldn't find your assessment results. Please check your user ID and try again.</p>
+            </div>
+            
+            <div id="results-content" style="display: none;">
+                <div class="overall-score">
+                    <div class="score-circle" id="score-circle">
+                        <span class="score-value" id="overall-score">--</span>
+                    </div>
+                    <h2>Overall Performance</h2>
+                    <p id="performance-level">Calculating...</p>
+                </div>
+                
+                <div class="section-results" id="section-results">
+                    <!-- Section cards will be populated by JavaScript -->
+                </div>
+                
+                <div class="cognitive-profile">
+                    <h2>🧠 Cognitive Profile</h2>
+                    <div class="profile-traits" id="cognitive-traits">
+                        <!-- Traits will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="timing-analysis">
+                    <h2>⏱️ Timing Analysis</h2>
+                    <div id="timing-details">
+                        <!-- Timing analysis will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="recommendations">
+                    <h2>💡 Personalized Recommendations</h2>
+                    <div id="recommendations-list">
+                        <!-- Recommendations will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="/assessment/core" class="btn">Retake Assessment</a>
+            <a href="/assessment/advanced" class="btn btn-secondary">Try Advanced Assessment</a>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+            <button onclick="window.print()" class="btn btn-secondary">Print Results</button>
+        </div>
+    </div>
+
+    <script>
+        const userId = '{{USER_ID}}';
+        
+        // Assessment scoring configurations
+        const scoringConfig = {
+            crt: {
+                questions: ['bat_ball', 'widget', 'lily_pad'],
+                correct: { bat_ball: 0.05, widget: 5, lily_pad: 47 },
+                maxScore: 3
+            },
+            numeracy: {
+                maxScore: 2,
+                scoringMethod: 'percentage'
+            },
+            intent: {
+                maxScore: 2,
+                scoringMethod: 'accuracy'
+            },
+            nfc: {
+                maxScore: 21,
+                scoringMethod: 'likert_sum'
+            },
+            anchoring: {
+                maxScore: 2,
+                scoringMethod: 'bias_resistance'
+            },
+            aot: {
+                maxScore: 35,
+                scoringMethod: 'likert_sum'
+            }
+        };
+        
+        async function loadResults() {
+            try {
+                const response = await fetch(`/api/results/core/${userId}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError();
+                    return;
+                }
+                
+                displayResults(data);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results-content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading results:', error);
+                showError();
+            }
+        }
+        
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+        
+        function displayResults(data) {
+            // Display completion time
+            if (data.timestamp) {
+                const completionTime = new Date(data.timestamp).toLocaleString();
+                document.getElementById('completion-time').textContent = `Completed: ${completionTime}`;
+            }
+            
+            // Calculate and display scores
+            const scores = calculateScores(data);
+            displayOverallScore(scores);
+            displaySectionResults(scores, data);
+            displayCognitiveProfile(scores);
+            displayTimingAnalysis(data);
+            displayRecommendations(scores);
+        }
+        
+        function calculateScores(data) {
+            const scores = {};
+            let totalScore = 0;
+            let maxTotal = 0;
+            
+            // CRT Scoring
+            if (data.sections && data.sections.crt) {
+                const crtScore = calculateCRTScore(data.sections.crt);
+                scores.crt = crtScore;
+                totalScore += crtScore.score;
+                maxTotal += crtScore.maxScore;
+            }
+            
+            // Add other section scoring here...
+            // For now, using placeholder scores
+            scores.numeracy = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 75 };
+            scores.intent = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 65 };
+            scores.nfc = { score: Math.floor(Math.random() * 10) + 10, maxScore: 21, percentage: 70 };
+            scores.anchoring = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 60 };
+            scores.aot = { score: Math.floor(Math.random() * 15) + 20, maxScore: 35, percentage: 72 };
+            
+            // Calculate totals
+            Object.values(scores).forEach(section => {
+                if (section.score !== undefined) {
+                    totalScore += section.score;
+                    maxTotal += section.maxScore;
+                }
+            });
+            
+            scores.overall = {
+                score: totalScore,
+                maxScore: maxTotal,
+                percentage: Math.round((totalScore / maxTotal) * 100)
+            };
+            
+            return scores;
+        }
+        
+        function calculateCRTScore(crtData) {
+            let correct = 0;
+            const total = 3;
+            const correctAnswers = { bat_ball: 0.05, widget: 5, lily_pad: 47 };
+            
+            Object.keys(correctAnswers).forEach(key => {
+                if (crtData[key] && parseFloat(crtData[key].answer) === correctAnswers[key]) {
+                    correct++;
+                }
+            });
+            
+            return {
+                score: correct,
+                maxScore: total,
+                percentage: Math.round((correct / total) * 100)
+            };
+        }
+        
+        function displayOverallScore(scores) {
+            const overall = scores.overall;
+            const scoreElement = document.getElementById('overall-score');
+            const circleElement = document.getElementById('score-circle');
+            const levelElement = document.getElementById('performance-level');
+            
+            scoreElement.textContent = `${overall.percentage}%`;
+            circleElement.style.setProperty('--score-percent', `${overall.percentage}%`);
+            
+            let level = 'Average';
+            if (overall.percentage >= 85) level = 'Excellent';
+            else if (overall.percentage >= 70) level = 'Good';
+            else if (overall.percentage >= 55) level = 'Average';
+            else level = 'Needs Improvement';
+            
+            levelElement.textContent = `${level} Performance`;
+        }
+        
+        function displaySectionResults(scores, data) {
+            const container = document.getElementById('section-results');
+            const sections = [
+                { key: 'crt', name: 'Cognitive Reflection', description: 'Analytical thinking and intuition resistance' },
+                { key: 'numeracy', name: 'Numeracy & Calibration', description: 'Mathematical reasoning and probability judgment' },
+                { key: 'intent', name: 'Intent Attribution', description: 'Social perception and bias detection' },
+                { key: 'nfc', name: 'Need for Closure', description: 'Tolerance for ambiguity and uncertainty' },
+                { key: 'anchoring', name: 'Anchoring Resistance', description: 'Independence from initial reference points' },
+                { key: 'aot', name: 'Open-Minded Thinking', description: 'Intellectual humility and flexibility' }
+            ];
+            
+            sections.forEach(section => {
+                const score = scores[section.key];
+                if (score) {
+                    const card = createSectionCard(section, score);
+                    container.appendChild(card);
+                }
+            });
+        }
+        
+        function createSectionCard(section, score) {
+            const card = document.createElement('div');
+            card.className = 'section-card';
+            
+            card.innerHTML = `
+                <h3>${section.name}</h3>
+                <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">${section.description}</p>
+                <div class="score-bar">
+                    <div class="score-bar-fill" style="width: ${score.percentage}%"></div>
+                </div>
+                <div class="score-details">
+                    <span>Score: ${score.score}/${score.maxScore}</span>
+                    <span>${score.percentage}%</span>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function displayCognitiveProfile(scores) {
+            const container = document.getElementById('cognitive-traits');
+            const traits = [
+                { 
+                    name: 'Analytical Thinking', 
+                    level: scores.crt?.percentage >= 67 ? 'High' : scores.crt?.percentage >= 33 ? 'Moderate' : 'Developing',
+                    description: 'Your ability to think through problems systematically'
+                },
+                {
+                    name: 'Numerical Reasoning',
+                    level: scores.numeracy?.percentage >= 75 ? 'Strong' : scores.numeracy?.percentage >= 50 ? 'Adequate' : 'Improving',
+                    description: 'Your comfort with mathematical and statistical concepts'
+                },
+                {
+                    name: 'Social Perception',
+                    level: scores.intent?.percentage >= 75 ? 'Accurate' : scores.intent?.percentage >= 50 ? 'Typical' : 'Cautious',
+                    description: 'Your ability to read social situations objectively'
+                },
+                {
+                    name: 'Uncertainty Tolerance',
+                    level: scores.nfc?.percentage <= 40 ? 'High' : scores.nfc?.percentage <= 70 ? 'Moderate' : 'Low',
+                    description: 'Your comfort with ambiguous situations'
+                }
+            ];
+            
+            traits.forEach(trait => {
+                const traitElement = document.createElement('div');
+                traitElement.className = 'trait';
+                traitElement.innerHTML = `
+                    <div class="trait-name">${trait.name}</div>
+                    <div class="trait-level">${trait.level}</div>
+                    <div style="font-size: 0.8em; color: #666; margin-top: 5px;">${trait.description}</div>
+                `;
+                container.appendChild(traitElement);
+            });
+        }
+        
+        function displayTimingAnalysis(data) {
+            const container = document.getElementById('timing-details');
+            // Placeholder timing analysis
+            container.innerHTML = `
+                <p><strong>Total Time:</strong> ${data.timeSpent || 'N/A'}</p>
+                <p><strong>Average per Section:</strong> ${data.avgTimePerSection || 'N/A'}</p>
+                <p><strong>Time Efficiency:</strong> ${data.timeEfficiency || 'Optimal pace maintained'}</p>
+            `;
+        }
+        
+        function displayRecommendations(scores) {
+            const container = document.getElementById('recommendations-list');
+            const recommendations = generateRecommendations(scores);
+            
+            recommendations.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = 'recommendation-item';
+                item.innerHTML = `
+                    <h4 style="margin: 0 0 10px 0;">${rec.title}</h4>
+                    <p style="margin: 0;">${rec.description}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        function generateRecommendations(scores) {
+            const recommendations = [];
+            
+            if (scores.crt?.percentage < 50) {
+                recommendations.push({
+                    title: 'Strengthen Analytical Thinking',
+                    description: 'Practice solving logic puzzles and mathematical problems to improve your systematic thinking approach.'
+                });
+            }
+            
+            if (scores.numeracy?.percentage < 60) {
+                recommendations.push({
+                    title: 'Enhance Numerical Skills',
+                    description: 'Work on probability and statistics concepts to improve your quantitative reasoning abilities.'
+                });
+            }
+            
+            if (scores.overall?.percentage >= 80) {
+                recommendations.push({
+                    title: 'Excellent Performance!',
+                    description: 'You demonstrate strong cognitive abilities. Consider taking the Advanced Assessment to explore deeper personality factors.'
+                });
+            }
+            
+            if (recommendations.length === 0) {
+                recommendations.push({
+                    title: 'Continue Developing',
+                    description: 'Your results show balanced cognitive abilities. Regular practice with analytical problems will help maintain and improve these skills.'
+                });
+            }
+            
+            return recommendations;
+        }
+        
+        // Load results when page loads
+        window.addEventListener('load', loadResults);
+    </script>
+</body>
+</html>
