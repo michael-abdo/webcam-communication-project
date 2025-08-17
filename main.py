@@ -100,13 +100,13 @@ async def home():
                 <li class="assessment-item">
                     <h3>Full Core Assessment (4 minutes)</h3>
                     <p>Complete cognitive assessment including CRT, AOT, numeracy, and intent attribution.</p>
-                    <a href="/assessment/core" class="btn">Coming Soon</a>
+                    <a href="/assessment/core" class="btn">Start Core Assessment</a>
                 </li>
                 
                 <li class="assessment-item">
                     <h3>Full Advanced Assessment (6 minutes)</h3>
                     <p>Personality and behavioral assessment including emotion regulation and decision biases.</p>
-                    <a href="/assessment/advanced" class="btn">Coming Soon</a>
+                    <a href="#" class="btn" style="background: #ccc; cursor: not-allowed;">Coming Soon</a>
                 </li>
             </ul>
         </div>
@@ -131,6 +131,36 @@ async def aot_assessment():
 async def reaction_assessment():
     """Serve the reaction time assessment page"""
     with open("assessments/static/reaction_time_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/core", response_class=HTMLResponse)
+async def core_assessment():
+    """Serve the full Core assessment page"""
+    with open("assessments/static/core_assessment.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/numeracy", response_class=HTMLResponse)
+async def numeracy_assessment():
+    """Serve the numeracy assessment page"""
+    with open("assessments/static/numeracy_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/intent", response_class=HTMLResponse)
+async def intent_assessment():
+    """Serve the intent attribution assessment page"""
+    with open("assessments/static/intent_attribution_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/nfc", response_class=HTMLResponse)
+async def nfc_assessment():
+    """Serve the need for closure assessment page"""
+    with open("assessments/static/need_for_closure_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/anchoring", response_class=HTMLResponse)
+async def anchoring_assessment():
+    """Serve the anchoring test page"""
+    with open("assessments/static/anchoring_simple.html", "r") as f:
         return HTMLResponse(content=f.read())
 
 @app.get("/api/quiz/questions/{section}")

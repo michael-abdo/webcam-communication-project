@@ -1,0 +1,86 @@
+{
+  "tests": [
+    {
+      "id": "morocco_population",
+      "type": "two_step_anchoring",
+      "step1": {
+        "question": "Is the population of Morocco more or less than 20 million people?",
+        "anchor_value": 20,
+        "anchor_unit": "million",
+        "comparison_options": {
+          "more": "More than 20 million",
+          "less": "Less than 20 million"
+        }
+      },
+      "step2": {
+        "question": "What is your best estimate for the actual population of Morocco?",
+        "input_type": "number",
+        "unit": "million",
+        "placeholder": "Enter number",
+        "min": 1,
+        "max": 100,
+        "hint": "Enter in millions (e.g., 25 for 25 million people)"
+      },
+      "anchor_info": "The 20 million figure serves as an 'anchor' - let's see how it influences your estimate!",
+      "actual_value": 37,
+      "typical_range": [30, 45],
+      "anchoring_threshold": 10
+    },
+    {
+      "id": "company_valuation",
+      "type": "two_step_anchoring",
+      "step1": {
+        "question": "A successful tech startup with 50 employees and $10M annual revenue is being valued for acquisition. Is this company worth more or less than $80 million?",
+        "anchor_value": 80,
+        "anchor_unit": "million USD",
+        "comparison_options": {
+          "more": "More than $80 million",
+          "less": "Less than $80 million"
+        }
+      },
+      "step2": {
+        "question": "What is your best estimate for the fair market value of this company?",
+        "input_type": "number",
+        "unit": "million USD",
+        "placeholder": "Enter number",
+        "min": 1,
+        "max": 1000,
+        "hint": "Enter in millions (e.g., 75 for $75 million)"
+      },
+      "anchor_info": "The $80 million figure is another anchor. Did it influence your valuation?",
+      "actual_value": 50,
+      "typical_range": [30, 80],
+      "anchoring_threshold": 20
+    }
+  ],
+  "scoring": {
+    "anchoring_detection": {
+      "method": "distance_from_anchor",
+      "susceptibility_levels": {
+        "low": {
+          "description": "Resistant to anchoring bias",
+          "criteria": "No tests show anchoring influence"
+        },
+        "moderate": {
+          "description": "Some anchoring influence",
+          "criteria": "One test shows anchoring influence"
+        },
+        "high": {
+          "description": "Strong anchoring bias",
+          "criteria": "Both tests show anchoring influence"
+        }
+      }
+    },
+    "accuracy_scoring": {
+      "method": "distance_from_actual",
+      "accuracy_levels": {
+        "excellent": "Within 20% of actual value",
+        "good": "Within 40% of actual value",
+        "poor": "More than 40% from actual value"
+      }
+    }
+  },
+  "instructions": "This test measures how initial information (anchors) influence your subsequent judgments. Please answer each question honestly and give your best estimates.",
+  "time_limit": 120,
+  "category": "cognitive_bias"
+}

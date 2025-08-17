@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Need for Closure Scale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 4px solid #ff9800;
+        }
+        .question {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+        .question-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff9800;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 5px;
+        }
+        .scale-option {
+            text-align: center;
+            flex: 1;
+            padding: 15px 10px;
+        }
+        .scale-option input[type="radio"] {
+            display: none;
+        }
+        .scale-option label {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #666;
+            margin: 0 auto;
+            position: relative;
+        }
+        .scale-option label:hover {
+            border-color: #ff9800;
+            background: #fff3e0;
+            transform: scale(1.1);
+        }
+        .scale-option input[type="radio"]:checked + label {
+            background: #ff9800;
+            color: white;
+            border-color: #f57c00;
+            transform: scale(1.15);
+        }
+        .scale-number {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 40px auto 0;
+            padding: 15px 30px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #f57c00;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        .dimension-info {
+            background: #f3e5f5;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #7b1fa2;
+            border-left: 3px solid #9c27b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Need for Closure Scale</h1>
+        
+        <div class="instructions">
+            <p>Please indicate how much you agree or disagree with each statement.</p>
+            <p>Think about how you generally feel about uncertainty and decision-making.</p>
+        </div>
+
+        <form id="nfc-form">
+            <!-- Question 1: Preference for Clear Structure -->
+            <div class="question">
+                <div class="question-number">Question 1</div>
+                <div class="question-text">
+                    I prefer tasks and situations that have clear, definite right and wrong answers.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q1_1" name="q1" value="1" required>
+                        <label for="q1_1">1</label>
+                        <div class="scale-number">Strongly<br>Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_2" name="q1" value="2" required>
+                        <label for="q1_2">2</label>
+                        <div class="scale-number">Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_3" name="q1" value="3" required>
+                        <label for="q1_3">3</label>
+                        <div class="scale-number">Neutral</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_4" name="q1" value="4" required>
+                        <label for="q1_4">4</label>
+                        <div class="scale-number">Agree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q1_5" name="q1" value="5" required>
+                        <label for="q1_5">5</label>
+                        <div class="scale-number">Strongly<br>Agree</div>
+                    </div>
+                </div>
+                <div class="dimension-info">
+                    Measures: Preference for structure and certainty
+                </div>
+            </div>
+
+            <!-- Question 2: Discomfort with Ambiguity -->
+            <div class="question">
+                <div class="question-number">Question 2</div>
+                <div class="question-text">
+                    I feel uncomfortable when I don't understand the reason why an event occurred in my life.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q2_1" name="q2" value="1" required>
+                        <label for="q2_1">1</label>
+                        <div class="scale-number">Strongly<br>Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_2" name="q2" value="2" required>
+                        <label for="q2_2">2</label>
+                        <div class="scale-number">Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_3" name="q2" value="3" required>
+                        <label for="q2_3">3</label>
+                        <div class="scale-number">Neutral</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_4" name="q2" value="4" required>
+                        <label for="q2_4">4</label>
+                        <div class="scale-number">Agree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q2_5" name="q2" value="5" required>
+                        <label for="q2_5">5</label>
+                        <div class="scale-number">Strongly<br>Agree</div>
+                    </div>
+                </div>
+                <div class="dimension-info">
+                    Measures: Discomfort with ambiguity and uncertainty
+                </div>
+            </div>
+
+            <!-- Question 3: Preference for Quick Decisions -->
+            <div class="question">
+                <div class="question-number">Question 3</div>
+                <div class="question-text">
+                    I like to have things settled and decided rather than leaving them open and uncertain.
+                </div>
+                <div class="scale-labels">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                </div>
+                <div class="likert-scale">
+                    <div class="scale-option">
+                        <input type="radio" id="q3_1" name="q3" value="1" required>
+                        <label for="q3_1">1</label>
+                        <div class="scale-number">Strongly<br>Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_2" name="q3" value="2" required>
+                        <label for="q3_2">2</label>
+                        <div class="scale-number">Disagree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_3" name="q3" value="3" required>
+                        <label for="q3_3">3</label>
+                        <div class="scale-number">Neutral</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_4" name="q3" value="4" required>
+                        <label for="q3_4">4</label>
+                        <div class="scale-number">Agree</div>
+                    </div>
+                    <div class="scale-option">
+                        <input type="radio" id="q3_5" name="q3" value="5" required>
+                        <label for="q3_5">5</label>
+                        <div class="scale-number">Strongly<br>Agree</div>
+                    </div>
+                </div>
+                <div class="dimension-info">
+                    Measures: Preference for closure and decisiveness
+                </div>
+            </div>
+
+            <button type="submit">Submit Responses</button>
+            <div class="progress">Question 3 of 3</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('nfc-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {
+                q1: parseInt(formData.get('q1')),
+                q2: parseInt(formData.get('q2')),
+                q3: parseInt(formData.get('q3')),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Calculate Need for Closure score
+            const nfcScore = (responses.q1 + responses.q2 + responses.q3) / 3;
+            
+            // Categorize score
+            let interpretation = '';
+            let description = '';
+            
+            if (nfcScore >= 4.0) {
+                interpretation = 'High Need for Closure';
+                description = 'You strongly prefer structure, certainty, and clear-cut answers. You may be less comfortable with ambiguous situations.';
+            } else if (nfcScore >= 3.0) {
+                interpretation = 'Moderate Need for Closure';
+                description = 'You have a balanced approach to certainty and ambiguity, preferring some structure while remaining open to uncertainty.';
+            } else {
+                interpretation = 'Low Need for Closure';
+                description = 'You are comfortable with uncertainty and ambiguity, and may actually prefer open-ended situations.';
+            }
+            
+            // Analyze specific dimensions
+            const structurePreference = responses.q1;
+            const ambiguityDiscomfort = responses.q2;
+            const decisiveness = responses.q3;
+            
+            let dimensionFeedback = '\n\nBreakdown:\n';
+            dimensionFeedback += `Structure preference: ${structurePreference}/5\n`;
+            dimensionFeedback += `Ambiguity discomfort: ${ambiguityDiscomfort}/5\n`;
+            dimensionFeedback += `Decisiveness: ${decisiveness}/5\n`;
+            
+            // Bias implications
+            let biasImplications = '\n\nBias Implications:\n';
+            if (nfcScore >= 3.5) {
+                biasImplications += '• May be more susceptible to confirmation bias\n';
+                biasImplications += '• Tendency to make quick judgments\n';
+                biasImplications += '• May prefer familiar solutions over novel ones';
+            } else {
+                biasImplications += '• More likely to consider multiple perspectives\n';
+                biasImplications += '• Better tolerance for uncertainty\n';
+                biasImplications += '• May delay decisions to gather more information';
+            }
+            
+            const fullFeedback = `Need for Closure Results:\n\nScore: ${nfcScore.toFixed(2)}/5\n${interpretation}\n\n${description}${dimensionFeedback}${biasImplications}`;
+            
+            console.log('Need for Closure Responses:', responses);
+            console.log('NFC Score:', nfcScore);
+            
+            alert(fullFeedback);
+            
+            // In production, would send to server:
+            // fetch('/api/quiz/nfc/submit', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify(responses)
+            // });
+        });
+    </script>
+</body>
+</html>
