@@ -507,9 +507,17 @@ const CoreAssessment = {
         .then(response => response.json())
         .then(data => {
             console.log('Assessment submitted successfully:', data);
+            // Redirect to results page after successful submission
+            setTimeout(() => {
+                window.location.href = '/results/core/' + this.sessionData.userId;
+            }, 2000); // 2 second delay to show completion message
         })
         .catch(error => {
             console.error('Error submitting assessment:', error);
+            // Even if submission fails, still redirect to results page
+            setTimeout(() => {
+                window.location.href = '/results/core/' + this.sessionData.userId;
+            }, 3000);
         });
     },
 
