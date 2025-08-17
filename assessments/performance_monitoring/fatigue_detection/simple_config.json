@@ -1,0 +1,58 @@
+{
+  "reaction_time_test": {
+    "trials": 5,
+    "delay_range": [1000, 4000],
+    "thresholds": {
+      "fast": 250,
+      "average": 350,
+      "slow": 400,
+      "very_slow": 500
+    },
+    "fatigue_indicators": {
+      "slowdown_percentage": 20,
+      "high_variance": 150,
+      "high_average": 350,
+      "lapses": 500
+    }
+  },
+  "simple_attention_test": {
+    "duration": 60000,
+    "target_letter": "X",
+    "target_frequency": 0.2,
+    "display_time": 500,
+    "interval": 1000,
+    "fatigue_thresholds": {
+      "missed_targets": 2,
+      "false_alarms": 3,
+      "slow_responses": 3
+    }
+  },
+  "scoring": {
+    "normal": {
+      "description": "Alert and focused",
+      "reaction_avg": [0, 300],
+      "missed_percentage": [0, 10]
+    },
+    "mild_fatigue": {
+      "description": "Slightly tired",
+      "reaction_avg": [300, 400],
+      "missed_percentage": [10, 20]
+    },
+    "moderate_fatigue": {
+      "description": "Noticeably tired",
+      "reaction_avg": [400, 500],
+      "missed_percentage": [20, 30]
+    },
+    "severe_fatigue": {
+      "description": "Very tired - consider a break",
+      "reaction_avg": [500, 9999],
+      "missed_percentage": [30, 100]
+    }
+  },
+  "recommendations": {
+    "normal": "Continue with assessment",
+    "mild_fatigue": "Stay focused, you're doing well",
+    "moderate_fatigue": "Consider taking a short break after this section",
+    "severe_fatigue": "We recommend taking a 5-minute break now"
+  }
+}

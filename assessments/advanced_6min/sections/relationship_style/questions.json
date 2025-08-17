@@ -1,0 +1,90 @@
+{
+  "attachment_questions": {
+    "anxiety_dimension": [
+      {
+        "id": "worry_care",
+        "text": "I often worry that people close to me don't really care about me as much as I care about them.",
+        "dimension": "anxiety",
+        "reverse_scored": false
+      },
+      {
+        "id": "need_reassurance",
+        "text": "I need a lot of reassurance that I am valued by those close to me.",
+        "dimension": "anxiety",
+        "reverse_scored": false
+      }
+    ],
+    "avoidance_dimension": [
+      {
+        "id": "hide_feelings",
+        "text": "I prefer not to show others how I feel deep down.",
+        "dimension": "avoidance",
+        "reverse_scored": false
+      },
+      {
+        "id": "difficulty_depending",
+        "text": "I find it difficult to depend on others or have them depend on me.",
+        "dimension": "avoidance",
+        "reverse_scored": false
+      }
+    ]
+  },
+  "relationship_values": [
+    {
+      "id": "trust",
+      "label": "Trust and reliability",
+      "description": "Feeling secure that others will be there when needed"
+    },
+    {
+      "id": "independence",
+      "label": "Personal space and independence",
+      "description": "Maintaining autonomy and individual identity"
+    },
+    {
+      "id": "intimacy",
+      "label": "Emotional intimacy and sharing",
+      "description": "Deep emotional connection and vulnerability"
+    },
+    {
+      "id": "stability",
+      "label": "Stability and consistency",
+      "description": "Predictable and steady relationship patterns"
+    }
+  ],
+  "attachment_styles": {
+    "secure": {
+      "name": "Secure",
+      "anxiety_range": [1, 2.99],
+      "avoidance_range": [1, 2.99],
+      "description": "Comfortable with intimacy and independence",
+      "coaching_focus": "Maintain healthy boundaries while deepening connections"
+    },
+    "anxious": {
+      "name": "Anxious-Preoccupied",
+      "anxiety_range": [3, 5],
+      "avoidance_range": [1, 2.99],
+      "description": "Seeks high intimacy, worries about relationships",
+      "coaching_focus": "Build self-confidence and manage relationship anxiety"
+    },
+    "avoidant": {
+      "name": "Dismissive-Avoidant",
+      "anxiety_range": [1, 2.99],
+      "avoidance_range": [3, 5],
+      "description": "Values independence over closeness",
+      "coaching_focus": "Practice vulnerability and emotional expression"
+    },
+    "fearful_avoidant": {
+      "name": "Fearful-Avoidant",
+      "anxiety_range": [3, 5],
+      "avoidance_range": [3, 5],
+      "description": "Desires closeness but fears rejection",
+      "coaching_focus": "Build trust gradually and manage conflicting needs"
+    }
+  },
+  "scoring": {
+    "dimensions": ["anxiety", "avoidance"],
+    "scale_range": [1, 5],
+    "classification_method": "quadrant",
+    "value_ranking_weight": 0.2
+  }
+}
