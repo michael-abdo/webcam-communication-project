@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xenodex"
+version = "0.1.0"
+description = "AI-powered personality detection system"
+authors = [{name = "Xenodex Team"}]
+dependencies = [
+    "openai>=1.0.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "click>=8.1.0",
+    "pytest>=7.4.0",
+    "mlflow>=2.5.0",
+    "wandb>=0.15.0"
+]
+
+[project.scripts]
+xenodex = "src.cli.main:main"

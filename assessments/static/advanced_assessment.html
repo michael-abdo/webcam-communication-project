@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Advanced Assessment (6 minutes)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .assessment-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .assessment-title {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .timer-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 10px 0;
+        }
+        .progress-display {
+            margin: 10px 0;
+            color: #666;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #2196f3;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .section-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            min-height: 400px;
+        }
+        .section-title {
+            color: #2196f3;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #2196f3;
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #1976d2;
+        }
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: #555;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .section-content {
+            display: none;
+        }
+        .section-content.active {
+            display: block;
+        }
+        .intro-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .intro-screen h2 {
+            color: #2196f3;
+            margin-bottom: 20px;
+        }
+        .intro-screen p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        .section-list {
+            text-align: left;
+            max-width: 600px;
+            margin: 30px auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .section-list h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .section-list ol {
+            margin: 0;
+        }
+        .section-list li {
+            margin-bottom: 8px;
+        }
+        .results-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .results-screen h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+        .time-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+        .time-critical {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        /* Advanced Assessment specific styles */
+        .question-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .question-group input, .question-group select, .question-group textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .radio-group label {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        .radio-group label:hover {
+            border-color: #2196f3;
+            background: #f0f8ff;
+        }
+        .radio-group input[type="radio"]:checked + span {
+            color: #2196f3;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="assessment-header">
+        <h1 class="assessment-title">Full Advanced Assessment</h1>
+        <div class="timer-display" id="timer">Time remaining: 6:00</div>
+        <div class="progress-display" id="progress-text">Ready to begin</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div id="time-warning" class="time-warning">
+            ⏰ Time is running short - please move through sections efficiently
+        </div>
+    </div>
+
+    <div class="section-container">
+        <!-- Introduction Screen -->
+        <div id="intro-screen" class="section-content active intro-screen">
+            <h2>Welcome to the Advanced Personality Assessment</h2>
+            <p>This assessment will evaluate your personality traits and behavioral patterns through 5 different sections.</p>
+            <p><strong>Time Limit:</strong> 6 minutes total</p>
+            
+            <div class="section-list">
+                <h3>Assessment Sections:</h3>
+                <ol>
+                    <li><strong>Emotion Regulation</strong> - How you manage emotions in challenging situations</li>
+                    <li><strong>Relationship Style</strong> - Your attachment patterns and relationship preferences</li>
+                    <li><strong>Listening Preferences</strong> - Your natural listening and support style</li>
+                    <li><strong>Loss Aversion</strong> - How you respond to potential gains and losses</li>
+                    <li><strong>Perspective Taking</strong> - Your ability to understand multiple viewpoints</li>
+                </ol>
+            </div>
+            
+            <p><strong>Instructions:</strong></p>
+            <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                <li>Answer all questions honestly based on your typical behavior</li>
+                <li>Work efficiently but thoughtfully</li>
+                <li>You can't go back to previous sections</li>
+                <li>Assessment will auto-submit when time expires</li>
+            </ul>
+        </div>
+
+        <!-- Section Content will be loaded here -->
+        <div id="section-content" class="section-content">
+            <!-- Dynamic content loaded here -->
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="section-content results-screen">
+            <h2>Assessment Complete!</h2>
+            <p>Thank you for completing the Advanced Personality Assessment.</p>
+            <p>Your responses have been recorded and are being processed.</p>
+            <div id="completion-stats">
+                <p><strong>Time used:</strong> <span id="time-used">0:00</span></p>
+                <p><strong>Sections completed:</strong> <span id="sections-completed">0/5</span></p>
+            </div>
+            <button class="btn btn-primary" onclick="viewDetailedResults()">View Detailed Results</button>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button id="back-btn" class="btn btn-secondary" style="display: none;" onclick="previousSection()">
+            ← Back
+        </button>
+        <div id="section-indicator">Section 0 of 5</div>
+        <button id="next-btn" class="btn btn-primary" onclick="nextSection()">
+            Begin Assessment
+        </button>
+    </div>
+
+    <script src="/static/advanced_quiz.js"></script>
+    
+    <script>
+        // Initialize the assessment
+        document.addEventListener('DOMContentLoaded', function() {
+            AdvancedAssessment.init();
+        });
+    </script>
+</body>
+</html>

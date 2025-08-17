@@ -1,0 +1,57 @@
+{
+  "questions": [
+    {
+      "id": "change_mind_wisdom",
+      "text": "I believe that the ability to change one's mind is a sign of wisdom rather than weakness.",
+      "type": "positive_aot",
+      "reverse_scored": false,
+      "bias_indicator": "intellectual_humility"
+    },
+    {
+      "id": "seek_disconfirming",
+      "text": "I actively seek out information that might prove my initial beliefs wrong.",
+      "type": "positive_aot", 
+      "reverse_scored": false,
+      "bias_indicator": "confirmation_bias_resistance"
+    },
+    {
+      "id": "strong_opinions_good",
+      "text": "People should stick to their opinions even when others disagree.",
+      "type": "negative_aot",
+      "reverse_scored": true,
+      "bias_indicator": "dogmatism"
+    },
+    {
+      "id": "evidence_over_intuition",
+      "text": "I prefer to base my decisions on evidence rather than gut feelings.",
+      "type": "positive_aot",
+      "reverse_scored": false,
+      "bias_indicator": "analytical_thinking"
+    },
+    {
+      "id": "question_assumptions",
+      "text": "I often question my own assumptions before making important decisions.",
+      "type": "positive_aot",
+      "reverse_scored": false,
+      "bias_indicator": "cognitive_reflection"
+    }
+  ],
+  "scale": {
+    "type": "likert",
+    "points": 5,
+    "labels": [
+      "Strongly Disagree",
+      "Somewhat Disagree", 
+      "Neither Agree nor Disagree",
+      "Somewhat Agree",
+      "Strongly Agree"
+    ]
+  },
+  "scoring": {
+    "scale_range": [1, 5],
+    "high_aot_threshold": 4.0,
+    "low_aot_threshold": 2.5,
+    "certainty_weight": 0.1
+  },
+  "instructions": "Please rate how much you agree or disagree with each statement."
+}

@@ -1,0 +1,62 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_00
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_00
+Total Utterances: 2
+Total Speaking Time: 8.36 seconds
+Average Utterance Length: 4.18 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: female (confidence: 100.0%)
+Age Group: 31 - 45 (confidence: 51.7%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 99.9%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (1 utterances)
+Emotion Distribution:
+  Neutral: 50.0%
+  Happy: 50.0%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 50.0%
+Positive: 50.0%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Normal: 50.0%
+  Fast: 50.0%
+Hesitation Patterns:
+  No: 100.0%
+Engagement Level:
+  Neutral: 50.0%
+  Engaged: 50.0%
+Voice Strength:
+  Neutral: 100.0%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 100.0%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[72.4s - 78.9s]: I thought we had in slack sort of farmed each one of them out. That's so I guess the next.
+[1717.5s - 1719.3s]: Oh my God, that's what I'm like.
+
+SUMMARY
+-------
+- Demographics: 31 - 45 female
+- Primary emotional tone: neutral
+- Speaking style: normal pace
+- Engagement level: neutral
+
+============================================================

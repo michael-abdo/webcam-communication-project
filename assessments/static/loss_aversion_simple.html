@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loss Aversion Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 4px solid #4caf50;
+        }
+        .scenario {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .scenario-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .scenario-text {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .choice-question {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .choice-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .choice-option {
+            flex: 1;
+            max-width: 300px;
+            padding: 25px;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            text-align: center;
+            position: relative;
+        }
+        .choice-option:hover {
+            border-color: #4caf50;
+            background: #f8fff8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .choice-option input[type="radio"] {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            transform: scale(1.3);
+        }
+        .choice-option input[type="radio"]:checked + .option-content {
+            color: #4caf50;
+        }
+        .choice-option input[type="radio"]:checked ~ .option-title {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .option-content {
+            margin-top: 25px;
+        }
+        .option-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .option-description {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .option-details {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.3;
+        }
+        .expected-value {
+            background: #f0f8ff;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #0066cc;
+            font-weight: 500;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 40px auto 0;
+            padding: 15px 30px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .progress {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .choice-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .choice-option {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Loss Aversion Assessment</h1>
+        
+        <div class="instructions">
+            <p>This assessment measures your tendency toward loss aversion - the psychological principle that losses feel worse than equivalent gains.</p>
+            <p>For each scenario, choose the option you would prefer, considering the risks and potential outcomes.</p>
+        </div>
+
+        <form id="loss-aversion-form">
+            <!-- Scenario 1: Simple Gain vs Loss Frame -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 1: Investment Choice</div>
+                
+                <div class="scenario-text">
+                    You have $1,000 to invest. You can choose between two investment options with the same expected return but different risk profiles.
+                </div>
+                
+                <div class="choice-question">Which investment would you choose?</div>
+                <div class="choice-options">
+                    <label class="choice-option">
+                        <input type="radio" name="scenario1_choice" value="safe_gain" required>
+                        <div class="option-content">
+                            <div class="option-title">Safe Investment</div>
+                            <div class="option-description">Guaranteed gain of $200</div>
+                            <div class="option-details">You will definitely receive $200 profit, ending with $1,200 total.</div>
+                            <div class="expected-value">Expected value: +$200</div>
+                        </div>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="scenario1_choice" value="risky_gain" required>
+                        <div class="option-content">
+                            <div class="option-title">Risky Investment</div>
+                            <div class="option-description">50% chance to gain $400<br>50% chance to gain $0</div>
+                            <div class="option-details">Coin flip: heads you gain $400, tails you gain nothing.</div>
+                            <div class="expected-value">Expected value: +$200</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Loss Frame -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 2: Financial Emergency</div>
+                
+                <div class="scenario-text">
+                    You face an unexpected expense and must choose how to handle a $1,000 loss. You have two options to minimize the damage.
+                </div>
+                
+                <div class="choice-question">Which approach would you choose?</div>
+                <div class="choice-options">
+                    <label class="choice-option">
+                        <input type="radio" name="scenario2_choice" value="certain_loss" required>
+                        <div class="option-content">
+                            <div class="option-title">Accept Certain Loss</div>
+                            <div class="option-description">Guaranteed loss of $300</div>
+                            <div class="option-details">You will definitely lose $300, leaving you $700 short of where you started.</div>
+                            <div class="expected-value">Expected value: -$300</div>
+                        </div>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="scenario2_choice" value="risky_loss" required>
+                        <div class="option-content">
+                            <div class="option-title">Take a Gamble</div>
+                            <div class="option-description">50% chance to lose $600<br>50% chance to lose $0</div>
+                            <div class="option-details">Coin flip: heads you lose $600, tails you lose nothing.</div>
+                            <div class="expected-value">Expected value: -$300</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Scenario 3: Mixed Gains and Losses -->
+            <div class="scenario">
+                <div class="scenario-number">Scenario 3: Business Opportunity</div>
+                
+                <div class="scenario-text">
+                    You're considering a business opportunity that requires an upfront investment. You can choose between a conservative approach or a more aggressive strategy.
+                </div>
+                
+                <div class="choice-question">Which business strategy would you choose?</div>
+                <div class="choice-options">
+                    <label class="choice-option">
+                        <input type="radio" name="scenario3_choice" value="conservative" required>
+                        <div class="option-content">
+                            <div class="option-title">Conservative Strategy</div>
+                            <div class="option-description">Guaranteed profit of $500</div>
+                            <div class="option-details">Steady, predictable returns with minimal risk of loss.</div>
+                            <div class="expected-value">Expected value: +$500</div>
+                        </div>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="scenario3_choice" value="aggressive" required>
+                        <div class="option-content">
+                            <div class="option-title">Aggressive Strategy</div>
+                            <div class="option-description">60% chance to gain $1,000<br>40% chance to lose $250</div>
+                            <div class="option-details">Higher potential returns but with substantial risk of loss.</div>
+                            <div class="expected-value">Expected value: +$500</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">Submit Assessment</button>
+            <div class="progress">Assessment: 3 scenarios completed</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loss-aversion-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responses = {
+                scenario1: formData.get('scenario1_choice'),
+                scenario2: formData.get('scenario2_choice'),
+                scenario3: formData.get('scenario3_choice'),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Calculate loss aversion score
+            let lossAversionScore = 0;
+            let riskTakingScore = 0;
+            
+            // Scenario 1: Risk aversion in gains domain
+            if (responses.scenario1 === 'safe_gain') {
+                lossAversionScore += 1;
+            } else {
+                riskTakingScore += 1;
+            }
+            
+            // Scenario 2: Risk seeking in losses domain (classic loss aversion pattern)
+            if (responses.scenario2 === 'risky_loss') {
+                lossAversionScore += 2; // Weight this more heavily as it's the classic pattern
+            } else {
+                // Choosing certain loss shows unusual pattern for loss aversion
+                riskTakingScore += 1;
+            }
+            
+            // Scenario 3: Mixed domain
+            if (responses.scenario3 === 'conservative') {
+                lossAversionScore += 1;
+            } else {
+                riskTakingScore += 1;
+            }
+            
+            // Determine loss aversion level
+            let lossAversionLevel = '';
+            let description = '';
+            
+            if (lossAversionScore >= 3) {
+                lossAversionLevel = 'High Loss Aversion';
+                description = 'You show strong loss aversion - you tend to be risk-averse for gains but risk-seeking to avoid losses. This is the typical human pattern.';
+            } else if (lossAversionScore === 2) {
+                lossAversionLevel = 'Moderate Loss Aversion';
+                description = 'You show some loss aversion tendencies but also display risk-taking behavior in certain situations.';
+            } else {
+                lossAversionLevel = 'Low Loss Aversion';
+                description = 'You show relatively little loss aversion and appear comfortable with risk across different domains.';
+            }
+            
+            let feedback = 'Loss Aversion Assessment Results:\\n\\n';
+            feedback += `Loss Aversion Level: ${lossAversionLevel}\\n\\n`;
+            feedback += `${description}\\n\\n`;
+            
+            feedback += 'Your Choices:\\n';
+            feedback += `• Investment: ${responses.scenario1 === 'safe_gain' ? 'Safe (risk-averse)' : 'Risky (risk-taking)'}\\n`;
+            feedback += `• Emergency: ${responses.scenario2 === 'certain_loss' ? 'Certain loss (unusual)' : 'Risky gamble (typical loss aversion)'}\\n`;
+            feedback += `• Business: ${responses.scenario3 === 'conservative' ? 'Conservative (risk-averse)' : 'Aggressive (risk-taking)'}\\n\\n`;
+            
+            if (lossAversionScore >= 3) {
+                feedback += '💡 Your pattern matches typical human psychology - we feel losses more intensely than equivalent gains.';
+            } else if (lossAversionScore <= 1) {
+                feedback += '💡 You show unusually low loss aversion - you may be more analytical and less emotionally influenced by potential losses.';
+            } else {
+                feedback += '💡 You show a balanced approach to risk that varies by context.';
+            }
+            
+            console.log('Loss Aversion Responses:', responses);
+            console.log('Loss Aversion Score:', lossAversionScore);
+            console.log('Risk Taking Score:', riskTakingScore);
+            
+            alert(feedback);
+            
+            // In production, would send to server:
+            // fetch('/api/quiz/loss-aversion/submit', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         ...responses,
+            //         lossAversionScore: lossAversionScore,
+            //         riskTakingScore: riskTakingScore,
+            //         lossAversionLevel: lossAversionLevel
+            //     })
+            // });
+        });
+    </script>
+</body>
+</html>

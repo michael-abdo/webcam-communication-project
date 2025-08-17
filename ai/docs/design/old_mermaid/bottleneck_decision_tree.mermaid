@@ -1,0 +1,61 @@
+flowchart TD
+    A[Iteration Complete<br/>New Metrics Available] --> B{Accuracy improved<br/>>2% from previous?}
+    
+    B -->|Yes| C{Accuracy ≥ 80%?}
+    B -->|No| D[PLATEAU DETECTED<br/>Investigate cause]
+    
+    C -->|Yes| SUCCESS[🎉 STAGE 1 SUCCESS<br/>Proceed to Di/De Detector]
+    C -->|No| E{Train accuracy much greater than<br/>Validation accuracy?<br/>Gap greater than 15%}
+    
+    D --> F{High-confidence predictions<br/>mostly wrong?<br/>Error rate greater than 10%}
+    
+    F -->|Yes| G[BOTTLENECK: Overconfident Model<br/>ACTION: Calibrate confidence thresholds<br/>or add uncertainty quantification]
+    F -->|No| H{Certain celebrities<br/>always misclassified?<br/>Variance greater than 15%}
+    
+    H -->|Yes| I[BOTTLENECK: Celebrity Bias<br/>ACTION: Expand dataset diversity<br/>or remove biased examples]
+    H -->|No| J{False positives much greater than<br/>False negatives?<br/>or vice versa}
+    
+    J -->|FP much greater than FN| K[BOTTLENECK: Too Eager<br/>ACTION: Raise confidence threshold<br/>or add negative examples]
+    J -->|FN much greater than FP| L[BOTTLENECK: Too Conservative<br/>ACTION: Lower threshold<br/>or add positive examples]
+    J -->|Balanced errors| M{Iteration count ≥ 3<br/>AND total improvement less than 5%?}
+    
+    M -->|Yes| N[BOTTLENECK: Data/Approach Limitation<br/>ACTION: Consider ensemble methods<br/>or different modality]
+    M -->|No| O[CONTINUE: Performance plateau<br/>but may improve with more iterations]
+    
+    E -->|Yes| P[BOTTLENECK: Overfitting<br/>ACTION: Reduce epochs, add regularization,<br/>or increase validation set]
+    E -->|No| Q{Validation accuracy < 60%?}
+    
+    Q -->|Yes| R[BOTTLENECK: Underfitting<br/>ACTION: Increase model complexity,<br/>more training time, or better data]
+    Q -->|No| S{Class imbalance<br/>greater than 10% deviation?}
+    
+    S -->|Yes| T[BOTTLENECK: Data Quality<br/>ACTION: Resample training data<br/>to balance F/T classes]
+    S -->|No| U[CONTINUE: Good progress<br/>Proceed with next iteration]
+    
+    G --> V[Next Iteration]
+    I --> V
+    K --> V
+    L --> V
+    O --> V
+    P --> V
+    R --> V
+    T --> V
+    U --> V
+    
+    N --> W[EXIT STAGE 1<br/>Baseline approach plateaued<br/>Scale to ensemble methods]
+    
+    X{Cost > $100<br/>OR 5+ iterations?} --> Y[FORCED EXIT<br/>Budget/time limit reached<br/>Evaluate pivot options]
+    
+    V --> X
+    X -->|No| Z[Continue with<br/>recommended action]
+    
+    style SUCCESS fill:#ccffcc
+    style W fill:#ffcccc
+    style Y fill:#ffcccc
+    style N fill:#fff2cc
+    style G fill:#ffe6cc
+    style I fill:#ffe6cc
+    style K fill:#ffe6cc
+    style L fill:#ffe6cc
+    style P fill:#ffe6cc
+    style R fill:#ffe6cc
+    style T fill:#ffe6cc

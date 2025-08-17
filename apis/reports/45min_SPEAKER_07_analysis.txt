@@ -1,0 +1,82 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_07
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_07
+Total Utterances: 17
+Total Speaking Time: 136.26 seconds
+Average Utterance Length: 8.02 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: male (confidence: 92.8%)
+Age Group: 31 - 45 (confidence: 45.4%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 100.0%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (10 utterances)
+Emotion Distribution:
+  Neutral: 62.5%
+  Happy: 31.2%
+  Sad: 6.2%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 62.5%
+Positive: 31.2%
+Negative: 6.2%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Fast: 50.0%
+  Normal: 43.8%
+  Slow: 6.2%
+Hesitation Patterns:
+  No: 93.8%
+  Yes: 6.2%
+Engagement Level:
+  Neutral: 68.8%
+  Engaged: 31.2%
+Voice Strength:
+  Neutral: 81.2%
+  Strong: 18.8%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 100.0%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[571.1s - 585.4s]: Yeah. And that would help me with the plan stuff as well, because there are some things like Epic boards that people have been asking for for years now and they  finally have, and that's great. But I think, you know, like the milestone burn up charts.
+[586.9s - 615.6s]: That was a two and that's helpful. And I was looking through features and you know, actual monthly features that were released in a given month. I mean, that was one of the more important ones, but it's not very exciting, but we can bundle that with some other things and up level it. So that would be helpful there. And also Brian about the VS code thing. One other cool thing about that is both of those VS code integrations that hit the same month were community contributions, which is also kind of cool.
+[949.3s - 958.9s]: We should reserve a spot for plan, but i'm going to have to go through and do some aggregating after this just go through the list of what's shipped in the last twelve months and re bucket that.
+[1246.3s - 1257.9s]: Yeah, there might be a value stream analytics story in there too, if we aggregate it all. It's a bummer that customizable value stream analytics is twelve dot nine.
+[1259.7s - 1262.9s]: But yeah, there might be.
+[1811.9s - 1818.3s]: It just seems like the right time to do this, right? Manage is even less descriptive than that.
+[1908.0s - 1909.6s]: I usually let the designers handle that stuff.
+[1917.3s - 1920.0s]: There's no red on there. Oh, you like that?
+[1922.8s - 1945.6s]: It's not obviously negative. So we're saying because it really does lend itself to being a comparison more than a competitive piece because of that. Because there's no, you know, these folks at thirty seven percent are in the red and they're terrible. They just have less green or we would have less green. So it's not it's not being worse. It's being less good. And I think that lends itself to
+[1947.0s - 1951.0s]: working with, you know, all the cooperation situations we're talking about.
+[2213.9s - 2218.2s]: Yeah, the only thing it might be missing, but I don't know how we do it without over complicating it is.
+[2220.2s - 2230.8s]: Well, I guess less risk also implies higher quality. I guess that kind of bundles the quality and the security together. So I've talked myself out of not liking that. So yeah, good.
+[2277.7s - 2282.6s]: your software factory and your software or your, your software or in your product.
+[2485.2s - 2485.6s]: more sweet.
+[2488.6s - 2491.4s]: Ricky Bobby and me really did like the no trade-offs though, Parker.
+[2496.1s - 2499.9s]: It's something Ricky Bobby would have said. If anyone hasn't seen Teladega Nights, they should.
+[2520.4s - 2525.1s]: And then next week we'll watch Step Brothers. That's another great one.
+
+SUMMARY
+-------
+- Demographics: 31 - 45 male
+- Primary emotional tone: neutral
+- Speaking style: fast pace
+- Engagement level: neutral
+
+============================================================

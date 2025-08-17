@@ -1,0 +1,138 @@
+{
+  "scenarios": [
+    {
+      "id": "investment_choice",
+      "title": "Investment Choice",
+      "description": "You have $1,000 to invest. You can choose between two investment options with the same expected return but different risk profiles.",
+      "domain": "gains",
+      "choices": [
+        {
+          "id": "safe_gain",
+          "title": "Safe Investment",
+          "description": "Guaranteed gain of $200",
+          "details": "You will definitely receive $200 profit, ending with $1,200 total.",
+          "expected_value": 200,
+          "risk_type": "risk_averse",
+          "probabilities": [{"outcome": 200, "probability": 1.0}]
+        },
+        {
+          "id": "risky_gain",
+          "title": "Risky Investment", 
+          "description": "50% chance to gain $400, 50% chance to gain $0",
+          "details": "Coin flip: heads you gain $400, tails you gain nothing.",
+          "expected_value": 200,
+          "risk_type": "risk_seeking",
+          "probabilities": [
+            {"outcome": 400, "probability": 0.5},
+            {"outcome": 0, "probability": 0.5}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "financial_emergency",
+      "title": "Financial Emergency",
+      "description": "You face an unexpected expense and must choose how to handle a $1,000 loss. You have two options to minimize the damage.",
+      "domain": "losses",
+      "choices": [
+        {
+          "id": "certain_loss",
+          "title": "Accept Certain Loss",
+          "description": "Guaranteed loss of $300",
+          "details": "You will definitely lose $300, leaving you $700 short of where you started.",
+          "expected_value": -300,
+          "risk_type": "risk_averse",
+          "probabilities": [{"outcome": -300, "probability": 1.0}]
+        },
+        {
+          "id": "risky_loss",
+          "title": "Take a Gamble",
+          "description": "50% chance to lose $600, 50% chance to lose $0",
+          "details": "Coin flip: heads you lose $600, tails you lose nothing.",
+          "expected_value": -300,
+          "risk_type": "risk_seeking",
+          "probabilities": [
+            {"outcome": -600, "probability": 0.5},
+            {"outcome": 0, "probability": 0.5}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business_opportunity",
+      "title": "Business Opportunity",
+      "description": "You're considering a business opportunity that requires an upfront investment. You can choose between a conservative approach or a more aggressive strategy.",
+      "domain": "mixed",
+      "choices": [
+        {
+          "id": "conservative",
+          "title": "Conservative Strategy",
+          "description": "Guaranteed profit of $500",
+          "details": "Steady, predictable returns with minimal risk of loss.",
+          "expected_value": 500,
+          "risk_type": "risk_averse",
+          "probabilities": [{"outcome": 500, "probability": 1.0}]
+        },
+        {
+          "id": "aggressive",
+          "title": "Aggressive Strategy",
+          "description": "60% chance to gain $1,000, 40% chance to lose $250",
+          "details": "Higher potential returns but with substantial risk of loss.",
+          "expected_value": 500,
+          "risk_type": "risk_seeking",
+          "probabilities": [
+            {"outcome": 1000, "probability": 0.6},
+            {"outcome": -250, "probability": 0.4}
+          ]
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "loss_aversion_patterns": {
+      "classic_pattern": {
+        "description": "Risk-averse in gains domain, risk-seeking in losses domain",
+        "gains_choice": "risk_averse",
+        "losses_choice": "risk_seeking",
+        "score_weight": 2.0
+      },
+      "consistent_risk_averse": {
+        "description": "Risk-averse across all domains",
+        "pattern": "all_risk_averse",
+        "score_weight": 1.0
+      },
+      "consistent_risk_seeking": {
+        "description": "Risk-seeking across all domains",
+        "pattern": "all_risk_seeking", 
+        "score_weight": 0.0
+      }
+    },
+    "loss_aversion_coefficient": {
+      "calculation": "weighted_sum_of_choices",
+      "weights": {
+        "gains_risk_averse": 1,
+        "losses_risk_seeking": 2,
+        "mixed_risk_averse": 1
+      },
+      "max_score": 4,
+      "interpretation": {
+        "high": {
+          "range": [3, 4],
+          "description": "High loss aversion - strong tendency to avoid losses even when taking greater risks"
+        },
+        "moderate": {
+          "range": [2, 2.9],
+          "description": "Moderate loss aversion - some sensitivity to framing effects"
+        },
+        "low": {
+          "range": [0, 1.9],
+          "description": "Low loss aversion - relatively consistent risk preferences across domains"
+        }
+      }
+    }
+  },
+  "instructions": "This assessment measures your tendency toward loss aversion - the psychological principle that losses feel worse than equivalent gains. For each scenario, choose the option you would prefer, considering the risks and potential outcomes.",
+  "time_limit": 90,
+  "category": "behavioral_economics"
+}
+ENDJSON < /dev/null

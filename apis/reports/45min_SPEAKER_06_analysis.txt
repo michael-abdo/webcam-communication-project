@@ -1,0 +1,86 @@
+============================================================
+BEHAVIORAL SIGNALS ANALYSIS - SPEAKER_06
+============================================================
+
+SPEAKER OVERVIEW
+--------------------
+Speaker ID: SPEAKER_06
+Total Utterances: 23
+Total Speaking Time: 188.56 seconds
+Average Utterance Length: 8.20 seconds
+
+DEMOGRAPHICS
+---------------
+Gender: female (confidence: 99.4%)
+Age Group: 31 - 45 (confidence: 50.9%)
+
+LANGUAGE
+----------
+Language: EN (confidence: 100.0%)
+
+EMOTIONAL PROFILE
+------------------
+Dominant Emotion: NEUTRAL (21 utterances)
+Emotion Distribution:
+  Neutral: 95.5%
+  Happy: 4.5%
+
+POSITIVITY ANALYSIS
+-------------------
+Neutral: 95.5%
+Positive: 4.5%
+
+SPEAKING PATTERNS
+-----------------
+Speaking Rate:
+  Normal: 50.0%
+  Fast: 31.8%
+  Slow: 18.2%
+Hesitation Patterns:
+  No: 100.0%
+Engagement Level:
+  Neutral: 95.5%
+  Engaged: 4.5%
+Voice Strength:
+  Neutral: 77.3%
+  Weak: 18.2%
+  Strong: 4.5%
+
+AUTHENTICITY ANALYSIS
+---------------------
+Authentic: 100.0%
+
+SPEECH TRANSCRIPTIONS
+---------------------
+[117.5s - 120.4s]: On slack only and on the issue.
+[155.6s - 159.6s]: GitOps has been cancelled after the enablement.
+[550.2s - 570.5s]: I've done a similar, I've taken a similar approach for monitor with incident management. There were a bunch of things that we released. Although the core of incident management was part of trend.exe, I think. So I did the same over there as well. Yeah. I think that makes sense.
+[661.6s - 666.0s]: How are we measuring excitement levels, one, two, and three?
+[669.0s - 696.3s]: I was looking at maybe MAU as a metric to perhaps measure whether customers have started using that, are interested in using that or not. We probably may not have it for everything, but at least some of it, wherever we have it, it's probably something we can use. But of course, we need a benchmark level of what MAU we want to call one, two, or three.
+[1066.7s - 1070.3s]: I think it was in the last little over six months or so.
+[1176.9s - 1181.4s]: I think the communities agent and from an integration point of view.
+[1183.7s - 1190.6s]: Perhaps the Terraform integration. I think we have a lot of customers actually using that already.
+[1383.1s - 1412.9s]: So in the competitive sheet, I've already identified the features for CD, Configure, as well as Monitor, getting it reviewed from PM. My understanding was that we wouldn't have the same set of competitors that we're going to compare to, but the right competitors for that particular stage. So for example,  for monitor, we may not have like a GitHub or something like that.
+[1412.9s - 1415.0s]: We would have monitor-based competitors.
+[1416.5s - 1424.7s]: Was that the understanding? Because we identified that entire list of competitors and partners for every single stage.
+[1426.1s - 1434.4s]: I thought we were going to be using those competitors to compare against. So I just wanted your input on what, because I saw
+[1435.7s - 1439.8s]: Some of you have compared with the five competitors already listed over there.
+[1441.5s - 1446.1s]: They may not be relevant. For example, cloud beads may not be relevant for monitor stage at all.
+[1447.2s - 1448.9s]: So that's what I wanted to check with you.
+[1467.1s - 1489.6s]: Each rulebook has the same. Yeah, so each sheet has ADO, Atlassian, GitHub, Jenkins, JFrog, and CloudBees, right? So that may not be relevant for monitor. For configure, it would be a different set of competitors that we need to include, which I think we already identified a while back. I think we identified top three competitors for every stage.
+[1512.7s - 1520.8s]: We just use the tier one competitors and if they're not  if they don't are not applicable, then we don't have to fill out anything for that.
+[1525.7s - 1532.6s]: Do we need to add a line item for GitLab as well? Because I think that's the same over here.
+[1647.4s - 1649.2s]: I don't have to look at this question.
+[1920.0s - 1922.6s]: That's what I was going for. You like that? OK.
+[2421.2s - 2429.1s]: Do you want to add, maybe we can add high confidence or more confidence at the end of your first statement. So it kind of combines
+[2430.3s - 2436.2s]: All of it. So more speed, less risk, more high confidence. It's kind of overused anyway.
+[2491.8s - 2492.1s]: Yeah.
+
+SUMMARY
+-------
+- Demographics: 31 - 45 female
+- Primary emotional tone: neutral
+- Speaking style: normal pace
+- Engagement level: neutral
+
+============================================================

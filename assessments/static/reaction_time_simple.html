@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Reaction Time Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-area {
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            user-select: none;
+        }
+        .test-area.waiting {
+            background: #e0e0e0;
+            color: #666;
+        }
+        .test-area.ready {
+            background: #ff5252;
+            color: white;
+        }
+        .test-area.go {
+            background: #4caf50;
+            color: white;
+        }
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .result-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .slow {
+            color: #ff5252;
+        }
+        .average {
+            color: #ff9800;
+        }
+        .fast {
+            color: #4caf50;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .instructions {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .fatigue-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reaction Time Test</h1>
+        
+        <div class="instructions">
+            <p>Click the box as quickly as possible when it turns <strong>GREEN</strong>.</p>
+            <p>We'll run 5 trials to measure your average reaction time and detect any fatigue.</p>
+        </div>
+
+        <div id="test-area" class="test-area waiting">
+            Click to Start
+        </div>
+
+        <button id="start-btn" onclick="startTest()">Begin Test</button>
+        <button id="reset-btn" onclick="resetTest()" style="display:none">Reset</button>
+
+        <div id="results" class="results" style="display:none">
+            <h3>Your Results:</h3>
+            <div id="times-list"></div>
+            <div id="stats" class="stats"></div>
+            <div id="fatigue-indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        let state = 'idle';
+        let startTime = 0;
+        let reactionTimes = [];
+        let currentTrial = 0;
+        let timeoutId = null;
+        let tooEarlyTimeout = null;
+        const MAX_TRIALS = 5;
+
+        const testArea = document.getElementById('test-area');
+        const resultsDiv = document.getElementById('results');
+        const timesList = document.getElementById('times-list');
+        const statsDiv = document.getElementById('stats');
+        const fatigueDiv = document.getElementById('fatigue-indicator');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        testArea.addEventListener('click', handleClick);
+
+        function startTest() {
+            if (state === 'idle') {
+                startBtn.style.display = 'none';
+                resultsDiv.style.display = 'none';
+                reactionTimes = [];
+                currentTrial = 0;
+                nextTrial();
+            }
+        }
+
+        function nextTrial() {
+            if (currentTrial >= MAX_TRIALS) {
+                showResults();
+                return;
+            }
+
+            state = 'waiting';
+            testArea.className = 'test-area ready';
+            testArea.textContent = 'Wait for GREEN...';
+
+            // Random delay between 1-4 seconds
+            const delay = 1000 + Math.random() * 3000;
+            
+            timeoutId = setTimeout(() => {
+                state = 'go';
+                startTime = Date.now();
+                testArea.className = 'test-area go';
+                testArea.textContent = 'CLICK NOW!';
+            }, delay);
+        }
+
+        function handleClick() {
+            if (state === 'waiting') {
+                // Clicked too early
+                clearTimeout(timeoutId);
+                state = 'too-early';
+                testArea.className = 'test-area waiting';
+                testArea.textContent = 'Too early! Click to try again';
+                
+                tooEarlyTimeout = setTimeout(() => {
+                    state = 'idle';
+                    testArea.textContent = 'Click to continue';
+                }, 1500);
+                
+            } else if (state === 'go') {
+                // Valid reaction
+                const reactionTime = Date.now() - startTime;
+                reactionTimes.push(reactionTime);
+                currentTrial++;
+                
+                state = 'idle';
+                testArea.className = 'test-area waiting';
+                testArea.textContent = `${reactionTime}ms - Click to continue`;
+                
+                if (currentTrial < MAX_TRIALS) {
+                    setTimeout(() => {
+                        testArea.textContent = 'Click for next trial';
+                    }, 1000);
+                }
+                
+            } else if (state === 'idle' && currentTrial < MAX_TRIALS) {
+                nextTrial();
+            } else if (state === 'too-early') {
+                clearTimeout(tooEarlyTimeout);
+                state = 'idle';
+                nextTrial();
+            }
+        }
+
+        function showResults() {
+            state = 'complete';
+            testArea.className = 'test-area waiting';
+            testArea.textContent = 'Test Complete';
+            resultsDiv.style.display = 'block';
+            resetBtn.style.display = 'inline-block';
+
+            // Display individual times
+            timesList.innerHTML = '';
+            reactionTimes.forEach((time, index) => {
+                const className = time < 250 ? 'fast' : time > 400 ? 'slow' : 'average';
+                timesList.innerHTML += `
+                    <div class="result-item">
+                        <span>Trial ${index + 1}:</span>
+                        <span class="${className}">${time}ms</span>
+                    </div>
+                `;
+            });
+
+            // Calculate statistics
+            const avg = Math.round(reactionTimes.reduce((a, b) => a + b) / reactionTimes.length);
+            const min = Math.min(...reactionTimes);
+            const max = Math.max(...reactionTimes);
+            const variance = max - min;
+
+            statsDiv.innerHTML = `
+                <strong>Average: ${avg}ms</strong><br>
+                Range: ${min}ms - ${max}ms<br>
+                Variance: ${variance}ms
+            `;
+
+            // Simple fatigue detection
+            const lastTwo = reactionTimes.slice(-2);
+            const firstTwo = reactionTimes.slice(0, 2);
+            const earlyAvg = (firstTwo[0] + firstTwo[1]) / 2;
+            const lateAvg = (lastTwo[0] + lastTwo[1]) / 2;
+            const slowdown = ((lateAvg - earlyAvg) / earlyAvg) * 100;
+
+            if (slowdown > 20) {
+                fatigueDiv.innerHTML = `
+                    <div class="fatigue-warning">
+                        ⚠️ Possible fatigue detected: Your reaction time slowed by ${Math.round(slowdown)}%
+                    </div>
+                `;
+            } else if (avg > 350) {
+                fatigueDiv.innerHTML = `
+                    <div class="fatigue-warning">
+                        ⚠️ Your average reaction time (${avg}ms) suggests you may be tired
+                    </div>
+                `;
+            } else {
+                fatigueDiv.innerHTML = `✅ No significant fatigue detected`;
+            }
+
+            // Would send to server in production
+            const results = {
+                times: reactionTimes,
+                average: avg,
+                variance: variance,
+                slowdown_percentage: slowdown,
+                timestamp: new Date().toISOString()
+            };
+            console.log('Reaction Time Results:', results);
+        }
+
+        function resetTest() {
+            state = 'idle';
+            reactionTimes = [];
+            currentTrial = 0;
+            testArea.className = 'test-area waiting';
+            testArea.textContent = 'Click to Start';
+            resultsDiv.style.display = 'none';
+            resetBtn.style.display = 'none';
+            startBtn.style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

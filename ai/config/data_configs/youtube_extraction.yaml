@@ -1,0 +1,15 @@
+youtube:
+  api_key_env: "YOUTUBE_API_KEY"
+  video_formats: ["mp4", "webm"]
+  audio_formats: ["mp3", "wav"]
+  
+extraction:
+  transcription:
+    model: "whisper-1"
+    language: "en"
+  
+  story_extraction:
+    model: "gpt-4o-mini"
+    prompt_template: "extract_personal_stories.txt"
+    min_story_length: 50
+    max_stories_per_video: 5
