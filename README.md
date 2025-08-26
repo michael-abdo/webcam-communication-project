@@ -16,6 +16,56 @@ This system is built on a **test-driven, foundation-first approach**. Every feat
 └── 🎯 CAMERA HEALTH TEST ← FOUNDATION (MUST PASS FIRST)
 ```
 
+## 📁 Directory Structure
+
+### Organized Project Layout
+```
+📦 webcam/
+├── 📄 README.md              # Project documentation (you are here)
+├── 📄 requirements.txt       # Python dependencies
+├── 📄 Procfile              # Heroku deployment config
+├── 🐍 app_lightweight.py    # Main Flask application
+│
+├── 📁 deployment/           # Deployment scripts and tools
+│   ├── deploy.sh
+│   ├── deploy_heroku.sh
+│   └── ... (other deployment files)
+│
+├── 📁 docs/                 # Documentation
+│   ├── 📁 deployment/       # Deployment-specific docs
+│   ├── BACKEND_TRUTH.md
+│   ├── CHANGELOG.md
+│   └── ... (other documentation)
+│
+├── 📁 scripts/              # Standalone utility scripts
+│   ├── validate_deployment.py
+│   ├── performance_profiler.py
+│   └── ... (other scripts)
+│
+├── 📁 tests/                # Test files and utilities
+│   ├── 📁 definitions/      # Test definitions (JSON)
+│   ├── 📁 utils/           # Test utilities
+│   ├── test_integration.py
+│   └── ... (other test files)
+│
+├── 📁 camera_tools/         # Camera foundation & health
+├── 📁 cognitive_overload/   # Fatigue detection core
+├── 📁 assessments/          # Psychological assessments
+├── 📁 ai/                   # AI/ML components
+├── 📁 apis/                 # External API integrations
+├── 📁 streaming/            # S3 streaming functionality
+├── 📁 static/               # Frontend assets (JS, CSS)
+├── 📁 templates/            # HTML templates
+└── 📁 data/                 # Data files and results
+```
+
+### Key Components
+- **Core Application**: `app_lightweight.py` - Main Flask web server
+- **Foundation**: `camera_tools/` - Camera health and diagnostics (BEDROCK)
+- **Features**: `cognitive_overload/`, `assessments/` - Core functionality
+- **Infrastructure**: `deployment/`, `scripts/`, `tests/` - Supporting tools
+- **Documentation**: `docs/` - All project documentation centralized
+
 ## 🚀 Quick Start (Foundation-First)
 
 ### Step 1: Validate Camera Foundation (REQUIRED)
