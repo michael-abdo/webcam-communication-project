@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 # AWS Configuration
 AWS_PROFILE = 'zenex'
 AWS_REGION = 'us-west-2'
-S3_BUCKET = 'xendoex-webcam-streaming-2025'
+S3_BUCKET = 'webcam-streaming'
 
 # Initialize S3 client with specific profile
 def get_s3_client():
@@ -87,13 +87,13 @@ def generate_presigned_post(session_id=None, chunk_number=0):
             Key=key,
             ExpiresIn=300,  # 5 minutes
             Conditions=[
-                {'content-type': 'video/webm'},
+                {'content-type': 'video/webm;codecs=vp8,opus'},
                 ['content-length-range', 0, 50 * 1024 * 1024]  # Max 50MB
             ]
         )
         
         # Add additional fields for browser upload
-        response['fields']['Content-Type'] = 'video/webm'
+        response['fields']['Content-Type'] = 'video/webm;codecs=vp8,opus'
         response['key'] = key
         response['session_id'] = session_id
         
