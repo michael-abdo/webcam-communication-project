@@ -7,7 +7,7 @@ class VideoRecorder {
     constructor(options = {}) {
         // Configuration
         this.CHUNK_DURATION_MS = options.chunkDuration || 5000; // 5 seconds
-        this.MIME_TYPE = options.mimeType || 'video/webm';
+        this.MIME_TYPE = options.mimeType || 'video/webm;codecs=vp8,opus';
         
         // DOM elements
         this.videoElement = options.videoElement || document.getElementById('videoPreview');
