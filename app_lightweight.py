@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
-from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
+from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists, generate_download_url
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -1222,6 +1222,49 @@ def get_video_session_chunks(video_session_id):
         
     except Exception as e:
         print(f"Error retrieving video chunks: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/video/download', methods=['POST'])
+def get_video_download_url():
+    """Generate presigned download URL for a video chunk."""
+    try:
+        data = request.get_json()
+        s3_key = data.get('s3_key')
+        
+        if not s3_key:
+            return jsonify({
+                'status': 'error',
+                'message': 'Missing s3_key parameter'
+            }), 400
+        
+        # Basic validation to prevent directory traversal
+        if '..' in s3_key or s3_key.startswith('/'):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid s3_key format'
+            }), 400
+        
+        # Generate presigned download URL
+        download_url = generate_download_url(s3_key)
+        
+        if download_url:
+            return jsonify({
+                'status': 'success',
+                'download_url': download_url,
+                's3_key': s3_key,
+                'expires_in': 300  # 5 minutes
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Failed to generate download URL. Check S3 configuration and key existence.'
+            }), 500
+            
+    except Exception as e:
+        print(f"Error in download URL endpoint: {e}")
         return jsonify({
             'status': 'error',
             'message': str(e)
