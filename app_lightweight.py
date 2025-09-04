@@ -127,7 +127,8 @@ def get_presigned_url():
                 'test_session_id': test_session_id,
                 'start_time': datetime.now(),
                 'chunks_uploaded': 0,
-                'status': 'active'
+                'status': 'active',
+                'chunk_keys': []  # Store actual S3 keys
             }
             
             # Create link if test session provided
@@ -135,12 +136,16 @@ def get_presigned_url():
                 test_video_links[test_session_id] = session_id
                 print(f"[VideoLink] Linked test session {test_session_id} with video session {session_id}")
         
-        # Update chunk count
-        if session_id in video_sessions:
-            video_sessions[session_id]['chunks_uploaded'] += 1
-        
         # Generate presigned POST URL
         presigned_data = generate_presigned_post(session_id, chunk_number)
+        
+        # Update chunk count and store S3 key
+        if session_id in video_sessions and presigned_data:
+            video_sessions[session_id]['chunks_uploaded'] += 1
+            video_sessions[session_id]['chunk_keys'].append({
+                'chunk_number': chunk_number,
+                's3_key': presigned_data['key']
+            })
         
         if presigned_data:
             return jsonify({
@@ -1194,21 +1199,24 @@ def get_video_session_chunks(video_session_id):
             
         video_session = video_sessions[video_session_id]
         
-        # Generate chunk information (this would ideally come from S3 metadata)
+        # Generate chunk information using stored S3 keys
         chunks_info = []
-        chunks_uploaded = video_session.get('chunks_uploaded', 0)
+        chunk_keys = video_session.get('chunk_keys', [])
+        session_start_ms = int(video_session['start_time'].timestamp() * 1000)
         
-        for chunk_num in range(chunks_uploaded):
+        # Sort chunk keys by chunk number to ensure proper order
+        sorted_chunks = sorted(chunk_keys, key=lambda x: x['chunk_number'])
+        
+        for idx, chunk_data in enumerate(sorted_chunks):
             # Calculate approximate timestamp for each chunk (5-second intervals)
-            chunk_start_offset_ms = chunk_num * 5000  # 5 seconds per chunk
-            session_start_ms = int(video_session['start_time'].timestamp() * 1000)
+            chunk_start_offset_ms = idx * 5000  # 5 seconds per chunk
             
             chunks_info.append({
-                'chunk_number': chunk_num,
+                'chunk_number': chunk_data['chunk_number'],
                 'chunk_start_time': session_start_ms + chunk_start_offset_ms,
                 'chunk_duration_ms': 5000,  # 5 seconds
                 'relative_start_ms': chunk_start_offset_ms,
-                's3_key': f"{video_session_id}/chunk_{chunk_num:04d}.webm"
+                's3_key': chunk_data['s3_key']
             })
         
         return jsonify({
