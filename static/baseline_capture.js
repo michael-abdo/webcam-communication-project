@@ -1103,7 +1103,13 @@ class BaselineCapture {
         if (!hasActiveDetector || 
             !this.faceDetectionResults || 
             Date.now() - this.lastFaceDetectionTime > 2000) {
-            return this.simulateFaceQualityCheck(); // Fallback
+            // Return fallback quality without recursion
+            return {
+                confidence: Math.random() * 0.4 + 0.5,
+                lighting: Math.random() > 0.3,
+                position: Math.random() > 0.4,
+                stability: Math.random() > 0.5
+            };
         }
         
         const detections = this.faceDetectionResults.detections;
@@ -1147,10 +1153,7 @@ class BaselineCapture {
      * Face quality check (using real detection data when available)
      */
     simulateFaceQualityCheck() {
-        // Try to get real face data first if any detector is active
-        if (this.activeFaceDetector !== 'fallback') {
-            return this.getRealFaceQuality();
-        }
+        // Generate simulated face quality data (no recursion)
         
         // Fallback to simulation if no face detection available
         const baseConfidence = Math.random() * 0.4 + 0.5; // 0.5-0.9
