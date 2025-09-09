@@ -113,8 +113,7 @@ class BaselineCapture {
         // Check for required browser features
         this.checkBrowserSupport();
         
-        // Initialize face detection systems
-        this.initializeFaceDetection();
+        // Note: Face detection will be initialized after camera setup in startBaselineCapture()
     }
 
     /**
@@ -164,12 +163,20 @@ class BaselineCapture {
             await this.setupMediaStreams();
             this.updateOverallProgress('Media access granted', 20);
             
+            // Initialize face detection after camera is ready
+            console.log('🎯 Initializing face detection after camera setup...');
+            await this.initializeFaceDetection();
+            
             // Show face capture section
             this.showSection('faceSection');
             this.hideSection('instructionsSection');
             this.currentState = 'face_ready';
             
             this.updateOverallProgress('Ready for face baseline', 25);
+            
+            // Start quality monitoring and frame processing
+            this.startQualityMonitoring();
+            this.startFrameProcessing();
             
             // Start status polling for real-time updates
             this.startStatusPolling();
@@ -255,9 +262,6 @@ class BaselineCapture {
             
             // Setup MediaRecorder instances
             this.setupMediaRecorders();
-            
-            // Start quality monitoring
-            this.startQualityMonitoring();
             
             console.log('✅ Media streams setup complete');
             
@@ -794,14 +798,6 @@ class BaselineCapture {
         console.log('👀 Starting quality monitoring');
         console.log(`🔍 Active face detector: ${this.activeFaceDetector}`);
         
-        // Start frame processing if any real detector is ready
-        if (this.activeFaceDetector !== 'fallback') {
-            this.startFrameProcessing();
-            console.log(`📹 ${this.activeFaceDetector} frame processing enabled`);
-        } else {
-            console.log('🔄 No real face detection, using simulation');
-        }
-        
         this.timers.quality = setInterval(() => {
             // Process video frame for face detection if any detector is active
             if (this.activeFaceDetector !== 'fallback' && 
@@ -1015,7 +1011,26 @@ class BaselineCapture {
     calculateFrameBrightness() {
         try {
             const videoElement = document.getElementById('faceVideo');
-            if (!videoElement || videoElement.readyState < 2) return 0.5;
+            
+            // Enhanced debugging
+            console.log('🎥 Video element check:', {
+                exists: !!videoElement,
+                readyState: videoElement ? videoElement.readyState : 'N/A',
+                videoWidth: videoElement ? videoElement.videoWidth : 'N/A',
+                videoHeight: videoElement ? videoElement.videoHeight : 'N/A',
+                srcObject: videoElement ? !!videoElement.srcObject : 'N/A',
+                streamActive: this.videoStream ? this.videoStream.active : 'N/A'
+            });
+            
+            if (!videoElement) {
+                console.error('❌ faceVideo element not found');
+                return 0.5;
+            }
+            
+            if (videoElement.readyState < 2) {
+                console.error('❌ Video not ready, readyState:', videoElement.readyState);
+                return 0.5;
+            }
             
             // Create hidden canvas for analysis
             const canvas = document.createElement('canvas');
@@ -1038,10 +1053,12 @@ class BaselineCapture {
                 sum += brightness;
             }
             
-            return sum / (data.length / 4) / 255; // Normalize to 0-1
+            const finalBrightness = sum / (data.length / 4) / 255; // Normalize to 0-1
+            console.log('✅ Real brightness calculated:', finalBrightness.toFixed(3));
+            return finalBrightness;
             
         } catch (error) {
-            console.error('Brightness calculation error:', error);
+            console.error('❌ Brightness calculation error:', error);
             return 0.5; // Default neutral brightness
         }
     }
@@ -1114,10 +1131,23 @@ class BaselineCapture {
      * Get real face quality from active face detector
      */
     getRealFaceQuality() {
+        // Debug: Check why we might be using fallback data
+        const timeSinceLastDetection = this.lastFaceDetectionTime ? Date.now() - this.lastFaceDetectionTime : null;
+        console.log('🔍 getRealFaceQuality debug:', {
+            activeFaceDetector: this.activeFaceDetector,
+            hasDetectionResults: !!this.faceDetectionResults,
+            timeSinceLastDetection: timeSinceLastDetection,
+            isMediaPipeReady: this.isMediaPipeReady,
+            usingFallback: this.activeFaceDetector !== 'working_mediapipe' || 
+                          !this.faceDetectionResults || 
+                          timeSinceLastDetection > 2000
+        });
+        
         // Check if we have working MediaPipe and recent results
         if (this.activeFaceDetector !== 'working_mediapipe' || 
             !this.faceDetectionResults || 
             Date.now() - this.lastFaceDetectionTime > 2000) {
+            console.log('⚠️ Using fallback quality data - MediaPipe not working properly');
             // Return fallback quality without recursion
             const fallbackLighting = Math.random() > 0.3;
             return {
@@ -1128,6 +1158,8 @@ class BaselineCapture {
                 stability: Math.random() > 0.5
             };
         }
+        
+        console.log('✅ Using real MediaPipe data for quality calculation');
         
         const landmarks = this.faceDetectionResults.landmarks;
         const confidence = this.faceDetectionResults.confidence || 0;
