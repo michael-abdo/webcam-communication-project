@@ -22,16 +22,11 @@ from datetime import datetime
 import sys
 import os
 
-# Import existing landmark processor
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../cognitive_overload/processing'))
-try:
-    from landmark_processor import LandmarkProcessor
-    LANDMARK_PROCESSOR_AVAILABLE = True
-    logging.info("LandmarkProcessor successfully imported")
-except ImportError as e:
-    logging.warning(f"LandmarkProcessor not available: {e} - face analysis will be limited")
-    LandmarkProcessor = None
-    LANDMARK_PROCESSOR_AVAILABLE = False
+# Import existing landmark processor - disabled for Heroku deployment
+# MediaPipe dependency is too large for Heroku
+LANDMARK_PROCESSOR_AVAILABLE = False
+LandmarkProcessor = None
+logging.warning("LandmarkProcessor disabled for deployment - face analysis will be limited")
 
 
 @dataclass
