@@ -13,8 +13,20 @@ from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists, generate_download_url
 
+# Import baseline blueprint
+from blueprints.baseline_blueprint import baseline_bp
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+# Register baseline blueprint
+app.register_blueprint(baseline_bp)
+
+# Route to serve baseline capture page
+@app.route('/baseline')
+def baseline_capture_page():
+    """Serve the baseline capture interface"""
+    return render_template('baseline_capture.html')
 
 # Global state
 system_state = {
