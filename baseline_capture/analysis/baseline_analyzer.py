@@ -26,9 +26,12 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../cognitive_overload/processing'))
 try:
     from landmark_processor import LandmarkProcessor
-except ImportError:
-    logging.warning("LandmarkProcessor not available - face analysis will be limited")
+    LANDMARK_PROCESSOR_AVAILABLE = True
+    logging.info("LandmarkProcessor successfully imported")
+except ImportError as e:
+    logging.warning(f"LandmarkProcessor not available: {e} - face analysis will be limited")
     LandmarkProcessor = None
+    LANDMARK_PROCESSOR_AVAILABLE = False
 
 
 @dataclass

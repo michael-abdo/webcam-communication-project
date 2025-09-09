@@ -498,20 +498,4 @@ async def baseline_health_check() -> JSONResponse:
     })
 
 
-# Error handlers
-@baseline_router.exception_handler(ValueError)
-async def value_error_handler(request, exc):
-    """Handle validation errors."""
-    return JSONResponse(
-        status_code=400,
-        content={'success': False, 'error': f'Validation error: {str(exc)}'}
-    )
-
-
-@baseline_router.exception_handler(FileNotFoundError)  
-async def file_not_found_handler(request, exc):
-    """Handle file not found errors."""
-    return JSONResponse(
-        status_code=404,
-        content={'success': False, 'error': f'File not found: {str(exc)}'}
-    )
+# Note: Error handlers are added at the FastAPI app level, not router level

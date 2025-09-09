@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+worktrees/
+assessments/baseline_data/
+assessments/results/
+test_baseline_demo.html
+*.log
+
+# Heroku
+heroku_runtime.txt
