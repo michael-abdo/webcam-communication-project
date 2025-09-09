@@ -878,7 +878,7 @@ class BaselineCapture {
             this.faceMesh.setOptions({
                 maxNumFaces: 1,
                 refineLandmarks: true,
-                minDetectionConfidence: 0.5,
+                minDetectionConfidence: 0.7,
                 minTrackingConfidence: 0.5
             });
             
@@ -889,6 +889,7 @@ class BaselineCapture {
             this.RIGHT_EYE_LANDMARKS = [33, 160, 158, 133, 153, 144];
             
             this.isMediaPipeReady = true;
+            this.activeFaceDetector = 'working_mediapipe';
             console.log('✅ Working MediaPipe Face Mesh initialized successfully');
             
         } catch (error) {
@@ -967,9 +968,11 @@ class BaselineCapture {
         // Store results in the same format for compatibility
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
             this.faceDetectionResults = {
-                landmarks: results.multiFaceLandmarks[0]
+                landmarks: results.multiFaceLandmarks[0],
+                confidence: this.calculateDetectionConfidence(results.multiFaceLandmarks[0])
             };
             this.lastFaceDetectionTime = Date.now();
+            this.activeFaceDetector = 'working_mediapipe';
         } else {
             this.faceDetectionResults = null;
         }
@@ -1059,7 +1062,9 @@ class BaselineCapture {
         if (!videoElement || videoElement.readyState < 2) return;
         
         try {
-            if (this.activeFaceDetector === 'mediapipe' && this.isMediaPipeReady && this.faceDetection) {
+            if (this.activeFaceDetector === 'working_mediapipe' && this.isMediaPipeReady && this.faceMesh) {
+                await this.faceMesh.send({image: videoElement});
+            } else if (this.activeFaceDetector === 'mediapipe' && this.isMediaPipeReady && this.faceDetection) {
                 await this.faceDetection.send({image: videoElement});
             } else if (this.activeFaceDetector === 'tensorflow' && this.isTensorFlowReady && this.tensorflowFaceModel) {
                 const predictions = await this.tensorflowFaceModel.estimateFaces({
@@ -1096,11 +1101,8 @@ class BaselineCapture {
      * Get real face quality from active face detector
      */
     getRealFaceQuality() {
-        // Check if we have active face detection and recent results
-        const hasActiveDetector = (this.activeFaceDetector === 'mediapipe' && this.isMediaPipeReady) ||
-                                 (this.activeFaceDetector === 'tensorflow' && this.isTensorFlowReady);
-        
-        if (!hasActiveDetector || 
+        // Check if we have working MediaPipe and recent results
+        if (this.activeFaceDetector !== 'working_mediapipe' || 
             !this.faceDetectionResults || 
             Date.now() - this.lastFaceDetectionTime > 2000) {
             // Return fallback quality without recursion
@@ -1112,9 +1114,10 @@ class BaselineCapture {
             };
         }
         
-        const detections = this.faceDetectionResults.detections;
+        const landmarks = this.faceDetectionResults.landmarks;
+        const confidence = this.faceDetectionResults.confidence || 0;
         
-        if (!detections || detections.length === 0) {
+        if (!landmarks || landmarks.length === 0) {
             return {
                 confidence: 0,
                 lighting: false,
@@ -1123,29 +1126,16 @@ class BaselineCapture {
             };
         }
         
-        // Use the first (most confident) detection
-        const face = detections[0];
-        // Handle different score formats (array vs single value)
-        const confidence = Array.isArray(face.score) ? face.score[0] : (face.score || 0);
-        
-        // Check face position (should be centered)
-        const boundingBox = face.boundingBox;
-        // MediaPipe returns normalized coordinates (0-1)
-        const centerX = (boundingBox.xCenter !== undefined) ? boundingBox.xCenter : 
-                       ((boundingBox.x + boundingBox.width / 2) || 0.5);
-        const centerY = (boundingBox.yCenter !== undefined) ? boundingBox.yCenter : 
-                       ((boundingBox.y + boundingBox.height / 2) || 0.5);
-        const isPositioned = centerX > 0.3 && centerX < 0.7 && 
-                           centerY > 0.3 && centerY < 0.7;
-        
-        // Estimate lighting based on detection confidence
-        const hasGoodLighting = confidence > 0.7;
+        // Calculate real quality metrics from landmarks
+        const lighting = this.calculateLighting();
+        const position = this.validateFacePosition(landmarks);
+        const stability = this.checkDetectionStability(confidence);
         
         return {
             confidence: confidence,
-            lighting: hasGoodLighting,
-            position: isPositioned,
-            stability: confidence > 0.6
+            lighting: lighting,
+            position: position,
+            stability: stability
         };
     }
     
@@ -1153,7 +1143,10 @@ class BaselineCapture {
      * Face quality check (using real detection data when available)
      */
     simulateFaceQualityCheck() {
-        // Generate simulated face quality data (no recursion)
+        // Try to get real face quality if MediaPipe is active
+        if (this.activeFaceDetector === 'working_mediapipe' && this.faceDetectionResults) {
+            return this.getRealFaceQuality();
+        }
         
         // Fallback to simulation if no face detection available
         const baseConfidence = Math.random() * 0.4 + 0.5; // 0.5-0.9
@@ -1823,6 +1816,72 @@ class BaselineCapture {
         } else if (this.currentState.includes('speech') && speechQualityElement) {
             speechQualityElement.innerHTML = recommendationHtml;
         }
+    }
+
+    /**
+     * Calculate detection confidence from landmarks
+     */
+    calculateDetectionConfidence(landmarks) {
+        // Base confidence from landmark count (should have 468 landmarks)
+        const expectedCount = 468;
+        const actualCount = landmarks.length;
+        return Math.min(1.0, actualCount / expectedCount);
+    }
+    
+    /**
+     * Calculate lighting quality using existing brightness function
+     */
+    calculateLighting() {
+        const brightness = this.calculateFrameBrightness();
+        // Good lighting is between 0.3 and 0.8
+        return brightness > 0.3 && brightness < 0.8;
+    }
+    
+    /**
+     * Validate face position using landmarks
+     */
+    validateFacePosition(landmarks) {
+        if (!landmarks || landmarks.length < 2) return false;
+        
+        // Use nose tip (landmark 1) to check if face is centered
+        const noseTip = landmarks[1];
+        if (!noseTip) return false;
+        
+        const centerX = noseTip.x;
+        const centerY = noseTip.y;
+        
+        // Check if face is within center bounds (0.3 to 0.7)
+        return centerX > 0.3 && centerX < 0.7 && centerY > 0.3 && centerY < 0.7;
+    }
+    
+    /**
+     * Check detection stability over time
+     */
+    checkDetectionStability(confidence) {
+        // Initialize confidence history if not exists
+        if (!this.confidenceHistory) {
+            this.confidenceHistory = [];
+        }
+        
+        // Add current confidence to history
+        this.confidenceHistory.push(confidence);
+        
+        // Keep only last 10 measurements
+        if (this.confidenceHistory.length > 10) {
+            this.confidenceHistory.shift();
+        }
+        
+        // Need at least 3 measurements for stability check
+        if (this.confidenceHistory.length < 3) {
+            return false;
+        }
+        
+        // Calculate variance
+        const avg = this.confidenceHistory.reduce((a, b) => a + b, 0) / this.confidenceHistory.length;
+        const variance = this.confidenceHistory.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / this.confidenceHistory.length;
+        
+        // Low variance indicates stability
+        return variance < 0.05;
     }
 
     /**
