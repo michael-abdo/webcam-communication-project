@@ -840,61 +840,61 @@ class BaselineCapture {
     }
 
     /**
-     * Initialize face detection with multiple fallback approaches
+     * Initialize face detection using proven MediaPipe Face Mesh approach
      */
     async initializeFaceDetection() {
-        console.log('🎭 Initializing face detection systems...');
+        console.log('🎭 Initializing face detection with proven MediaPipe approach...');
         
-        // Try MediaPipe first
-        await this.initializeMediaPipe();
-        
-        // If MediaPipe fails, try TensorFlow.js
-        if (!this.isMediaPipeReady) {
-            await this.initializeTensorFlowFaceDetection();
-        }
+        // Use the working MediaPipe Face Mesh implementation from webcam_analysis.html
+        await this.initializeWorkingMediaPipe();
         
         // Set active detector
         if (this.isMediaPipeReady) {
-            this.activeFaceDetector = 'mediapipe';
-            console.log('✅ Active face detector: MediaPipe');
-        } else if (this.isTensorFlowReady) {
-            this.activeFaceDetector = 'tensorflow';
-            console.log('✅ Active face detector: TensorFlow.js');
+            this.activeFaceDetector = 'working_mediapipe';
+            console.log('✅ Active face detector: Working MediaPipe Face Mesh');
         } else {
-            this.activeFaceDetector = 'fallback';
-            console.log('⚠️ Active face detector: Fallback simulation');
+            this.activeFaceDetector = 'canvas_analysis';
+            console.log('⚠️ Active face detector: Canvas-based analysis');
         }
     }
     
     /**
-     * Initialize MediaPipe Face Detection
+     * Initialize working MediaPipe Face Mesh (from webcam_analysis.html)
      */
-    async initializeMediaPipe() {
+    async initializeWorkingMediaPipe() {
         try {
-            if (typeof FaceDetection === 'undefined') {
-                console.warn('⚠️ MediaPipe not loaded');
+            if (typeof FaceMesh === 'undefined') {
+                console.warn('⚠️ MediaPipe Face Mesh not loaded');
                 return;
             }
             
-            console.log('🎭 Trying MediaPipe Face Detection...');
+            console.log('🎭 Initializing working MediaPipe Face Mesh...');
             
-            // Try MediaPipe without custom locateFile to use default paths
-            this.faceDetection = new FaceDetection();
+            // Use the proven working configuration from webcam_analysis.html
+            this.faceMesh = new FaceMesh({locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+            }});
             
-            // Use minimal configuration to avoid model loading issues
-            this.faceDetection.setOptions({
-                minDetectionConfidence: 0.5
+            this.faceMesh.setOptions({
+                maxNumFaces: 1,
+                refineLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
             });
             
-            this.faceDetection.onResults(this.onMediaPipeResults.bind(this));
+            this.faceMesh.onResults(this.onWorkingMediaPipeResults.bind(this));
             
-            // Test if MediaPipe is working
-            await this.testMediaPipeInitialization();
+            // Initialize eye landmark indices (from working implementation)
+            this.LEFT_EYE_LANDMARKS = [362, 385, 387, 263, 373, 380];
+            this.RIGHT_EYE_LANDMARKS = [33, 160, 158, 133, 153, 144];
+            
+            this.isMediaPipeReady = true;
+            console.log('✅ Working MediaPipe Face Mesh initialized successfully');
             
         } catch (error) {
-            console.error('❌ MediaPipe initialization failed:', error);
+            console.error('❌ Working MediaPipe initialization failed:', error);
             this.isMediaPipeReady = false;
-            this.faceDetection = null;
+            this.faceMesh = null;
         }
     }
     
@@ -961,11 +961,73 @@ class BaselineCapture {
     }
     
     /**
-     * Process face detection results from MediaPipe
+     * Process results from working MediaPipe Face Mesh
      */
-    onMediaPipeResults(results) {
-        this.faceDetectionResults = results;
-        this.lastFaceDetectionTime = Date.now();
+    onWorkingMediaPipeResults(results) {
+        // Store results in the same format for compatibility
+        if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+            this.faceDetectionResults = {
+                landmarks: results.multiFaceLandmarks[0]
+            };
+            this.lastFaceDetectionTime = Date.now();
+        } else {
+            this.faceDetectionResults = null;
+        }
+    }
+    
+    /**
+     * Calculate Eye Aspect Ratio (from working implementation)
+     */
+    calculateEyeAspectRatio(landmarks, eyePoints) {
+        // Calculate Eye Aspect Ratio (EAR) for fatigue detection
+        const points = eyePoints.map(idx => landmarks[idx]);
+        
+        // Vertical distances
+        const v1 = Math.sqrt(Math.pow(points[1].x - points[5].x, 2) + Math.pow(points[1].y - points[5].y, 2));
+        const v2 = Math.sqrt(Math.pow(points[2].x - points[4].x, 2) + Math.pow(points[2].y - points[4].y, 2));
+        
+        // Horizontal distance
+        const h = Math.sqrt(Math.pow(points[0].x - points[3].x, 2) + Math.pow(points[0].y - points[3].y, 2));
+        
+        // EAR calculation
+        return (v1 + v2) / (2.0 * h);
+    }
+    
+    /**
+     * Calculate brightness from video frame
+     */
+    calculateFrameBrightness() {
+        try {
+            const videoElement = document.getElementById('faceVideo');
+            if (!videoElement || videoElement.readyState < 2) return 0.5;
+            
+            // Create hidden canvas for analysis
+            const canvas = document.createElement('canvas');
+            canvas.width = 160; // Small size for performance
+            canvas.height = 120;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw video frame
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // Calculate average brightness
+            let sum = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                // Convert RGB to grayscale using standard formula
+                const brightness = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+                sum += brightness;
+            }
+            
+            return sum / (data.length / 4) / 255; // Normalize to 0-1
+            
+        } catch (error) {
+            console.error('Brightness calculation error:', error);
+            return 0.5; // Default neutral brightness
+        }
     }
     
     /**
