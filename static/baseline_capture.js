@@ -1119,9 +1119,11 @@ class BaselineCapture {
             !this.faceDetectionResults || 
             Date.now() - this.lastFaceDetectionTime > 2000) {
             // Return fallback quality without recursion
+            const fallbackLighting = Math.random() > 0.3;
             return {
                 confidence: Math.random() * 0.4 + 0.5,
-                lighting: Math.random() > 0.3,
+                lighting: fallbackLighting,
+                lightingDetails: { status: fallbackLighting ? 'Good' : 'Poor', brightness: 0.5, good: fallbackLighting },
                 position: Math.random() > 0.4,
                 stability: Math.random() > 0.5
             };
@@ -1134,19 +1136,21 @@ class BaselineCapture {
             return {
                 confidence: 0,
                 lighting: false,
+                lightingDetails: { status: 'No Face', brightness: 0, good: false },
                 position: false,
                 stability: false
             };
         }
         
         // Calculate real quality metrics from landmarks
-        const lighting = this.calculateLighting();
+        const lightingResult = this.calculateLighting();
         const position = this.validateFacePosition(landmarks);
         const stability = this.checkDetectionStability(confidence);
         
         return {
             confidence: confidence,
-            lighting: lighting,
+            lighting: lightingResult.good,
+            lightingDetails: lightingResult, // Include detailed lighting info
             position: position,
             stability: stability
         };
@@ -1530,9 +1534,18 @@ class BaselineCapture {
         const lightingClass = quality.lighting ? 'quality-good' : 'quality-error';
         const positionClass = quality.position ? 'quality-good' : 'quality-warning';
         
+        // Enhanced lighting display with actual brightness values
+        let lightingText = 'Lighting: Poor';
+        if (quality.lightingDetails) {
+            const brightness = (quality.lightingDetails.brightness * 100).toFixed(0);
+            lightingText = `Lighting: ${quality.lightingDetails.status} (${brightness}%)`;
+        } else if (quality.lighting) {
+            lightingText = 'Lighting: Good';
+        }
+        
         indicatorsElement.innerHTML = `
             <span class="quality-indicator ${confidenceClass}">Face Confidence: ${(quality.confidence * 100).toFixed(0)}%</span>
-            <span class="quality-indicator ${lightingClass}">Lighting: ${quality.lighting ? 'Good' : 'Poor'}</span>
+            <span class="quality-indicator ${lightingClass}">${lightingText}</span>
             <span class="quality-indicator ${positionClass}">Position: ${quality.position ? 'Good' : 'Adjust'}</span>
         `;
     }
@@ -1846,8 +1859,20 @@ class BaselineCapture {
      */
     calculateLighting() {
         const brightness = this.calculateFrameBrightness();
-        // Good lighting is between 0.3 and 0.8
-        return brightness > 0.3 && brightness < 0.8;
+        
+        // Debug: Log actual brightness value
+        console.log('🔆 Brightness level:', brightness.toFixed(3));
+        
+        // Return lighting quality object with more detail
+        if (brightness < 0.2) {
+            return { status: 'Too Dark', brightness: brightness, good: false };
+        } else if (brightness < 0.4) {
+            return { status: 'Low', brightness: brightness, good: false };
+        } else if (brightness > 0.8) {
+            return { status: 'Too Bright', brightness: brightness, good: false };
+        } else {
+            return { status: 'Good', brightness: brightness, good: true };
+        }
     }
     
     /**
