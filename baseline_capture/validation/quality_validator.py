@@ -11,13 +11,10 @@ Author: Baseline Capture System
 Version: 1.0
 """
 
-import numpy as np
-import cv2
-import mediapipe as mp
-from typing import Dict, List, Optional, Tuple, Any
 import logging
-import time
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
+import time
 
 
 @dataclass
