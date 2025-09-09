@@ -615,8 +615,8 @@ class BaselineCapture {
                 const progressPercent = ((this.config.face.duration - secondsRemaining) / this.config.face.duration) * 100;
                 this.updateFaceProgress(`Recording face baseline... ${secondsRemaining}s`, progressPercent);
                 
-                // Simulate quality check (in real implementation, this would analyze video frames)
-                const qualityCheck = this.simulateFaceQualityCheck();
+                // Get real quality check from MediaPipe face detection
+                const qualityCheck = this.getRealFaceQuality();
                 qualityChecks.push(qualityCheck);
                 this.updateFaceQualityDisplay(qualityCheck);
                 
@@ -811,8 +811,21 @@ class BaselineCapture {
             
             // Update quality displays
             if (this.currentState === 'face_ready' || this.currentState === 'face_capturing') {
-                const faceQuality = this.simulateFaceQualityCheck();
+                // Always try to get real face quality first
+                const faceQuality = this.getRealFaceQuality();
                 this.updateFaceQualityDisplay(faceQuality);
+                
+                // Debug logging to help identify the issue
+                if (this.activeFaceDetector === 'working_mediapipe') {
+                    console.log('🎯 UI Update - MediaPipe Status:', {
+                        detector: this.activeFaceDetector,
+                        hasResults: !!this.faceDetectionResults,
+                        confidence: faceQuality.confidence,
+                        lighting: faceQuality.lighting,
+                        position: faceQuality.position,
+                        lastDetection: this.lastFaceDetectionTime ? Date.now() - this.lastFaceDetectionTime : null
+                    });
+                }
             }
             
             if (this.currentState === 'speech_ready' || this.currentState === 'speech_capturing') {
