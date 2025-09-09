@@ -1506,13 +1506,35 @@ let baselineCapture = null;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    baselineCapture = new BaselineCapture();
+    console.log('🎯 DOMContentLoaded - Initializing BaselineCapture...');
+    try {
+        baselineCapture = new BaselineCapture();
+        console.log('✅ BaselineCapture initialized successfully');
+        
+        // Make functions available globally
+        window.startBaselineCapture = startBaselineCapture;
+        window.startFaceCapture = startFaceCapture;
+        window.startSpeechCapture = startSpeechCapture;
+        window.retryFaceCapture = retryFaceCapture;
+        window.retrySpeechCapture = retrySpeechCapture;
+        window.goToSpeechCapture = goToSpeechCapture;
+        window.completeBaseline = completeBaseline;
+        window.startPersonalizedAssessment = startPersonalizedAssessment;
+        
+    } catch (error) {
+        console.error('❌ Failed to initialize BaselineCapture:', error);
+        alert('Failed to initialize baseline capture system. Error: ' + error.message);
+    }
 });
 
 // Global functions called by HTML buttons
 function startBaselineCapture() {
+    console.log('🚀 startBaselineCapture called');
     if (baselineCapture) {
         baselineCapture.startBaselineCapture();
+    } else {
+        console.error('❌ baselineCapture not initialized');
+        alert('Baseline capture system not ready. Please refresh the page.');
     }
 }
 

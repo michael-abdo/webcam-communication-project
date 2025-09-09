@@ -415,18 +415,28 @@
     
     <!-- Fallback for missing JavaScript -->
     <script>
-        // Basic fallback functions if main JS file fails to load
-        function startBaselineCapture() {
-            alert('Loading baseline capture system...');
-        }
-        
-        function startFaceCapture() {
-            alert('Starting face capture...');
-        }
-        
-        function startSpeechCapture() {
-            alert('Starting speech capture...');
-        }
+        // Only define fallback functions if the main script hasn't loaded
+        window.addEventListener('load', function() {
+            // Check if the main functions exist after a short delay
+            setTimeout(function() {
+                if (typeof baselineCapture === 'undefined') {
+                    console.error('BaselineCapture failed to initialize');
+                    
+                    // Define fallback functions only if main script failed
+                    window.startBaselineCapture = function() {
+                        alert('Error: Baseline capture system failed to load. Please refresh the page.');
+                    }
+                    
+                    window.startFaceCapture = function() {
+                        alert('Error: Face capture system not available. Please refresh the page.');
+                    }
+                    
+                    window.startSpeechCapture = function() {
+                        alert('Error: Speech capture system not available. Please refresh the page.');
+                    }
+                }
+            }, 100); // Small delay to ensure main script has time to load
+        });
     </script>
 
 </body>
