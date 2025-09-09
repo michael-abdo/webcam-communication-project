@@ -157,37 +157,3 @@ def ensure_bucket_exists():
     except Exception as e:
         print(f"Error ensuring bucket exists: {e}")
         return False
-
-def generate_download_url(s3_key, expiration=300):
-    """
-    Generate a presigned GET URL for downloading a video chunk from S3.
-    
-    Args:
-        s3_key: The S3 object key (e.g., "video_session_1756998413169_pmxim1q/chunk_0000.webm")
-        expiration: URL expiration time in seconds (default: 5 minutes)
-        
-    Returns:
-        str: Presigned download URL, or None on error
-    """
-    try:
-        s3_client = get_s3_client()
-        
-        # Generate presigned GET URL
-        download_url = s3_client.generate_presigned_url(
-            'get_object',
-            Params={
-                'Bucket': S3_BUCKET,
-                'Key': s3_key,
-                'ResponseContentDisposition': f'attachment; filename="{s3_key.split("/")[-1]}"'
-            },
-            ExpiresIn=expiration
-        )
-        
-        return download_url
-        
-    except ClientError as e:
-        print(f"AWS S3 Error generating download URL: {e}")
-        return None
-    except Exception as e:
-        print(f"Error generating download URL: {e}")
-        return None

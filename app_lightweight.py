@@ -11,7 +11,7 @@ import random
 from datetime import datetime
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
-from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists, generate_download_url
+from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -101,6 +101,16 @@ def webcam_analysis():
     
     return render_template('webcam_analysis.html')
 
+@app.route('/simple-baseline')
+def simple_baseline():
+    """Simple baseline capture interface with real-time quality metrics."""
+    system_state['requests_count'] += 1
+    
+    # Log access for debugging
+    print(f"[{datetime.now().isoformat()}] Simple baseline accessed - User-Agent: {request.headers.get('User-Agent')}")
+    
+    return render_template('simple_baseline.html')
+
 @app.route('/stream')
 def stream():
     """Raw video/audio streaming to S3 interface."""
@@ -127,8 +137,7 @@ def get_presigned_url():
                 'test_session_id': test_session_id,
                 'start_time': datetime.now(),
                 'chunks_uploaded': 0,
-                'status': 'active',
-                'chunk_keys': []  # Store actual S3 keys
+                'status': 'active'
             }
             
             # Create link if test session provided
@@ -136,16 +145,12 @@ def get_presigned_url():
                 test_video_links[test_session_id] = session_id
                 print(f"[VideoLink] Linked test session {test_session_id} with video session {session_id}")
         
+        # Update chunk count
+        if session_id in video_sessions:
+            video_sessions[session_id]['chunks_uploaded'] += 1
+        
         # Generate presigned POST URL
         presigned_data = generate_presigned_post(session_id, chunk_number)
-        
-        # Update chunk count and store S3 key
-        if session_id in video_sessions and presigned_data:
-            video_sessions[session_id]['chunks_uploaded'] += 1
-            video_sessions[session_id]['chunk_keys'].append({
-                'chunk_number': chunk_number,
-                's3_key': presigned_data['key']
-            })
         
         if presigned_data:
             return jsonify({
@@ -295,6 +300,60 @@ def api_analyze():
         
     except Exception as e:
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
+
+@app.route('/api/upload_baseline', methods=['POST'])
+def upload_baseline():
+    """Upload baseline capture video with quality metrics."""
+    try:
+        # Get uploaded video file
+        if 'video' not in request.files:
+            return jsonify({'error': 'No video file provided'}), 400
+        
+        video_file = request.files['video']
+        if video_file.filename == '':
+            return jsonify({'error': 'No video file selected'}), 400
+        
+        # Get quality metrics
+        metrics_json = request.form.get('metrics', '{}')
+        try:
+            metrics = json.loads(metrics_json)
+        except json.JSONDecodeError:
+            metrics = {}
+        
+        # Create baseline data directory
+        baseline_dir = 'baseline_captures'
+        os.makedirs(baseline_dir, exist_ok=True)
+        
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"baseline_{timestamp}.webm"
+        filepath = os.path.join(baseline_dir, filename)
+        
+        # Save video file
+        video_file.save(filepath)
+        
+        # Save metrics
+        metrics_file = filepath.replace('.webm', '_metrics.json')
+        with open(metrics_file, 'w') as f:
+            json.dump({
+                'timestamp': datetime.now().isoformat(),
+                'filename': filename,
+                'metrics': metrics,
+                'quality_score': metrics.get('qualityScore', 0)
+            }, f, indent=2)
+        
+        print(f"[BaselineUpload] Saved: {filename}, Quality: {metrics.get('qualityScore', 0)}%")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Baseline capture uploaded successfully',
+            'filename': filename,
+            'metrics': metrics
+        })
+        
+    except Exception as e:
+        print(f"[BaselineUpload] Error: {str(e)}")
+        return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
 # Video Analysis API Endpoints
 @app.route('/api/datasets')
@@ -1199,24 +1258,21 @@ def get_video_session_chunks(video_session_id):
             
         video_session = video_sessions[video_session_id]
         
-        # Generate chunk information using stored S3 keys
+        # Generate chunk information (this would ideally come from S3 metadata)
         chunks_info = []
-        chunk_keys = video_session.get('chunk_keys', [])
-        session_start_ms = int(video_session['start_time'].timestamp() * 1000)
+        chunks_uploaded = video_session.get('chunks_uploaded', 0)
         
-        # Sort chunk keys by chunk number to ensure proper order
-        sorted_chunks = sorted(chunk_keys, key=lambda x: x['chunk_number'])
-        
-        for idx, chunk_data in enumerate(sorted_chunks):
+        for chunk_num in range(chunks_uploaded):
             # Calculate approximate timestamp for each chunk (5-second intervals)
-            chunk_start_offset_ms = idx * 5000  # 5 seconds per chunk
+            chunk_start_offset_ms = chunk_num * 5000  # 5 seconds per chunk
+            session_start_ms = int(video_session['start_time'].timestamp() * 1000)
             
             chunks_info.append({
-                'chunk_number': chunk_data['chunk_number'],
+                'chunk_number': chunk_num,
                 'chunk_start_time': session_start_ms + chunk_start_offset_ms,
                 'chunk_duration_ms': 5000,  # 5 seconds
                 'relative_start_ms': chunk_start_offset_ms,
-                's3_key': chunk_data['s3_key']
+                's3_key': f"{video_session_id}/chunk_{chunk_num:04d}.webm"
             })
         
         return jsonify({
@@ -1230,49 +1286,6 @@ def get_video_session_chunks(video_session_id):
         
     except Exception as e:
         print(f"Error retrieving video chunks: {e}")
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500
-
-@app.route('/api/video/download', methods=['POST'])
-def get_video_download_url():
-    """Generate presigned download URL for a video chunk."""
-    try:
-        data = request.get_json()
-        s3_key = data.get('s3_key')
-        
-        if not s3_key:
-            return jsonify({
-                'status': 'error',
-                'message': 'Missing s3_key parameter'
-            }), 400
-        
-        # Basic validation to prevent directory traversal
-        if '..' in s3_key or s3_key.startswith('/'):
-            return jsonify({
-                'status': 'error',
-                'message': 'Invalid s3_key format'
-            }), 400
-        
-        # Generate presigned download URL
-        download_url = generate_download_url(s3_key)
-        
-        if download_url:
-            return jsonify({
-                'status': 'success',
-                'download_url': download_url,
-                's3_key': s3_key,
-                'expires_in': 300  # 5 minutes
-            })
-        else:
-            return jsonify({
-                'status': 'error',
-                'message': 'Failed to generate download URL. Check S3 configuration and key existence.'
-            }), 500
-            
-    except Exception as e:
-        print(f"Error in download URL endpoint: {e}")
         return jsonify({
             'status': 'error',
             'message': str(e)

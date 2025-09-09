@@ -1,0 +1,178 @@
+{
+  "test_id": "cognitive_attention_v1",
+  "title": "Cognitive Attention Assessment",
+  "description": "Evaluate attention levels and cognitive focus through various question types",
+  "version": "1.0.0",
+  "category": "cognitive",
+  "duration_minutes": 10,
+  "instructions": "This test will assess your current attention and focus levels. Please answer each question honestly and to the best of your ability. Find a quiet place where you won't be interrupted.",
+  "settings": {
+    "randomize_questions": false,
+    "show_progress": true,
+    "allow_skip": false,
+    "time_limit_seconds": 600,
+    "passing_score": 70
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "multiple_choice",
+      "question": "How would you rate your current level of alertness?",
+      "description": "Consider how awake and aware you feel right now",
+      "required": true,
+      "points": 1,
+      "tags": ["alertness", "self-assessment"],
+      "options": [
+        {"value": "very_alert", "label": "Very Alert", "is_correct": false},
+        {"value": "alert", "label": "Alert", "is_correct": false},
+        {"value": "neutral", "label": "Neutral", "is_correct": false},
+        {"value": "tired", "label": "Somewhat Tired", "is_correct": false},
+        {"value": "very_tired", "label": "Very Tired", "is_correct": false}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "slider",
+      "question": "On a scale of 1-10, how difficult is it for you to concentrate right now?",
+      "description": "1 = Very easy to concentrate, 10 = Extremely difficult",
+      "required": true,
+      "points": 1,
+      "tags": ["concentration", "difficulty"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 10,
+        "step": 1
+      }
+    },
+    {
+      "id": 3,
+      "type": "text_input",
+      "question": "List three things you notice in your environment right now",
+      "description": "This helps assess your current awareness and attention to surroundings",
+      "required": true,
+      "points": 3,
+      "time_limit_seconds": 60,
+      "tags": ["awareness", "observation"],
+      "validation": {
+        "min_length": 10,
+        "max_length": 200
+      }
+    },
+    {
+      "id": 4,
+      "type": "true_false",
+      "question": "I have had difficulty staying focused on tasks today",
+      "required": true,
+      "points": 1,
+      "tags": ["focus", "self-report"]
+    },
+    {
+      "id": 5,
+      "type": "multiple_choice",
+      "question": "Which pattern comes next in the sequence: 2, 4, 8, 16, ?",
+      "description": "This tests pattern recognition and logical thinking",
+      "required": true,
+      "points": 2,
+      "time_limit_seconds": 30,
+      "tags": ["logic", "pattern-recognition"],
+      "options": [
+        {"value": "24", "label": "24", "is_correct": false},
+        {"value": "32", "label": "32", "is_correct": true},
+        {"value": "64", "label": "64", "is_correct": false},
+        {"value": "20", "label": "20", "is_correct": false}
+      ],
+      "scoring": {
+        "method": "exact",
+        "correct_answer": "32"
+      }
+    },
+    {
+      "id": 6,
+      "type": "rating",
+      "question": "Rate your mental fatigue level",
+      "description": "How mentally tired do you feel?",
+      "required": true,
+      "points": 1,
+      "tags": ["fatigue", "mental-state"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Not tired at all"},
+        {"value": "2", "label": "Slightly tired"},
+        {"value": "3", "label": "Moderately tired"},
+        {"value": "4", "label": "Very tired"},
+        {"value": "5", "label": "Extremely tired"}
+      ]
+    },
+    {
+      "id": 7,
+      "type": "multiple_choice",
+      "question": "How many hours of sleep did you get last night?",
+      "description": "Sleep quality affects cognitive performance",
+      "required": true,
+      "points": 1,
+      "tags": ["sleep", "health"],
+      "options": [
+        {"value": "less_than_4", "label": "Less than 4 hours"},
+        {"value": "4_to_6", "label": "4-6 hours"},
+        {"value": "6_to_8", "label": "6-8 hours"},
+        {"value": "more_than_8", "label": "More than 8 hours"}
+      ]
+    },
+    {
+      "id": 8,
+      "type": "text_input",
+      "question": "Describe any factors that might be affecting your concentration today",
+      "description": "This could include stress, environment, health, etc.",
+      "required": false,
+      "points": 2,
+      "tags": ["factors", "context"],
+      "validation": {
+        "min_length": 0,
+        "max_length": 500
+      }
+    }
+  ],
+  "scoring": {
+    "type": "weighted",
+    "max_score": 12,
+    "categories": [
+      {
+        "name": "alertness",
+        "question_ids": [1, 6],
+        "weight": 0.3
+      },
+      {
+        "name": "concentration",
+        "question_ids": [2, 3, 4],
+        "weight": 0.4
+      },
+      {
+        "name": "cognitive_performance",
+        "question_ids": [5],
+        "weight": 0.3
+      }
+    ]
+  },
+  "feedback": {
+    "show_correct_answers": true,
+    "immediate": false,
+    "final_message": {
+      "excellent": {
+        "min_score": 85,
+        "message": "Your attention and cognitive focus appear to be excellent. Keep up the good work!"
+      },
+      "good": {
+        "min_score": 70,
+        "message": "Your attention levels are good, though there may be room for improvement in some areas."
+      },
+      "needs_improvement": {
+        "min_score": 0,
+        "message": "Your attention and focus levels suggest you may benefit from rest or attention-enhancing strategies."
+      }
+    }
+  }
+}

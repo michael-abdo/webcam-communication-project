@@ -745,46 +745,9 @@
                 this.downloadFile(csv, `test-events-${this.sessionId}.csv`, 'text/csv');
             },
             
-            async downloadChunk(s3Key) {
-                try {
-                    // Show loading state on button
-                    const button = event.target;
-                    const originalText = button.textContent;
-                    button.textContent = 'Generating...';
-                    button.disabled = true;
-                    
-                    // Request presigned download URL
-                    const response = await fetch('/api/video/download', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ s3_key: s3Key })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status === 'success' && data.download_url) {
-                        // Open download URL in new tab
-                        window.open(data.download_url, '_blank');
-                    } else {
-                        alert(`Failed to generate download URL: ${data.message || 'Unknown error'}`);
-                    }
-                    
-                    // Reset button
-                    button.textContent = originalText;
-                    button.disabled = false;
-                    
-                } catch (error) {
-                    console.error('Download error:', error);
-                    alert(`Download failed: ${error.message}`);
-                    
-                    // Reset button
-                    if (event.target) {
-                        event.target.textContent = 'Download';
-                        event.target.disabled = false;
-                    }
-                }
+            downloadChunk(s3Key) {
+                // This would need to be implemented with S3 download URLs
+                alert(`Download functionality for video chunks needs S3 presigned download URLs.\nS3 Key: ${s3Key}`);
             },
             
             // Utility functions

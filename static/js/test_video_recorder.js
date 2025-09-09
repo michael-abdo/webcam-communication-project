@@ -29,8 +29,6 @@ class VideoRecorder {
         this.chunksUploaded = 0;
         this.uploadQueue = [];
         this.durationInterval = null;
-        this.chunkInterval = null; // Timer for chunking
-        this.currentChunkData = []; // Accumulate data for current chunk
         this.testSessionId = null; // Link to test session
         
         // Callbacks
@@ -138,11 +136,8 @@ class VideoRecorder {
             // Set up event handlers
             this.setupMediaRecorderEvents();
             
-            // Start recording without timeslice to ensure complete files
-            this.mediaRecorder.start();
-            
-            // Set up chunking timer
-            this.startChunkTimer();
+            // Start recording with chunking
+            this.mediaRecorder.start(this.CHUNK_DURATION_MS);
             
             // Update state and UI
             this.isRecording = true;
@@ -182,12 +177,6 @@ class VideoRecorder {
     stopRecording() {
         if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
             console.log('[VideoRecorder] Stopping recording...');
-            
-            // Stop chunk timer first
-            if (this.chunkInterval) {
-                clearInterval(this.chunkInterval);
-                this.chunkInterval = null;
-            }
             
             this.mediaRecorder.stop();
             this.isRecording = false;
@@ -265,9 +254,8 @@ class VideoRecorder {
      */
     handleDataAvailable(event) {
         if (event.data && event.data.size > 0) {
-            console.log(`[VideoRecorder] Data received: ${event.data.size} bytes, type: ${event.data.type}`);
+            console.log(`[VideoRecorder] Chunk received: ${event.data.size} bytes, type: ${event.data.type}`);
             
-            // When MediaRecorder stops, it provides the complete recording
             const chunk = {
                 data: event.data,
                 number: this.chunkNumber++,
@@ -285,47 +273,6 @@ class VideoRecorder {
             this.uploadQueue.push(chunk);
             this.processUploadQueue();
         }
-    }
-    
-    /**
-     * Start chunk timer to create complete video files
-     */
-    startChunkTimer() {
-        this.chunkInterval = setInterval(() => {
-            if (this.isRecording && this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-                console.log('[VideoRecorder] Creating chunk by restarting recorder...');
-                
-                // Stop current recording to get complete chunk
-                this.mediaRecorder.stop();
-                
-                // Wait a bit for the stop event to process, then restart
-                setTimeout(() => {
-                    if (this.isRecording && this.mediaStream) {
-                        try {
-                            // Create new MediaRecorder for next chunk
-                            const selectedMimeType = this.detectSupportedMimeType();
-                            this.mediaRecorder = new MediaRecorder(this.mediaStream, {
-                                mimeType: selectedMimeType,
-                                videoBitsPerSecond: 1000000,
-                                audioBitsPerSecond: 128000
-                            });
-                            
-                            // Set up event handlers
-                            this.setupMediaRecorderEvents();
-                            
-                            // Start recording next chunk
-                            this.mediaRecorder.start();
-                            console.log('[VideoRecorder] Started recording next chunk');
-                        } catch (error) {
-                            console.error('[VideoRecorder] Error restarting recorder:', error);
-                            if (this.onError) {
-                                this.onError('chunk_restart_failed', error);
-                            }
-                        }
-                    }
-                }, 100);
-            }
-        }, this.CHUNK_DURATION_MS);
     }
     
     /**
@@ -410,13 +357,6 @@ class VideoRecorder {
      * Upload chunk to S3 using presigned URL
      */
     async uploadToS3(blob, presignedData) {
-        // Debug blob info
-        console.log(`[VideoRecorder] Uploading blob - size: ${blob.size} bytes, type: ${blob.type}`);
-        
-        if (blob.size === 0) {
-            console.error('[VideoRecorder] WARNING: Attempting to upload empty blob!');
-        }
-        
         const formData = new FormData();
         
         // Add all fields from presigned data

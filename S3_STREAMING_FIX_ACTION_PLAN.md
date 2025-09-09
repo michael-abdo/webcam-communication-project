@@ -124,7 +124,7 @@ const response = await fetch('/api/s3/presigned-url', {
 2. **Verify S3 Bucket**
    ```bash
    # Check AWS S3 console or use AWS CLI
-   aws s3 ls s3://psychometric-webcam-videos/ --recursive
+   aws s3 ls s3://xendoex-webcam-streaming-2025/ --recursive
    ```
 
 3. **Monitor Browser Console**

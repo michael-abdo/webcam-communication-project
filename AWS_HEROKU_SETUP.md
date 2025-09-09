@@ -6,7 +6,7 @@
 - Heroku CLI installed
 
 ## Required AWS Permissions
-The IAM user needs the following permissions for the S3 bucket `psychometric-webcam-videos`:
+The IAM user needs the following permissions for the S3 bucket `webcam-streaming`:
 - `s3:PutObject`
 - `s3:PutObjectAcl`
 - `s3:GetObject`
@@ -48,11 +48,11 @@ heroku config
 7. Save the credentials securely
 
 ## S3 Bucket Configuration
-The app expects a bucket named `psychometric-webcam-videos` in the `us-west-2` region.
+The app expects a bucket named `webcam-streaming` in the `us-west-2` region.
 
 To create it manually:
 ```bash
-aws s3 mb s3://psychometric-webcam-videos --region us-west-2
+aws s3 mb s3://webcam-streaming --region us-west-2
 ```
 
 The app will attempt to create the bucket automatically with proper CORS configuration if it doesn't exist.

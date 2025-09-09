@@ -282,6 +282,9 @@
                             <button class="start-button" onclick="TestManager.startTest('${test.test_id}')">
                                 Start Test
                             </button>
+                            <button class="start-button video-button" onclick="TestManager.startTestWithVideo('${test.test_id}')" style="background: linear-gradient(135deg, #dc2626 0%, #7c2d12 100%); margin-top: 0.5rem;">
+                                🎥 With Video Recording
+                            </button>
                         </div>
                     </div>
                 `;
@@ -307,10 +310,10 @@
                     const data = await response.json();
                     
                     if (data.status === 'success') {
-                        // Store session info and navigate to combined test page (always with video)
+                        // Store session info and navigate to test page
                         sessionStorage.setItem('test_session_id', data.session_id);
                         sessionStorage.setItem('test_data', JSON.stringify(data.test));
-                        window.location.href = `/tests/session/combined?id=${data.session_id}`;
+                        window.location.href = `/tests/session?id=${data.session_id}`;
                     } else {
                         this.showError(data.message || 'Failed to start test');
                     }
