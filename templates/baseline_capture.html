@@ -410,11 +410,17 @@
         </div>
     </div>
 
-    <!-- Include MediaPipe Face Detection - Using unpkg CDN -->
+    <!-- Include MediaPipe Face Detection - Testing version 0.3 for compatibility -->
     <script src="https://unpkg.com/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@mediapipe/control_utils@0.6/control_utils.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@mediapipe/drawing_utils@0.3/drawing_utils.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@mediapipe/face_detection@0.4/face_detection.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/face_detection@0.3/face_detection.js" crossorigin="anonymous"></script>
+    
+    <!-- TensorFlow.js Face Landmarks Detection as backup -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.10.0/dist/tf-core.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@4.10.0/dist/tf-converter.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.10.0/dist/tf-backend-webgl.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.2/dist/face-landmarks-detection.min.js" crossorigin="anonymous"></script>
     
     <!-- Include JavaScript -->
     <script src="{{ url_for('static', filename='baseline_capture.js') }}"></script>

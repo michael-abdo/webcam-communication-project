@@ -59,12 +59,16 @@ class BaselineCapture {
             }
         };
         
-        // MediaPipe Face Detection
+        // Face Detection - Multiple approaches
         this.faceDetection = null;
+        this.tensorflowFaceModel = null;
         this.isMediaPipeReady = false;
+        this.isTensorFlowReady = false;
         this.mediaPipeInitialized = false;
+        this.tensorflowInitialized = false;
         this.lastFaceDetectionTime = 0;
         this.faceDetectionResults = null;
+        this.activeFaceDetector = null; // 'mediapipe', 'tensorflow', or 'fallback'
         
         // Configuration from SOP requirements
         this.config = {
@@ -109,8 +113,8 @@ class BaselineCapture {
         // Check for required browser features
         this.checkBrowserSupport();
         
-        // Initialize MediaPipe Face Detection
-        this.initializeMediaPipe();
+        // Initialize face detection systems
+        this.initializeFaceDetection();
     }
 
     /**
@@ -788,18 +792,20 @@ class BaselineCapture {
      */
     startQualityMonitoring() {
         console.log('👀 Starting quality monitoring');
+        console.log(`🔍 Active face detector: ${this.activeFaceDetector}`);
         
-        // Start frame processing for MediaPipe if ready
-        if (this.isMediaPipeReady && this.faceDetection) {
+        // Start frame processing if any real detector is ready
+        if (this.activeFaceDetector !== 'fallback') {
             this.startFrameProcessing();
-            console.log('📹 MediaPipe frame processing enabled');
+            console.log(`📹 ${this.activeFaceDetector} frame processing enabled`);
         } else {
-            console.log('🔄 MediaPipe not ready, using fallback quality monitoring');
+            console.log('🔄 No real face detection, using simulation');
         }
         
         this.timers.quality = setInterval(() => {
-            // Process video frame for face detection only if MediaPipe is ready
-            if (this.isMediaPipeReady && this.faceDetection && (this.currentState === 'face_ready' || this.currentState === 'face_capturing')) {
+            // Process video frame for face detection if any detector is active
+            if (this.activeFaceDetector !== 'fallback' && 
+                (this.currentState === 'face_ready' || this.currentState === 'face_capturing')) {
                 this.processVideoFrame();
             }
             
@@ -821,11 +827,12 @@ class BaselineCapture {
      */
     startFrameProcessing() {
         const processFrame = async () => {
-            if (this.isMediaPipeReady && (this.currentState === 'face_ready' || this.currentState === 'face_capturing')) {
+            if (this.activeFaceDetector !== 'fallback' && 
+                (this.currentState === 'face_ready' || this.currentState === 'face_capturing')) {
                 await this.processVideoFrame();
             }
-            // Continue processing only if MediaPipe is still ready
-            if (this.isMediaPipeReady && this.faceDetection) {
+            // Continue processing only if we have an active detector
+            if (this.activeFaceDetector !== 'fallback') {
                 requestAnimationFrame(processFrame);
             }
         };
@@ -833,46 +840,89 @@ class BaselineCapture {
     }
 
     /**
+     * Initialize face detection with multiple fallback approaches
+     */
+    async initializeFaceDetection() {
+        console.log('🎭 Initializing face detection systems...');
+        
+        // Try MediaPipe first
+        await this.initializeMediaPipe();
+        
+        // If MediaPipe fails, try TensorFlow.js
+        if (!this.isMediaPipeReady) {
+            await this.initializeTensorFlowFaceDetection();
+        }
+        
+        // Set active detector
+        if (this.isMediaPipeReady) {
+            this.activeFaceDetector = 'mediapipe';
+            console.log('✅ Active face detector: MediaPipe');
+        } else if (this.isTensorFlowReady) {
+            this.activeFaceDetector = 'tensorflow';
+            console.log('✅ Active face detector: TensorFlow.js');
+        } else {
+            this.activeFaceDetector = 'fallback';
+            console.log('⚠️ Active face detector: Fallback simulation');
+        }
+    }
+    
+    /**
      * Initialize MediaPipe Face Detection
      */
-    initializeMediaPipe() {
+    async initializeMediaPipe() {
         try {
             if (typeof FaceDetection === 'undefined') {
-                console.warn('⚠️ MediaPipe not loaded, using fallback quality detection');
-                this.isMediaPipeReady = false;
-                this.mediaPipeInitialized = false;
+                console.warn('⚠️ MediaPipe not loaded');
                 return;
             }
             
-            console.log('🎭 Initializing MediaPipe Face Detection...');
+            console.log('🎭 Trying MediaPipe Face Detection...');
             
-            this.faceDetection = new FaceDetection({
-                locateFile: (file) => {
-                    // Use unpkg CDN URL for model files - better model file support
-                    console.log(`📦 Loading MediaPipe file: ${file}`);
-                    return `https://unpkg.com/@mediapipe/face_detection@0.4/${file}`;
-                }
-            });
+            // Try MediaPipe without custom locateFile to use default paths
+            this.faceDetection = new FaceDetection();
             
+            // Use minimal configuration to avoid model loading issues
             this.faceDetection.setOptions({
-                modelSelection: 0, // 0 for short-range model (within 2 meters)
                 minDetectionConfidence: 0.5
             });
             
-            this.faceDetection.onResults(this.onFaceDetectionResults.bind(this));
+            this.faceDetection.onResults(this.onMediaPipeResults.bind(this));
             
-            // Test if MediaPipe is working by trying to send a dummy frame
-            this.testMediaPipeInitialization();
-            
-            console.log('✅ MediaPipe Face Detection initialized');
-            this.mediaPipeInitialized = true;
+            // Test if MediaPipe is working
+            await this.testMediaPipeInitialization();
             
         } catch (error) {
             console.error('❌ MediaPipe initialization failed:', error);
-            console.log('🔄 Disabling MediaPipe, using fallback quality detection');
             this.isMediaPipeReady = false;
-            this.mediaPipeInitialized = false;
             this.faceDetection = null;
+        }
+    }
+    
+    /**
+     * Initialize TensorFlow.js Face Landmarks Detection
+     */
+    async initializeTensorFlowFaceDetection() {
+        try {
+            if (typeof faceLandmarksDetection === 'undefined') {
+                console.warn('⚠️ TensorFlow.js Face Detection not loaded');
+                return;
+            }
+            
+            console.log('🤖 Trying TensorFlow.js Face Detection...');
+            
+            // Load the MediaPipe FaceDetection model
+            this.tensorflowFaceModel = await faceLandmarksDetection.load(
+                faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
+            );
+            
+            this.isTensorFlowReady = true;
+            this.tensorflowInitialized = true;
+            console.log('✅ TensorFlow.js Face Detection initialized');
+            
+        } catch (error) {
+            console.error('❌ TensorFlow.js Face Detection initialization failed:', error);
+            this.isTensorFlowReady = false;
+            this.tensorflowFaceModel = null;
         }
     }
     
@@ -913,38 +963,82 @@ class BaselineCapture {
     /**
      * Process face detection results from MediaPipe
      */
-    onFaceDetectionResults(results) {
+    onMediaPipeResults(results) {
         this.faceDetectionResults = results;
         this.lastFaceDetectionTime = Date.now();
     }
     
     /**
-     * Process video frame through MediaPipe
+     * Process face detection results from TensorFlow.js
+     */
+    onTensorFlowResults(predictions) {
+        // Convert TensorFlow predictions to MediaPipe-like format
+        this.faceDetectionResults = {
+            detections: predictions.map(pred => ({
+                score: pred.faceInViewConfidence || 0.8,
+                boundingBox: {
+                    x: pred.boundingBox?.topLeft?.[0] || 0,
+                    y: pred.boundingBox?.topLeft?.[1] || 0,
+                    width: pred.boundingBox?.bottomRight?.[0] - pred.boundingBox?.topLeft?.[0] || 0,
+                    height: pred.boundingBox?.bottomRight?.[1] - pred.boundingBox?.topLeft?.[1] || 0
+                }
+            }))
+        };
+        this.lastFaceDetectionTime = Date.now();
+    }
+    
+    /**
+     * Process video frame through active face detection system
      */
     async processVideoFrame() {
-        // Only process if MediaPipe is ready and working
-        if (this.isMediaPipeReady && this.faceDetection && this.videoStream && this.videoStream.active) {
-            const videoElement = document.getElementById('faceVideo');
-            if (videoElement && videoElement.readyState >= 2) {
-                try {
-                    await this.faceDetection.send({image: videoElement});
-                } catch (error) {
-                    console.error('Face detection error:', error);
-                    // Disable MediaPipe on repeated errors
-                    this.isMediaPipeReady = false;
-                    this.faceDetection = null;
-                    console.log('🔄 MediaPipe disabled due to processing errors, using fallback');
+        if (!this.videoStream || !this.videoStream.active) return;
+        
+        const videoElement = document.getElementById('faceVideo');
+        if (!videoElement || videoElement.readyState < 2) return;
+        
+        try {
+            if (this.activeFaceDetector === 'mediapipe' && this.isMediaPipeReady && this.faceDetection) {
+                await this.faceDetection.send({image: videoElement});
+            } else if (this.activeFaceDetector === 'tensorflow' && this.isTensorFlowReady && this.tensorflowFaceModel) {
+                const predictions = await this.tensorflowFaceModel.estimateFaces({
+                    input: videoElement,
+                    returnTensors: false,
+                    flipHorizontal: false
+                });
+                this.onTensorFlowResults(predictions);
+            }
+        } catch (error) {
+            console.error(`${this.activeFaceDetector} face detection error:`, error);
+            
+            // Disable current detector and try fallback
+            if (this.activeFaceDetector === 'mediapipe') {
+                this.isMediaPipeReady = false;
+                this.faceDetection = null;
+                if (this.isTensorFlowReady) {
+                    this.activeFaceDetector = 'tensorflow';
+                    console.log('🔄 Switching to TensorFlow.js face detection');
+                } else {
+                    this.activeFaceDetector = 'fallback';
+                    console.log('🔄 Switching to fallback face detection');
                 }
+            } else if (this.activeFaceDetector === 'tensorflow') {
+                this.isTensorFlowReady = false;
+                this.tensorflowFaceModel = null;
+                this.activeFaceDetector = 'fallback';
+                console.log('🔄 Switching to fallback face detection');
             }
         }
     }
     
     /**
-     * Get real face quality from MediaPipe detection
+     * Get real face quality from active face detector
      */
     getRealFaceQuality() {
-        // If MediaPipe is not ready or no detection results or results are stale (>2 seconds old)
-        if (!this.isMediaPipeReady || 
+        // Check if we have active face detection and recent results
+        const hasActiveDetector = (this.activeFaceDetector === 'mediapipe' && this.isMediaPipeReady) ||
+                                 (this.activeFaceDetector === 'tensorflow' && this.isTensorFlowReady);
+        
+        if (!hasActiveDetector || 
             !this.faceDetectionResults || 
             Date.now() - this.lastFaceDetectionTime > 2000) {
             return this.simulateFaceQualityCheck(); // Fallback
@@ -988,15 +1082,15 @@ class BaselineCapture {
     }
     
     /**
-     * Face quality check (now using real MediaPipe data when available)
+     * Face quality check (using real detection data when available)
      */
     simulateFaceQualityCheck() {
-        // Try to get real face data first if MediaPipe is ready
-        if (this.isMediaPipeReady && this.faceDetection) {
+        // Try to get real face data first if any detector is active
+        if (this.activeFaceDetector !== 'fallback') {
             return this.getRealFaceQuality();
         }
         
-        // Fallback to simulation if MediaPipe not available
+        // Fallback to simulation if no face detection available
         const baseConfidence = Math.random() * 0.4 + 0.5; // 0.5-0.9
         const timeBonus = this.currentState === 'face_capturing' ? 0.1 : 0;
         
