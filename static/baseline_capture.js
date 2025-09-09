@@ -59,6 +59,11 @@ class BaselineCapture {
             }
         };
         
+        // MediaPipe Face Detection
+        this.faceDetection = null;
+        this.lastFaceDetectionTime = 0;
+        this.faceDetectionResults = null;
+        
         // Configuration from SOP requirements
         this.config = {
             face: {
@@ -101,6 +106,9 @@ class BaselineCapture {
         
         // Check for required browser features
         this.checkBrowserSupport();
+        
+        // Initialize MediaPipe Face Detection
+        this.initializeMediaPipe();
     }
 
     /**
@@ -779,8 +787,18 @@ class BaselineCapture {
     startQualityMonitoring() {
         console.log('👀 Starting quality monitoring');
         
+        // Start frame processing for MediaPipe
+        if (this.faceDetection) {
+            this.startFrameProcessing();
+        }
+        
         this.timers.quality = setInterval(() => {
-            // Simulate real-time quality checks
+            // Process video frame for face detection
+            if (this.faceDetection && (this.currentState === 'face_ready' || this.currentState === 'face_capturing')) {
+                this.processVideoFrame();
+            }
+            
+            // Update quality displays
             if (this.currentState === 'face_ready' || this.currentState === 'face_capturing') {
                 const faceQuality = this.simulateFaceQualityCheck();
                 this.updateFaceQualityDisplay(faceQuality);
@@ -790,14 +808,130 @@ class BaselineCapture {
                 const speechQuality = this.simulateSpeechQualityCheck();
                 this.updateSpeechQualityDisplay(speechQuality);
             }
-        }, 2000); // Update every 2 seconds
+        }, 500); // Update every 500ms for smoother feedback
+    }
+    
+    /**
+     * Start continuous frame processing
+     */
+    startFrameProcessing() {
+        const processFrame = async () => {
+            if (this.currentState === 'face_ready' || this.currentState === 'face_capturing') {
+                await this.processVideoFrame();
+            }
+            if (this.faceDetection) {
+                requestAnimationFrame(processFrame);
+            }
+        };
+        requestAnimationFrame(processFrame);
     }
 
     /**
-     * Simulate face quality check (placeholder for real MediaPipe analysis)
+     * Initialize MediaPipe Face Detection
+     */
+    initializeMediaPipe() {
+        try {
+            if (typeof FaceDetection === 'undefined') {
+                console.warn('⚠️ MediaPipe not loaded, using fallback');
+                return;
+            }
+            
+            console.log('🎭 Initializing MediaPipe Face Detection...');
+            
+            this.faceDetection = new FaceDetection({locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
+            }});
+            
+            this.faceDetection.setOptions({
+                model: 'short_range',
+                minDetectionConfidence: 0.5
+            });
+            
+            this.faceDetection.onResults(this.onFaceDetectionResults.bind(this));
+            
+            console.log('✅ MediaPipe Face Detection initialized');
+        } catch (error) {
+            console.error('❌ MediaPipe initialization failed:', error);
+        }
+    }
+    
+    /**
+     * Process face detection results from MediaPipe
+     */
+    onFaceDetectionResults(results) {
+        this.faceDetectionResults = results;
+        this.lastFaceDetectionTime = Date.now();
+    }
+    
+    /**
+     * Process video frame through MediaPipe
+     */
+    async processVideoFrame() {
+        if (this.faceDetection && this.videoStream && this.videoStream.active) {
+            const videoElement = document.getElementById('faceVideo');
+            if (videoElement && videoElement.readyState >= 2) {
+                try {
+                    await this.faceDetection.send({image: videoElement});
+                } catch (error) {
+                    console.error('Face detection error:', error);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Get real face quality from MediaPipe detection
+     */
+    getRealFaceQuality() {
+        // If no detection results or results are stale (>2 seconds old)
+        if (!this.faceDetectionResults || 
+            Date.now() - this.lastFaceDetectionTime > 2000) {
+            return this.simulateFaceQualityCheck(); // Fallback
+        }
+        
+        const detections = this.faceDetectionResults.detections;
+        
+        if (!detections || detections.length === 0) {
+            return {
+                confidence: 0,
+                lighting: false,
+                position: false,
+                stability: false
+            };
+        }
+        
+        // Use the first (most confident) detection
+        const face = detections[0];
+        const confidence = face.score[0] || 0;
+        
+        // Check face position (should be centered)
+        const boundingBox = face.boundingBox;
+        const centerX = boundingBox.xCenter;
+        const centerY = boundingBox.yCenter;
+        const isPositioned = centerX > 0.3 && centerX < 0.7 && 
+                           centerY > 0.3 && centerY < 0.7;
+        
+        // Estimate lighting based on detection confidence
+        const hasGoodLighting = confidence > 0.7;
+        
+        return {
+            confidence: confidence,
+            lighting: hasGoodLighting,
+            position: isPositioned,
+            stability: confidence > 0.6
+        };
+    }
+    
+    /**
+     * Face quality check (now using real MediaPipe data when available)
      */
     simulateFaceQualityCheck() {
-        // Simulate improving quality over time
+        // Try to get real face data first
+        if (this.faceDetection) {
+            return this.getRealFaceQuality();
+        }
+        
+        // Fallback to simulation if MediaPipe not available
         const baseConfidence = Math.random() * 0.4 + 0.5; // 0.5-0.9
         const timeBonus = this.currentState === 'face_capturing' ? 0.1 : 0;
         
@@ -1497,6 +1631,12 @@ class BaselineCapture {
         
         if (this.audioRecorder && this.audioRecorder.state !== 'inactive') {
             this.audioRecorder.stop();
+        }
+        
+        // Close MediaPipe
+        if (this.faceDetection) {
+            this.faceDetection.close();
+            this.faceDetection = null;
         }
     }
 }
