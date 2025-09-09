@@ -838,12 +838,15 @@ class BaselineCapture {
             
             console.log('🎭 Initializing MediaPipe Face Detection...');
             
-            this.faceDetection = new FaceDetection({locateFile: (file) => {
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
-            }});
+            this.faceDetection = new FaceDetection({
+                locateFile: (file) => {
+                    // Use specific versioned CDN URL for model files
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`;
+                }
+            });
             
             this.faceDetection.setOptions({
-                model: 'short_range',
+                modelSelection: 0, // 0 for short-range model (within 2 meters)
                 minDetectionConfidence: 0.5
             });
             
@@ -852,6 +855,7 @@ class BaselineCapture {
             console.log('✅ MediaPipe Face Detection initialized');
         } catch (error) {
             console.error('❌ MediaPipe initialization failed:', error);
+            console.log('🔄 Using fallback quality detection');
         }
     }
     
@@ -902,12 +906,16 @@ class BaselineCapture {
         
         // Use the first (most confident) detection
         const face = detections[0];
-        const confidence = face.score[0] || 0;
+        // Handle different score formats (array vs single value)
+        const confidence = Array.isArray(face.score) ? face.score[0] : (face.score || 0);
         
         // Check face position (should be centered)
         const boundingBox = face.boundingBox;
-        const centerX = boundingBox.xCenter;
-        const centerY = boundingBox.yCenter;
+        // MediaPipe returns normalized coordinates (0-1)
+        const centerX = (boundingBox.xCenter !== undefined) ? boundingBox.xCenter : 
+                       ((boundingBox.x + boundingBox.width / 2) || 0.5);
+        const centerY = (boundingBox.yCenter !== undefined) ? boundingBox.yCenter : 
+                       ((boundingBox.y + boundingBox.height / 2) || 0.5);
         const isPositioned = centerX > 0.3 && centerX < 0.7 && 
                            centerY > 0.3 && centerY < 0.7;
         
