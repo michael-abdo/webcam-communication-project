@@ -37,7 +37,15 @@ baseline_capture/
 cognitive_overload/
 worktrees/
 
+# Project specific
+assessments/baseline_data/
+assessments/results/
+test_baseline_demo.html
+
 # Misc
 *.log
 .env
 .env.local
+
+# Heroku
+heroku_runtime.txt

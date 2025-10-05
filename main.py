@@ -7,7 +7,13 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+# Import baseline capture API
+from baseline_capture.api import baseline_router
+
 app = FastAPI(title="Bias-Resilient Assessment Platform")
+
+# Include baseline capture API routes
+app.include_router(baseline_router)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="assessments/static"), name="static")
@@ -110,6 +116,12 @@ async def home():
                     <p>Personality and behavioral assessment including emotion regulation and decision biases.</p>
                     <a href="/assessment/advanced" class="btn">Start Advanced Assessment</a>
                 </li>
+                
+                <li class="assessment-item">
+                    <h3>Baseline Capture Setup</h3>
+                    <p>Calibrate the system to your unique patterns for personalized assessments (25 seconds).</p>
+                    <a href="/assessment/baseline" class="btn">Start Baseline Setup</a>
+                </li>
             </ul>
         </div>
     </body>
@@ -199,6 +211,12 @@ async def loss_aversion_assessment():
 async def perspective_taking_assessment():
     """Serve the perspective taking assessment page"""
     with open("assessments/static/perspective_taking_simple.html", "r") as f:
+        return HTMLResponse(content=f.read())
+
+@app.get("/assessment/baseline", response_class=HTMLResponse)
+async def baseline_capture_assessment():
+    """Serve the baseline capture setup page"""
+    with open("assessments/static/baseline_capture.html", "r") as f:
         return HTMLResponse(content=f.read())
 
 @app.get("/results/core/{user_id}", response_class=HTMLResponse)
