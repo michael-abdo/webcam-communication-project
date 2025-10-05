@@ -1,0 +1,43 @@
+# Credentials
+greg-credentials.json
+greg-credentials-backup.json
+greg-credentials-final.json
+*-credentials.json
+credentials/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Flask
+instance/
+.webassets-cache
+flask_app.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+baseline_capture/
+cognitive_overload/
+worktrees/
+
+# Misc
+*.log
+.env
+.env.local
