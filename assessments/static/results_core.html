@@ -310,26 +310,206 @@
         async function loadResults() {
             try {
                 const response = await fetch(`/api/results/core/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.error) {
-                    showError();
+                    showError('not_found', data.error);
                     return;
                 }
                 
                 displayResults(data);
+                
+                // Clear localStorage since we successfully loaded from server
+                clearLocalStorageData();
+                
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('results-content').style.display = 'block';
                 
             } catch (error) {
                 console.error('Error loading results:', error);
-                showError();
+                
+                // Check if we have localStorage data as backup
+                const localData = checkLocalStorageForAssessmentData();
+                if (localData) {
+                    showError('network_with_recovery', error.message, localData);
+                } else {
+                    showError('network', error.message);
+                }
             }
         }
         
-        function showError() {
+        function checkLocalStorageForAssessmentData() {
+            try {
+                const localData = localStorage.getItem('coreAssessment_' + userId);
+                if (localData) {
+                    const parsedData = JSON.parse(localData);
+                    console.log('Found localStorage backup data:', parsedData);
+                    return parsedData;
+                }
+            } catch (e) {
+                console.warn('Error reading localStorage:', e);
+            }
+            return null;
+        }
+        
+        function clearLocalStorageData() {
+            try {
+                localStorage.removeItem('coreAssessment_' + userId);
+                console.log('Cleared localStorage backup data');
+            } catch (e) {
+                console.warn('Error clearing localStorage:', e);
+            }
+        }
+        
+        function showError(type = 'unknown', message = '', localData = null) {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
+            const errorDiv = document.getElementById('error');
+            
+            let errorHTML = '';
+            
+            switch (type) {
+                case 'not_found':
+                    errorHTML = `
+                        <h2>Results Not Found</h2>
+                        <p>We couldn't find your assessment results in our database.</p>
+                        <p><strong>Possible reasons:</strong></p>
+                        <ul>
+                            <li>The assessment submission may have failed</li>
+                            <li>The user ID might be incorrect</li>
+                            <li>Results may not have been saved properly</li>
+                        </ul>
+                        <div style="margin-top: 20px;">
+                            <button onclick="location.reload()" class="btn btn-primary">Try Again</button>
+                            <a href="/" class="btn btn-secondary">Back to Home</a>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'network':
+                    errorHTML = `
+                        <h2>Connection Error</h2>
+                        <p>Unable to connect to the server to load your results.</p>
+                        <p><strong>Error:</strong> ${message}</p>
+                        <div style="margin-top: 20px;">
+                            <button onclick="location.reload()" class="btn btn-primary">Retry</button>
+                            <a href="/" class="btn btn-secondary">Back to Home</a>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'network_with_recovery':
+                    errorHTML = `
+                        <h2>Connection Error - Recovery Available</h2>
+                        <p>Unable to load results from server, but we found your assessment data saved locally.</p>
+                        <p><strong>Error:</strong> ${message}</p>
+                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <strong>Good news!</strong> Your assessment responses are saved locally. You can:
+                            <ul style="margin: 10px 0;">
+                                <li>View your results using the cached data</li>
+                                <li>Try to resubmit your assessment to the server</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <button onclick="displayResultsFromLocalStorage()" class="btn btn-primary">View Cached Results</button>
+                            <button onclick="retrySubmissionFromLocalStorage()" class="btn btn-secondary">Retry Submission</button>
+                            <button onclick="location.reload()" class="btn btn-secondary">Refresh Page</button>
+                        </div>
+                    `;
+                    break;
+                    
+                default:
+                    errorHTML = `
+                        <h2>Unable to Load Results</h2>
+                        <p>An unexpected error occurred while loading your results.</p>
+                        <div style="margin-top: 20px;">
+                            <button onclick="location.reload()" class="btn btn-primary">Try Again</button>
+                            <a href="/" class="btn btn-secondary">Back to Home</a>
+                        </div>
+                    `;
+            }
+            
+            errorDiv.innerHTML = errorHTML;
+            errorDiv.style.display = 'block';
+        }
+        
+        function displayResultsFromLocalStorage() {
+            const localData = checkLocalStorageForAssessmentData();
+            if (localData) {
+                console.log('Displaying results from localStorage');
+                
+                // Add timestamp if missing
+                if (!localData.timestamp) {
+                    localData.timestamp = new Date().toISOString();
+                }
+                
+                displayResults(localData);
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('results-content').style.display = 'block';
+                
+                // Show warning banner
+                const warningBanner = document.createElement('div');
+                warningBanner.style.cssText = `
+                    background: #ff9900; color: white; padding: 10px; text-align: center;
+                    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+                `;
+                warningBanner.innerHTML = `
+                    ⚠️ Viewing cached results - data may not be saved to server
+                    <button onclick="this.parentNode.remove()" style="background: none; border: 1px solid white; color: white; margin-left: 10px; padding: 2px 8px; cursor: pointer;">×</button>
+                `;
+                document.body.insertBefore(warningBanner, document.body.firstChild);
+            }
+        }
+        
+        function retrySubmissionFromLocalStorage() {
+            const localData = checkLocalStorageForAssessmentData();
+            if (!localData) {
+                alert('No local data found to submit');
+                return;
+            }
+            
+            // Show loading indicator
+            const retryButton = event.target;
+            retryButton.disabled = true;
+            retryButton.textContent = 'Submitting...';
+            
+            // Submit the cached data
+            fetch('/api/quiz/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...localData,
+                    assessmentType: 'core',
+                    resubmission: true
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Successfully resubmitted - reload the page
+                    alert('Assessment successfully submitted! Reloading results...');
+                    location.reload();
+                } else {
+                    throw new Error(data.message || 'Submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Retry submission failed:', error);
+                alert('Submission failed: ' + error.message);
+                retryButton.disabled = false;
+                retryButton.textContent = 'Retry Submission';
+            });
         }
         
         function displayResults(data) {

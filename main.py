@@ -294,15 +294,29 @@ async def submit_quiz(request: Request):
     user_id = data.get("userId", "anonymous")
     
     # Save to user-specific results file
-    if assessment_type in ["core", "advanced"]:
-        user_filename = f"assessments/results/{assessment_type}/{user_id}.json"
-        with open(user_filename, "w") as f:
-            json.dump(data, f, indent=2)
-    else:
-        # Fallback to old timestamp-based naming for unknown types
-        filename = f"assessments/results/response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(filename, "w") as f:
-            json.dump(data, f, indent=2)
+    try:
+        if assessment_type in ["core", "advanced"]:
+            # Ensure directory exists
+            results_dir = Path(f"assessments/results/{assessment_type}")
+            results_dir.mkdir(parents=True, exist_ok=True)
+            
+            user_filename = f"assessments/results/{assessment_type}/{user_id}.json"
+            with open(user_filename, "w") as f:
+                json.dump(data, f, indent=2)
+        else:
+            # Fallback to old timestamp-based naming for unknown types
+            results_dir = Path("assessments/results")
+            results_dir.mkdir(parents=True, exist_ok=True)
+            
+            filename = f"assessments/results/response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(filename, "w") as f:
+                json.dump(data, f, indent=2)
+                
+        save_success = True
+        error_message = None
+    except Exception as e:
+        save_success = False
+        error_message = str(e)
     
     # Calculate basic scores (example for CRT)
     if "quiz_type" in data and data["quiz_type"] == "crt":
@@ -321,13 +335,34 @@ async def submit_quiz(request: Request):
                     pass
         
         return {
-            "status": "success",
+            "success": save_success,
+            "status": "success" if save_success else "error",
+            "user_id": user_id,
+            "timestamp": data["timestamp"],
             "score": score,
             "total": 3,
-            "message": f"You got {score} out of 3 correct!"
+            "message": f"You got {score} out of 3 correct!" if save_success else f"Quiz completed but save failed: {error_message}",
+            "error": error_message if not save_success else None
         }
     
-    return {"status": "success", "message": "Responses saved successfully"}
+    # Standard response for assessment submissions
+    if save_success:
+        return {
+            "success": True,
+            "status": "success",
+            "user_id": user_id,
+            "timestamp": data["timestamp"],
+            "message": "Assessment saved successfully"
+        }
+    else:
+        return {
+            "success": False,
+            "status": "error",
+            "user_id": user_id,
+            "timestamp": data["timestamp"],
+            "message": f"Assessment completed but save failed: {error_message}",
+            "error": error_message
+        }
 
 @app.get("/api/health")
 async def health_check():
