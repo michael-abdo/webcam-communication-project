@@ -101,6 +101,16 @@ def webcam_analysis():
     
     return render_template('webcam_analysis.html')
 
+@app.route('/simple-baseline')
+def simple_baseline():
+    """Simple baseline capture interface with real-time quality metrics."""
+    system_state['requests_count'] += 1
+    
+    # Log access for debugging
+    print(f"[{datetime.now().isoformat()}] Simple baseline accessed - User-Agent: {request.headers.get('User-Agent')}")
+    
+    return render_template('simple_baseline.html')
+
 @app.route('/stream')
 def stream():
     """Raw video/audio streaming to S3 interface."""
@@ -290,6 +300,60 @@ def api_analyze():
         
     except Exception as e:
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
+
+@app.route('/api/upload_baseline', methods=['POST'])
+def upload_baseline():
+    """Upload baseline capture video with quality metrics."""
+    try:
+        # Get uploaded video file
+        if 'video' not in request.files:
+            return jsonify({'error': 'No video file provided'}), 400
+        
+        video_file = request.files['video']
+        if video_file.filename == '':
+            return jsonify({'error': 'No video file selected'}), 400
+        
+        # Get quality metrics
+        metrics_json = request.form.get('metrics', '{}')
+        try:
+            metrics = json.loads(metrics_json)
+        except json.JSONDecodeError:
+            metrics = {}
+        
+        # Create baseline data directory
+        baseline_dir = 'baseline_captures'
+        os.makedirs(baseline_dir, exist_ok=True)
+        
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"baseline_{timestamp}.webm"
+        filepath = os.path.join(baseline_dir, filename)
+        
+        # Save video file
+        video_file.save(filepath)
+        
+        # Save metrics
+        metrics_file = filepath.replace('.webm', '_metrics.json')
+        with open(metrics_file, 'w') as f:
+            json.dump({
+                'timestamp': datetime.now().isoformat(),
+                'filename': filename,
+                'metrics': metrics,
+                'quality_score': metrics.get('qualityScore', 0)
+            }, f, indent=2)
+        
+        print(f"[BaselineUpload] Saved: {filename}, Quality: {metrics.get('qualityScore', 0)}%")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Baseline capture uploaded successfully',
+            'filename': filename,
+            'metrics': metrics
+        })
+        
+    except Exception as e:
+        print(f"[BaselineUpload] Error: {str(e)}")
+        return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
 # Video Analysis API Endpoints
 @app.route('/api/datasets')

@@ -1,0 +1,607 @@
+{
+  "test_id": "bias_resilient_advanced_6min",
+  "title": "Bias-Resilient Meeting Onboarding - Advanced 6-Minute Assessment",
+  "description": "Sharpen personalization for users who completed the core profile. Plain language, non-clinical. No diagnostic intent.",
+  "version": "1.0.0",
+  "category": "bias-resilient",
+  "duration_minutes": 6,
+  "instructions": "Answer quickly and honestly. Completion time about 6 minutes.",
+  "settings": {
+    "randomize_questions": false,
+    "show_progress": true,
+    "allow_skip": false,
+    "time_limit_seconds": 360,
+    "passing_score": null
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "multiple_choice",
+      "question": "A rollout has a 90% chance of success and a 10% chance of failure. Which message would you send to the team?",
+      "description": "Framing Micro-game",
+      "required": true,
+      "points": 0,
+      "tags": ["framing", "communication-style"],
+      "options": [
+        {"value": "1", "label": "Emphasize the 90% success chance"},
+        {"value": "2", "label": "Emphasize the 10% risk and mitigation"}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "slider",
+      "question": "Confidence for your message framing choice",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 3,
+      "type": "rating",
+      "question": "When upset, I reframe the situation to see it differently",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "reappraisal"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 4,
+      "type": "rating",
+      "question": "I hold back my emotions so others do not notice",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "suppression"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 5,
+      "type": "rating",
+      "question": "I look for the lesson in difficult events",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "reappraisal"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 6,
+      "type": "rating",
+      "question": "I keep a neutral face even when I feel strong emotion",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "suppression"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 7,
+      "type": "rating",
+      "question": "I try to view challenges as temporary",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "reappraisal"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 8,
+      "type": "rating",
+      "question": "I bottle things up during meetings",
+      "description": "Emotion Regulation Style",
+      "required": true,
+      "points": 0,
+      "tags": ["emotion-regulation", "suppression"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Never"},
+        {"value": "2", "label": "Rarely"},
+        {"value": "3", "label": "Sometimes"},
+        {"value": "4", "label": "Often"},
+        {"value": "5", "label": "Always"}
+      ]
+    },
+    {
+      "id": 9,
+      "type": "rating",
+      "question": "I appreciate honest feedback even when it stings",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "secure"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 10,
+      "type": "rating",
+      "question": "I worry that teammates will think poorly of me if I disagree",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "anxious"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 11,
+      "type": "rating",
+      "question": "I am comfortable asking for help when I need it",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "secure"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 12,
+      "type": "rating",
+      "question": "I downplay my needs to avoid bothering others",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "avoidant"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 13,
+      "type": "rating",
+      "question": "I can be direct without fearing rejection",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "secure"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 14,
+      "type": "rating",
+      "question": "I pull back when others want to discuss feelings",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "avoidant"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 15,
+      "type": "rating",
+      "question": "I seek reassurance during tense discussions",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "anxious"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 16,
+      "type": "rating",
+      "question": "I can disagree and still feel connected to the team",
+      "description": "Relationship Comfort and Independence",
+      "required": true,
+      "points": 0,
+      "tags": ["relationship-style", "secure"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 17,
+      "type": "multiple_choice",
+      "question": "When listening I focus mostly on:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "focus"],
+      "options": [
+        {"value": "a", "label": "The person"},
+        {"value": "b", "label": "The content"},
+        {"value": "c", "label": "The time"}
+      ]
+    },
+    {
+      "id": 18,
+      "type": "multiple_choice",
+      "question": "My default note style is:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "notes"],
+      "options": [
+        {"value": "a", "label": "Paraphrases"},
+        {"value": "b", "label": "Facts and numbers"},
+        {"value": "c", "label": "Action items"}
+      ]
+    },
+    {
+      "id": 19,
+      "type": "multiple_choice",
+      "question": "When discussion speeds up I tend to:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "pace"],
+      "options": [
+        {"value": "a", "label": "Ask for examples"},
+        {"value": "b", "label": "Summarize"},
+        {"value": "c", "label": "Push for decisions"}
+      ]
+    },
+    {
+      "id": 20,
+      "type": "multiple_choice",
+      "question": "Under pressure I:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "pressure"],
+      "options": [
+        {"value": "a", "label": "Get quiet"},
+        {"value": "b", "label": "Double check details"},
+        {"value": "c", "label": "Become brief and direct"}
+      ]
+    },
+    {
+      "id": 21,
+      "type": "multiple_choice",
+      "question": "I want nudges that help me:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "preferences"],
+      "options": [
+        {"value": "a", "label": "Empathize"},
+        {"value": "b", "label": "Clarify logic"},
+        {"value": "c", "label": "Be concise"}
+      ]
+    },
+    {
+      "id": 22,
+      "type": "multiple_choice",
+      "question": "I prefer meeting pace:",
+      "description": "Listening Style",
+      "required": true,
+      "points": 0,
+      "tags": ["listening-style", "pace-preference"],
+      "options": [
+        {"value": "a", "label": "Slower with reflection"},
+        {"value": "b", "label": "Balanced"},
+        {"value": "c", "label": "Fast with decisions"}
+      ]
+    },
+    {
+      "id": 23,
+      "type": "text_input",
+      "question": "Read the sentence: 'I think we should try a different approach next quarter.' What are two possible positive intentions behind this statement?",
+      "description": "Perspective Taking - List two positive intentions (one per line)",
+      "required": true,
+      "points": 0,
+      "tags": ["perspective-taking", "interpretation"],
+      "validation": {
+        "min_length": 10,
+        "max_length": 200
+      }
+    },
+    {
+      "id": 24,
+      "type": "rating",
+      "question": "Thin-Slice Rating: Rate the speaker's warmth (Note: In the app, a 10 second clip would play here)",
+      "description": "1 = Very low, 5 = Very high",
+      "required": false,
+      "points": 0,
+      "tags": ["thin-slice", "warmth"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      }
+    },
+    {
+      "id": 25,
+      "type": "rating",
+      "question": "Thin-Slice Rating: Rate the speaker's energy (Note: In the app, a 10 second clip would play here)",
+      "description": "1 = Very low, 5 = Very high",
+      "required": false,
+      "points": 0,
+      "tags": ["thin-slice", "energy"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      }
+    },
+    {
+      "id": 26,
+      "type": "rating",
+      "question": "Thin-Slice Rating: Rate the speaker's confidence (Note: In the app, a 10 second clip would play here)",
+      "description": "1 = Very low, 5 = Very high",
+      "required": false,
+      "points": 0,
+      "tags": ["thin-slice", "confidence"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      }
+    },
+    {
+      "id": 27,
+      "type": "multiple_choice",
+      "question": "Loss Aversion Choice A - Choose one:",
+      "required": true,
+      "points": 0,
+      "tags": ["loss-aversion", "gain-frame"],
+      "options": [
+        {"value": "A", "label": "A sure gain of $400"},
+        {"value": "B", "label": "A 50% chance to gain $900 and a 50% chance to gain $0"}
+      ]
+    },
+    {
+      "id": 28,
+      "type": "multiple_choice",
+      "question": "Loss Aversion Choice B - Choose one:",
+      "required": true,
+      "points": 0,
+      "tags": ["loss-aversion", "loss-frame"],
+      "options": [
+        {"value": "C", "label": "A sure loss of $400"},
+        {"value": "D", "label": "A 50% chance to lose $900 and a 50% chance to lose $0"}
+      ]
+    },
+    {
+      "id": 29,
+      "type": "multiple_choice",
+      "question": "You present a plan and receive a short 'Let's discuss' message with no details. What is your first interpretation?",
+      "description": "Intent Attribution Vignette 2 (optional)",
+      "required": false,
+      "points": 0,
+      "tags": ["intent-attribution", "interpretation"],
+      "options": [
+        {"value": "a", "label": "They want to collaborate"},
+        {"value": "b", "label": "They are unhappy with the plan"},
+        {"value": "c", "label": "They need clarification"},
+        {"value": "d", "label": "They want to delay the decision"}
+      ]
+    },
+    {
+      "id": 30,
+      "type": "slider",
+      "question": "Confidence for your interpretation of 'Let's discuss'",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": false,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 31,
+      "type": "multiple_choice",
+      "question": "Attention check: Please select option 3 here",
+      "description": "Data Quality Item",
+      "required": true,
+      "points": 0,
+      "tags": ["attention-check", "validity"],
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"},
+        {"value": "3", "label": "3", "is_correct": true},
+        {"value": "4", "label": "4"},
+        {"value": "5", "label": "5"}
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "custom",
+    "description": "Scoring is used to generate personalized nudge rules and coaching insights",
+    "categories": [
+      {
+        "name": "framing",
+        "question_ids": [1, 2],
+        "weight": 0.15
+      },
+      {
+        "name": "emotion_regulation",
+        "question_ids": [3, 4, 5, 6, 7, 8],
+        "weight": 0.20,
+        "subscales": {
+          "reappraisal": [3, 5, 7],
+          "suppression": [4, 6, 8]
+        }
+      },
+      {
+        "name": "relationship_style",
+        "question_ids": [9, 10, 11, 12, 13, 14, 15, 16],
+        "weight": 0.20,
+        "subscales": {
+          "secure": [9, 11, 13, 16],
+          "anxious": [10, 15],
+          "avoidant": [12, 14]
+        }
+      },
+      {
+        "name": "listening_style",
+        "question_ids": [17, 18, 19, 20, 21, 22],
+        "weight": 0.15
+      },
+      {
+        "name": "perspective_taking",
+        "question_ids": [23, 24, 25, 26],
+        "weight": 0.10
+      },
+      {
+        "name": "loss_aversion",
+        "question_ids": [27, 28],
+        "weight": 0.10
+      },
+      {
+        "name": "intent_attribution_advanced",
+        "question_ids": [29, 30],
+        "weight": 0.10
+      }
+    ]
+  },
+  "feedback": {
+    "show_correct_answers": false,
+    "immediate": false,
+    "final_message": {
+      "default": {
+        "min_score": 0,
+        "message": "Thank you for completing the advanced assessment. Your responses will help sharpen the personalization of your meeting coaching experience."
+      }
+    }
+  }
+}
