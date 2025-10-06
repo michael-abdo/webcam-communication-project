@@ -4,6 +4,12 @@
 (function() {
     console.log('🤖 Simple Test Automation V2 Loaded');
     
+    // Check for and disable full automation script if running
+    if (window.TestAutomationV2 && window.TestAutomationV2.enabled) {
+        console.log('🤖 Detected full automation running, stopping it...');
+        window.TestAutomationV2.stop();
+    }
+    
     // Question patterns and answers
     const answers = {
         // CRT Questions
@@ -277,7 +283,18 @@
     function startContinuousV2() {
         console.log('🤖 Starting continuous automation...');
         
-        const observer = new MutationObserver(() => {
+        // Make sure full automation is stopped
+        if (window.TestAutomationV2) {
+            window.TestAutomationV2.stop();
+            console.log('🤖 Full automation disabled for standalone mode');
+        }
+        
+        // Store observer globally so we can stop it
+        if (window.simpleAutoObserver) {
+            window.simpleAutoObserver.disconnect();
+        }
+        
+        window.simpleAutoObserver = new MutationObserver(() => {
             const questionCard = document.getElementById('questionCard');
             if (questionCard && questionCard.style.display !== 'none') {
                 setTimeout(() => {
@@ -287,7 +304,7 @@
             }
         });
         
-        observer.observe(document.body, {
+        window.simpleAutoObserver.observe(document.body, {
             childList: true,
             subtree: true,
             attributes: true,
@@ -298,7 +315,10 @@
         setTimeout(autoRunV2, 500);
         
         window.stopContinuousV2 = () => {
-            observer.disconnect();
+            if (window.simpleAutoObserver) {
+                window.simpleAutoObserver.disconnect();
+                window.simpleAutoObserver = null;
+            }
             console.log('🤖 Continuous automation stopped');
         };
     }
@@ -314,10 +334,29 @@
     window.clickNext = clickNextV2;
     window.autoRun = autoRunV2;
     
+    // Utility to ensure clean automation environment
+    window.ensureCleanAutomation = () => {
+        // Stop full automation if running
+        if (window.TestAutomationV2 && window.TestAutomationV2.enabled) {
+            window.TestAutomationV2.stop();
+            console.log('🤖 Full automation stopped');
+        }
+        
+        // Stop any existing simple automation
+        if (window.simpleAutoObserver) {
+            window.simpleAutoObserver.disconnect();
+            window.simpleAutoObserver = null;
+            console.log('🤖 Previous simple automation stopped');
+        }
+        
+        console.log('🤖 Clean automation environment ready');
+    };
+    
     console.log('🤖 Available commands:');
     console.log('  quickFillV2() - Fill current question');
     console.log('  clickNextV2() - Click next button');
     console.log('  autoRunV2() - Fill and advance once');
     console.log('  startContinuousV2() - Fully automated test completion');
     console.log('  stopContinuousV2() - Stop continuous automation');
+    console.log('  ensureCleanAutomation() - Stop all running automations');
 })();
