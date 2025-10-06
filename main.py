@@ -8,12 +8,12 @@ from datetime import datetime
 from pathlib import Path
 
 # Import baseline capture API
-from baseline_capture.api import baseline_router
+# from baseline_capture.api import baseline_router
 
 app = FastAPI(title="Bias-Resilient Assessment Platform")
 
 # Include baseline capture API routes
-app.include_router(baseline_router)
+# app.include_router(baseline_router)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="assessments/static"), name="static")
