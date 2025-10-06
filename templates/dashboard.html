@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatigue Detection System</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .nav-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .nav-section h2 {
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .nav-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .nav-link {
+            display: block;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateY(-2px);
+        }
+        .nav-link h3 {
+            margin: 0 0 5px 0;
+            color: #495057;
+            font-size: 18px;
+        }
+        .nav-link p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .status {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fatigue Detection System</h1>
+        <div class="status">System Status: Operational</div>
+        
+        <div class="nav-section">
+            <h2>Assessments</h2>
+            <div class="nav-links">
+                <a href="/assessment" class="nav-link">
+                    <h3>Assessment Home</h3>
+                    <p>Choose from various cognitive and personality assessments</p>
+                </a>
+                <a href="/assessment/core" class="nav-link">
+                    <h3>Core Assessment (4 min)</h3>
+                    <p>CRT, numeracy, and fundamental cognitive tests</p>
+                </a>
+                <a href="/assessment/advanced" class="nav-link">
+                    <h3>Advanced Assessment (6 min)</h3>
+                    <p>Emotion regulation, listening style, and decision biases</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <h2>Testing & Analysis</h2>
+            <div class="nav-links">
+                <a href="/tests" class="nav-link">
+                    <h3>Test Dashboard</h3>
+                    <p>Access all available tests and view results</p>
+                </a>
+                <a href="/baseline" class="nav-link">
+                    <h3>Baseline Capture</h3>
+                    <p>Capture baseline measurements for fatigue detection</p>
+                </a>
+                <a href="/video_analysis" class="nav-link">
+                    <h3>Video Analysis</h3>
+                    <p>Analyze uploaded videos for fatigue indicators</p>
+                </a>
+                <a href="/webcam_analysis" class="nav-link">
+                    <h3>Live Webcam Analysis</h3>
+                    <p>Real-time fatigue detection using webcam</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <h2>API Information</h2>
+            <div class="nav-links">
+                <a href="/api" class="nav-link">
+                    <h3>API Status</h3>
+                    <p>Check API version and operational status</p>
+                </a>
+                <a href="/api/health" class="nav-link">
+                    <h3>Health Check</h3>
+                    <p>System health and status information</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
