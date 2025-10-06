@@ -91,6 +91,47 @@
             return;
         }
         
+        // Check for rating buttons (Likert scale - 1-5 or 1-7)
+        const ratingButtons = document.querySelectorAll('.rating-button');
+        if (ratingButtons.length > 0) {
+            console.log('🤖 Found rating buttons (Likert scale)...');
+            
+            let targetRating = '3'; // Default to neutral
+            
+            // Check for specific question patterns
+            if (/look for reasons.*might be wrong/i.test(questionText) ||
+                /consider evidence.*against/i.test(questionText) ||
+                /open to changing.*opinion/i.test(questionText)) {
+                targetRating = '4'; // Slightly agree for open-mindedness questions
+            } else if (/changing.*mind.*weakness/i.test(questionText) ||
+                      /stick to.*beliefs/i.test(questionText)) {
+                targetRating = '2'; // Disagree with closed-minded statements
+            }
+            
+            // Find and click the target rating button
+            let selectedButton = null;
+            for (const btn of ratingButtons) {
+                if (btn.textContent.trim() === targetRating) {
+                    selectedButton = btn;
+                    break;
+                }
+            }
+            
+            // Fallback to middle button
+            if (!selectedButton && ratingButtons.length > 0) {
+                const middleIndex = Math.floor(ratingButtons.length / 2);
+                selectedButton = ratingButtons[middleIndex];
+                console.log('🤖 Fallback: selecting middle rating');
+            }
+            
+            if (selectedButton) {
+                selectedButton.click();
+                selectedButton.classList.add('selected', 'active');
+                console.log('🤖 Clicked rating button:', selectedButton.textContent);
+            }
+            return;
+        }
+        
         // Check for option buttons (new interface)
         const optionButtons = document.querySelectorAll('.option-button');
         if (optionButtons.length > 0) {

@@ -165,6 +165,52 @@ const TestAutomationV2 = {
                 ],
                 answer: "first" // Default to first option
             }
+        },
+        
+        // Likert Scale Questions (1-5 or 1-7 ratings)
+        likertScale: {
+            // Agreement scales
+            agreement: {
+                patterns: [
+                    /strongly disagree.*strongly agree/i,
+                    /disagree.*neutral.*agree/i,
+                    /rate.*agreement/i,
+                    /how much.*agree/i
+                ],
+                answer: "3" // Neutral response
+            },
+            
+            // Frequency scales
+            frequency: {
+                patterns: [
+                    /never.*always/i,
+                    /rarely.*frequently/i,
+                    /how often/i
+                ],
+                answer: "3" // Middle frequency
+            },
+            
+            // AOT (Actively Open-Minded Thinking) questions
+            aot: {
+                patterns: [
+                    /look for reasons.*might be wrong/i,
+                    /consider evidence.*against.*beliefs/i,
+                    /changing.*mind.*weakness/i,
+                    /open to changing.*opinion/i
+                ],
+                answer: "4" // Slightly agree (shows open-mindedness)
+            },
+            
+            // Need for Closure questions
+            nfc: {
+                patterns: [
+                    /prefer.*clear.*definite/i,
+                    /uncomfortable.*don't understand/i,
+                    /like.*settled.*decided/i,
+                    /dislike.*uncertain/i
+                ],
+                answer: "3" // Neutral
+            }
         }
     },
     
@@ -199,6 +245,9 @@ const TestAutomationV2 = {
         // Check for option buttons (new interface)
         const optionButtons = document.querySelectorAll('.option-button');
         
+        // Check for rating buttons (Likert scale questions)
+        const ratingButtons = document.querySelectorAll('.rating-button');
+        
         // Detect question type and get answer
         const answer = this.detectQuestionType(questionText);
         
@@ -207,6 +256,9 @@ const TestAutomationV2 = {
             textInput.value = answer;
             textInput.dispatchEvent(new Event('input', { bubbles: true }));
             textInput.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (ratingButtons.length > 0) {
+            console.log('🤖 Handling rating button (Likert scale) question');
+            this.handleRatingButtons(questionText, ratingButtons);
         } else if (optionButtons.length > 0) {
             console.log('🤖 Handling option button question');
             this.handleOptionButtons(questionText, optionButtons);
@@ -277,8 +329,56 @@ const TestAutomationV2 = {
             }
         }
         
+        // Check Likert scale patterns
+        for (const [likertType, likertData] of Object.entries(this.questionPatterns.likertScale)) {
+            for (const pattern of likertData.patterns) {
+                if (pattern.test(questionText)) {
+                    console.log('🤖 Detected Likert scale question:', likertType);
+                    return likertData.answer;
+                }
+            }
+        }
+        
         console.log('🤖 No pattern matched, using fallback');
         return this.getFallbackAnswer(questionText);
+    },
+    
+    // Handle rating button questions (Likert scales)
+    handleRatingButtons(questionText, ratingButtons) {
+        console.log('🤖 Processing rating buttons (Likert scale)...');
+        
+        // Get the answer for this question
+        let targetAnswer = this.detectQuestionType(questionText);
+        
+        // Default to neutral (3) if no specific pattern matched
+        if (!targetAnswer || isNaN(targetAnswer)) {
+            targetAnswer = "3";
+            console.log('🤖 No specific pattern, defaulting to neutral (3)');
+        }
+        
+        // Find the rating button with the target value
+        let selectedButton = null;
+        for (const button of ratingButtons) {
+            const buttonText = button.textContent || button.innerText;
+            if (buttonText.trim() === targetAnswer) {
+                selectedButton = button;
+                console.log('🤖 Found rating button:', targetAnswer);
+                break;
+            }
+        }
+        
+        // Fallback: if exact match not found, try middle button
+        if (!selectedButton && ratingButtons.length > 0) {
+            const middleIndex = Math.floor(ratingButtons.length / 2);
+            selectedButton = ratingButtons[middleIndex];
+            console.log('🤖 Fallback: selecting middle rating button');
+        }
+        
+        if (selectedButton) {
+            selectedButton.click();
+            selectedButton.classList.add('selected', 'active'); // Add visual feedback
+            console.log('🤖 Clicked rating button:', selectedButton.textContent);
+        }
     },
     
     // Handle option button questions (new interface)
