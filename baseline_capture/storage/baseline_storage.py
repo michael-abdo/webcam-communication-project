@@ -19,7 +19,7 @@ import logging
 
 # Add streaming directory to path to import existing S3 handler
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../streaming'))
-from s3_handler import get_s3_client, S3_BUCKET, generate_download_url
+from s3_handler import get_s3_client, S3_BUCKET
 from botocore.exceptions import ClientError
 
 
@@ -224,8 +224,18 @@ class BaselineStorage:
             speech_key = f"{base_key}_speech_calibration.webm"
             
             # Generate download URLs
-            face_url = generate_download_url(face_key, expiration=3600)  # 1 hour
-            speech_url = generate_download_url(speech_key, expiration=3600)
+            # Generate presigned URLs for download
+            s3_client = get_s3_client()
+            face_url = s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': S3_BUCKET, 'Key': face_key},
+                ExpiresIn=3600  # 1 hour
+            )
+            speech_url = s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': S3_BUCKET, 'Key': speech_key},
+                ExpiresIn=3600  # 1 hour
+            )
             
             return {
                 'session_id': session_id,

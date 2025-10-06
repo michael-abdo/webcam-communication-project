@@ -157,3 +157,16 @@ def ensure_bucket_exists():
     except Exception as e:
         print(f"Error ensuring bucket exists: {e}")
         return False
+
+def generate_download_url(key, expiration=3600):
+    """Generate presigned URL for downloading from S3"""
+    try:
+        s3_client = get_s3_client()
+        return s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': S3_BUCKET, 'Key': key},
+            ExpiresIn=expiration
+        )
+    except Exception as e:
+        print(f"Error generating download URL: {e}")
+        return None
