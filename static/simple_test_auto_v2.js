@@ -95,33 +95,15 @@
         const ratingButtons = document.querySelectorAll('.rating-button');
         if (ratingButtons.length > 0) {
             console.log('🤖 Found rating buttons (Likert scale)...');
+            console.log('🤖 Number of rating buttons:', ratingButtons.length);
             
-            let targetRating = '3'; // Default to neutral
-            
-            // Check for specific question patterns
-            if (/look for reasons.*might be wrong/i.test(questionText) ||
-                /consider evidence.*against/i.test(questionText) ||
-                /open to changing.*opinion/i.test(questionText)) {
-                targetRating = '4'; // Slightly agree for open-mindedness questions
-            } else if (/changing.*mind.*weakness/i.test(questionText) ||
-                      /stick to.*beliefs/i.test(questionText)) {
-                targetRating = '2'; // Disagree with closed-minded statements
-            }
-            
-            // Find and click the target rating button
+            // Always select the middle button for neutral response
+            // Works for any scale: 1-5 (select 3), 1-7 (select 4), etc.
             let selectedButton = null;
-            for (const btn of ratingButtons) {
-                if (btn.textContent.trim() === targetRating) {
-                    selectedButton = btn;
-                    break;
-                }
-            }
-            
-            // Fallback to middle button
-            if (!selectedButton && ratingButtons.length > 0) {
+            if (ratingButtons.length > 0) {
                 const middleIndex = Math.floor(ratingButtons.length / 2);
                 selectedButton = ratingButtons[middleIndex];
-                console.log('🤖 Fallback: selecting middle rating');
+                console.log('🤖 Selecting middle rating (neutral):', selectedButton.textContent);
             }
             
             if (selectedButton) {

@@ -343,41 +343,28 @@ const TestAutomationV2 = {
         return this.getFallbackAnswer(questionText);
     },
     
-    // Handle rating button questions (Likert scales)
+    // Handle rating button questions (Likert scales) - Generic for ALL rating questions
     handleRatingButtons(questionText, ratingButtons) {
         console.log('🤖 Processing rating buttons (Likert scale)...');
+        console.log('🤖 Found', ratingButtons.length, 'rating buttons');
         
-        // Get the answer for this question
-        let targetAnswer = this.detectQuestionType(questionText);
-        
-        // Default to neutral (3) if no specific pattern matched
-        if (!targetAnswer || isNaN(targetAnswer)) {
-            targetAnswer = "3";
-            console.log('🤖 No specific pattern, defaulting to neutral (3)');
-        }
-        
-        // Find the rating button with the target value
+        // For ALL rating button questions, select the middle option (neutral)
+        // This works for 1-5, 1-7, or any odd-numbered scale
         let selectedButton = null;
-        for (const button of ratingButtons) {
-            const buttonText = button.textContent || button.innerText;
-            if (buttonText.trim() === targetAnswer) {
-                selectedButton = button;
-                console.log('🤖 Found rating button:', targetAnswer);
-                break;
-            }
-        }
         
-        // Fallback: if exact match not found, try middle button
-        if (!selectedButton && ratingButtons.length > 0) {
+        // Always select middle button for consistent neutral responses
+        if (ratingButtons.length > 0) {
             const middleIndex = Math.floor(ratingButtons.length / 2);
             selectedButton = ratingButtons[middleIndex];
-            console.log('🤖 Fallback: selecting middle rating button');
+            console.log('🤖 Selecting middle rating button (neutral):', middleIndex + 1);
         }
         
         if (selectedButton) {
             selectedButton.click();
             selectedButton.classList.add('selected', 'active'); // Add visual feedback
             console.log('🤖 Clicked rating button:', selectedButton.textContent);
+        } else {
+            console.log('🤖 Error: No rating button found to click');
         }
     },
     
