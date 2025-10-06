@@ -844,6 +844,21 @@
             },
             
             viewDetailedResults() {
+                // Check if we have assessment results with redirect
+                const resultsStr = sessionStorage.getItem('test_results');
+                if (resultsStr) {
+                    try {
+                        const results = JSON.parse(resultsStr);
+                        if (results.is_assessment && results.assessment_redirect) {
+                            // Redirect to assessment results page
+                            window.location.href = results.assessment_redirect;
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing stored results:', e);
+                    }
+                }
+                // Default to regular test results
                 window.location.href = `/tests/results?session=${this.sessionId}`;
             },
             

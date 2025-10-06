@@ -13,14 +13,21 @@ from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
 
+# Import utils
+from utils.assessment_transformer import transform_flask_to_assessment, generate_assessment_data
+
 # Import baseline blueprint
 from blueprints.baseline_blueprint import baseline_bp
+# Import assessments blueprint
+from blueprints.assessments_blueprint import assessment_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Register baseline blueprint
 app.register_blueprint(baseline_bp)
+# Register assessments blueprint
+app.register_blueprint(assessment_bp)
 
 # Route to serve baseline capture page
 @app.route('/baseline')
@@ -1140,6 +1147,41 @@ def get_test_results(session_id):
                 'questions_completed': len(session['answers']),
                 'completion_rate': (len(session['answers']) / session['total_questions']) * 100
             }
+            
+            # Check if this is an assessment test and transform data
+            test_id = session.get('test_id', '').lower()
+            assessment_keywords = ['crt', 'aot', 'numeracy', 'intent', 'nfc', 'anchoring', 
+                                 'emotion', 'listening', 'relationship', 'loss', 'perspective',
+                                 'core', 'advanced']
+            
+            is_assessment = any(keyword in test_id for keyword in assessment_keywords)
+            
+            if is_assessment:
+                # Transform to assessment format
+                assessment_data = generate_assessment_data(session)
+                
+                # Save assessment results
+                try:
+                    assessment_type = assessment_data['assessmentType']
+                    user_id = assessment_data['userId']
+                    
+                    # Create results directory
+                    from pathlib import Path
+                    results_dir = Path('assessments/results') / assessment_type
+                    results_dir.mkdir(parents=True, exist_ok=True)
+                    
+                    # Save to file
+                    result_file = results_dir / f'{user_id}.json'
+                    with open(result_file, 'w') as f:
+                        json.dump(assessment_data, f, indent=2)
+                    
+                    # Add assessment redirect URL to results
+                    results['assessment_redirect'] = f'/results/{assessment_type}/{user_id}'
+                    results['is_assessment'] = True
+                    
+                except Exception as e:
+                    print(f"Error saving assessment results: {e}")
+                    results['is_assessment'] = False
             
         return jsonify({
             'status': 'success',
