@@ -39,6 +39,15 @@
         'agree|disagree': '3' // Neutral on Likert scales
     };
     
+    // Button-based responses (for option buttons)
+    const buttonResponses = {
+        'six-sided die.*rolled once.*more likely': 'An even number',
+        'fair die.*which.*more likely': 'An even number',
+        'die.*greater than.*even number': 'An even number',
+        'deck of cards.*more likely': 'Red card',
+        'more likely': 'even' // Generic fallback for probability questions
+    };
+    
     // Quick fill function for new interface
     function quickFillV2() {
         console.log('🤖 Quick filling current question...');
@@ -79,6 +88,65 @@
             textInput.dispatchEvent(new Event('input', { bubbles: true }));
             textInput.dispatchEvent(new Event('change', { bubbles: true }));
             console.log('🤖 Filled text input with:', answer);
+            return;
+        }
+        
+        // Check for option buttons (new interface)
+        const optionButtons = document.querySelectorAll('.option-button');
+        if (optionButtons.length > 0) {
+            console.log('🤖 Found option buttons, selecting appropriate answer...');
+            
+            let selectedButton = null;
+            
+            // Check for specific button response patterns
+            for (const [pattern, response] of Object.entries(buttonResponses)) {
+                const regex = new RegExp(pattern, 'i');
+                if (regex.test(questionText)) {
+                    // Find button with matching text
+                    selectedButton = Array.from(optionButtons).find(btn => {
+                        const btnText = btn.textContent || btn.innerText;
+                        return btnText.toLowerCase().includes(response.toLowerCase()) ||
+                               response.toLowerCase().includes(btnText.toLowerCase());
+                    });
+                    
+                    if (selectedButton) {
+                        console.log('🤖 Matched button pattern:', pattern, '-> Response:', response);
+                        break;
+                    }
+                }
+            }
+            
+            // Fallback: select based on common patterns
+            if (!selectedButton) {
+                console.log('🤖 Using fallback button selection...');
+                for (const btn of optionButtons) {
+                    const btnText = btn.textContent || btn.innerText;
+                    
+                    // For dice questions, prefer "even number"
+                    if (/die.*greater than.*even/i.test(questionText) && /even number/i.test(btnText)) {
+                        selectedButton = btn;
+                        break;
+                    }
+                    
+                    // For "more likely" questions, prefer even/red/common options
+                    if (/more likely/i.test(questionText) && (/even/i.test(btnText) || /red/i.test(btnText))) {
+                        selectedButton = btn;
+                        break;
+                    }
+                }
+            }
+            
+            // Final fallback: select first option
+            if (!selectedButton) {
+                selectedButton = optionButtons[0];
+                console.log('🤖 Fallback: selecting first option');
+            }
+            
+            if (selectedButton) {
+                selectedButton.click();
+                selectedButton.classList.add('selected');
+                console.log('🤖 Clicked option button:', selectedButton.textContent);
+            }
             return;
         }
         

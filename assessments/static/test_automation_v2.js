@@ -133,6 +133,38 @@ const TestAutomationV2 = {
                 ],
                 answer: "They're being direct about business concerns"
             }
+        },
+        
+        // Probability/Statistics Questions (button-based)
+        probability: {
+            // Dice questions
+            diceProbability: {
+                patterns: [
+                    /six-sided die.*rolled once.*more likely/i,
+                    /fair die.*which.*more likely/i,
+                    /die.*greater than.*even number/i
+                ],
+                answer: "An even number" // Even numbers: 2,4,6 (3/6) vs >4: 5,6 (2/6)
+            },
+            
+            // Card probability
+            cardProbability: {
+                patterns: [
+                    /deck of cards.*more likely/i,
+                    /playing card.*probability/i
+                ],
+                answer: "Red card" // Default to more likely option
+            },
+            
+            // General probability comparisons
+            generalProbability: {
+                patterns: [
+                    /more likely.*probability/i,
+                    /which.*greater chance/i,
+                    /higher probability/i
+                ],
+                answer: "first" // Default to first option
+            }
         }
     },
     
@@ -164,6 +196,9 @@ const TestAutomationV2 = {
         // Check for radio buttons
         const radioButtons = document.querySelectorAll('input[type="radio"]');
         
+        // Check for option buttons (new interface)
+        const optionButtons = document.querySelectorAll('.option-button');
+        
         // Detect question type and get answer
         const answer = this.detectQuestionType(questionText);
         
@@ -172,6 +207,9 @@ const TestAutomationV2 = {
             textInput.value = answer;
             textInput.dispatchEvent(new Event('input', { bubbles: true }));
             textInput.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (optionButtons.length > 0) {
+            console.log('🤖 Handling option button question');
+            this.handleOptionButtons(questionText, optionButtons);
         } else if (radioButtons.length > 0) {
             console.log('🤖 Handling radio button question');
             this.handleRadioQuestion(questionText, radioButtons);
@@ -229,8 +267,93 @@ const TestAutomationV2 = {
             }
         }
         
+        // Check probability patterns (for button-based questions)
+        for (const [probType, probData] of Object.entries(this.questionPatterns.probability)) {
+            for (const pattern of probData.patterns) {
+                if (pattern.test(questionText)) {
+                    console.log('🤖 Detected probability question:', probType);
+                    return probData.answer;
+                }
+            }
+        }
+        
         console.log('🤖 No pattern matched, using fallback');
         return this.getFallbackAnswer(questionText);
+    },
+    
+    // Handle option button questions (new interface)
+    handleOptionButtons(questionText, optionButtons) {
+        console.log('🤖 Processing option buttons...');
+        
+        // Get the answer for this question
+        const targetAnswer = this.detectQuestionType(questionText);
+        
+        if (!targetAnswer) {
+            console.log('🤖 No answer pattern found, selecting first option');
+            optionButtons[0].click();
+            return;
+        }
+        
+        // Find button with matching text
+        let selectedButton = null;
+        for (const button of optionButtons) {
+            const buttonText = button.textContent || button.innerText;
+            console.log('🤖 Checking button text:', buttonText);
+            
+            // Exact match
+            if (buttonText.trim() === targetAnswer) {
+                selectedButton = button;
+                console.log('🤖 Found exact match:', buttonText);
+                break;
+            }
+            
+            // Partial match (case insensitive)
+            if (buttonText.toLowerCase().includes(targetAnswer.toLowerCase()) ||
+                targetAnswer.toLowerCase().includes(buttonText.toLowerCase())) {
+                selectedButton = button;
+                console.log('🤖 Found partial match:', buttonText);
+                break;
+            }
+        }
+        
+        // Fallback: check for specific patterns
+        if (!selectedButton) {
+            console.log('🤖 No text match, using pattern matching...');
+            
+            for (const button of optionButtons) {
+                const buttonText = button.textContent || button.innerText;
+                
+                // Dice question specific logic
+                if (/die.*greater than.*even/i.test(questionText)) {
+                    if (/even number/i.test(buttonText)) {
+                        selectedButton = button;
+                        console.log('🤖 Selected even number for dice question');
+                        break;
+                    }
+                }
+                
+                // General "more likely" patterns
+                if (/more likely/i.test(questionText)) {
+                    if (/even/i.test(buttonText) || /red/i.test(buttonText)) {
+                        selectedButton = button;
+                        console.log('🤖 Selected likely option:', buttonText);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Final fallback: select first option
+        if (!selectedButton) {
+            selectedButton = optionButtons[0];
+            console.log('🤖 Fallback: selecting first option');
+        }
+        
+        if (selectedButton) {
+            selectedButton.click();
+            selectedButton.classList.add('selected'); // Add visual feedback
+            console.log('🤖 Clicked option button:', selectedButton.textContent);
+        }
     },
     
     // Handle radio button questions (Likert scales, multiple choice)
