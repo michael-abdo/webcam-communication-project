@@ -535,19 +535,77 @@
             
             // CRT Scoring
             if (data.sections && data.sections.crt) {
-                const crtScore = calculateCRTScore(data.sections.crt);
+                const crtScore = calculateCRTScore(data.sections.crt, data.crtScore);
                 scores.crt = crtScore;
                 totalScore += crtScore.score;
                 maxTotal += crtScore.maxScore;
             }
             
-            // Add other section scoring here...
-            // For now, using placeholder scores
-            scores.numeracy = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 75 };
-            scores.intent = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 65 };
-            scores.nfc = { score: Math.floor(Math.random() * 10) + 10, maxScore: 21, percentage: 70 };
-            scores.anchoring = { score: Math.floor(Math.random() * 2) + 1, maxScore: 2, percentage: 60 };
-            scores.aot = { score: Math.floor(Math.random() * 15) + 20, maxScore: 35, percentage: 72 };
+            // Use actual scores if available
+            if (data.scores && data.scores.sections) {
+                // Copy section scores from saved data
+                const sections = data.scores.sections;
+                
+                if (sections.numeracy) {
+                    scores.numeracy = {
+                        score: sections.numeracy.score,
+                        maxScore: sections.numeracy.max_score,
+                        percentage: sections.numeracy.percentage
+                    };
+                }
+                
+                if (sections.intent) {
+                    scores.intent = {
+                        score: sections.intent.score,
+                        maxScore: sections.intent.max_score,
+                        percentage: sections.intent.percentage
+                    };
+                }
+                
+                if (sections.nfc) {
+                    scores.nfc = {
+                        score: sections.nfc.score,
+                        maxScore: sections.nfc.max_score,
+                        percentage: sections.nfc.percentage
+                    };
+                }
+                
+                if (sections.anchoring) {
+                    scores.anchoring = {
+                        score: sections.anchoring.score,
+                        maxScore: sections.anchoring.max_score,
+                        percentage: sections.anchoring.percentage
+                    };
+                }
+                
+                if (sections.aot) {
+                    scores.aot = {
+                        score: sections.aot.score,
+                        maxScore: sections.aot.max_score,
+                        percentage: sections.aot.percentage
+                    };
+                }
+                
+                // Use overall score from saved data
+                if (data.scores.overall) {
+                    return {
+                        ...scores,
+                        overall: {
+                            score: data.scores.overall.score,
+                            maxScore: data.scores.overall.max_score,
+                            percentage: data.scores.overall.percentage
+                        }
+                    };
+                }
+            } else {
+                // Fallback placeholder scores for old data
+                console.warn('No scores found in data, using placeholder values');
+                scores.numeracy = { score: 1, maxScore: 2, percentage: 50 };
+                scores.intent = { score: 1, maxScore: 2, percentage: 50 };
+                scores.nfc = { score: 10, maxScore: 21, percentage: 48 };
+                scores.anchoring = { score: 1, maxScore: 2, percentage: 50 };
+                scores.aot = { score: 17, maxScore: 35, percentage: 49 };
+            }
             
             // Calculate totals
             Object.values(scores).forEach(section => {
@@ -566,7 +624,17 @@
             return scores;
         }
         
-        function calculateCRTScore(crtData) {
+        function calculateCRTScore(crtData, savedCrtScore) {
+            // Use saved CRT score if available
+            if (savedCrtScore) {
+                return {
+                    score: savedCrtScore.score || 0,
+                    maxScore: savedCrtScore.total || 3,
+                    percentage: savedCrtScore.percentage || 0
+                };
+            }
+            
+            // Fallback calculation for old data
             let correct = 0;
             const total = 3;
             const correctAnswers = { bat_ball: 0.05, widget: 5, lily_pad: 47 };

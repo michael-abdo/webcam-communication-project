@@ -3,6 +3,7 @@ Transform Flask test session data to Assessment format
 """
 from datetime import datetime
 from typing import Dict, List, Any
+from .scoring import calculate_assessment_scores
 
 def transform_flask_to_assessment(flask_session: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -77,8 +78,26 @@ def generate_assessment_data(test_session: Dict[str, Any], assessment_type: str 
     assessment_data['assessmentType'] = assessment_type
     
     # Add quiz_type for specific assessments
-    if 'crt' in test_session.get('test_id', '').lower():
+    test_id = test_session.get('test_id', '')
+    if 'crt' in test_id.lower():
         assessment_data['quiz_type'] = 'crt'
+    
+    # Calculate scores for the assessment
+    # Create a simple answer dict from the Flask answers
+    answer_dict = {}
+    for answer in test_session.get('answers', []):
+        question_id = str(answer.get('question_id'))
+        answer_dict[question_id] = answer.get('answer')
+    
+    # Calculate scores
+    scoring_data = calculate_assessment_scores(test_id, answer_dict)
+    
+    # Add scores to assessment data
+    assessment_data['scores'] = scoring_data
+    
+    # Also add CRT score at top level for backward compatibility
+    if 'crtScore' in scoring_data:
+        assessment_data['crtScore'] = scoring_data['crtScore']
     
     return assessment_data
 

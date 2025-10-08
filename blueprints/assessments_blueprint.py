@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import os
 from datetime import datetime
+from utils.scoring import calculate_assessment_scores
 
 # Create the blueprint
 assessment_bp = Blueprint('assessments', __name__, url_prefix='')
@@ -333,48 +334,45 @@ def submit_quiz():
         save_success = False
         error_message = str(e)
     
-    # Calculate basic scores (example for CRT)
-    if 'quiz_type' in data and data['quiz_type'] == 'crt':
-        correct_answers = {
-            'bat_ball': 0.05,
-            'widget': 5,
-            'lily_pad': 47
-        }
-        score = 0
-        correct_items = []
-        for key, correct in correct_answers.items():
-            if key in data['responses']:
-                try:
-                    if float(data['responses'][key]['answer']) == correct:
-                        score += 1
-                        correct_items.append(key)
-                except:
-                    pass
+    # Note: Scoring is now handled by the assessment_transformer module
+    # which calculates scores when data comes from Flask tests
+    
+    # Check if scores are included in the data (from direct API submissions)
+    if 'scores' not in data and 'testId' in data:
+        # Calculate scores for direct API submissions
+        test_id = data.get('testId', '')
+        answer_dict = {}
+        if 'responses' in data:
+            for key, value in data['responses'].items():
+                answer_dict[key] = value.get('answer') if isinstance(value, dict) else value
         
-        # Add CRT score to the saved data
-        data['crtScore'] = {
-            'score': score,
-            'total': 3,
-            'correctAnswers': correct_items
-        }
+        scoring_data = calculate_assessment_scores(test_id, answer_dict)
+        data['scores'] = scoring_data
         
-        # Re-save the data with CRT score included
+        # Add CRT score at top level for backward compatibility
+        if 'crtScore' in scoring_data:
+            data['crtScore'] = scoring_data['crtScore']
+        
+        # Re-save with scores
         try:
             if assessment_type in ['core', 'advanced']:
                 user_filename = RESULTS_DIR / assessment_type / f'{user_id}.json'
                 with open(user_filename, 'w') as f:
                     json.dump(data, f, indent=2)
         except Exception as e:
-            print(f"Error re-saving data with CRT score: {e}")
-        
+            print(f"Error re-saving data with scores: {e}")
+    
+    # Return response based on quiz type
+    if 'quiz_type' in data and data['quiz_type'] == 'crt' and 'crtScore' in data:
+        crt_score = data['crtScore']
         return jsonify({
             'success': save_success,
             'status': 'success' if save_success else 'error',
             'user_id': user_id,
             'timestamp': data['timestamp'],
-            'score': score,
-            'total': 3,
-            'message': f'You got {score} out of 3 correct!' if save_success else f'Quiz completed but save failed: {error_message}',
+            'score': crt_score.get('score', 0),
+            'total': crt_score.get('total', 3),
+            'message': f'You got {crt_score.get("score", 0)} out of {crt_score.get("total", 3)} correct!' if save_success else f'Quiz completed but save failed: {error_message}',
             'error': error_message if not save_success else None
         })
     
