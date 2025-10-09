@@ -1,6 +1,5 @@
 """
 Flask Blueprint for Baseline Capture API
-Converted from FastAPI to Flask for integration with existing system
 """
 
 from flask import Blueprint, request, jsonify, render_template

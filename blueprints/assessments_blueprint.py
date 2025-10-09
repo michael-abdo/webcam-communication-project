@@ -1,6 +1,5 @@
 """
 Flask Blueprint for Assessment functionality
-Ported from FastAPI to Flask
 """
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, send_file
 from pathlib import Path
@@ -28,8 +27,7 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 @assessment_bp.route('/assessment/')
 def home():
     """Home page with assessment options"""
-    # Read the home page HTML from FastAPI
-    home_html_path = Path(__file__).parent.parent / 'main.py'
+    # Generate the home page HTML
     
     # For now, return a simple HTML response
     # In production, you'd use a proper template
