@@ -76,8 +76,8 @@
         const questionText = questionElement.textContent || questionElement.innerText;
         console.log('🤖 Question:', questionText.substring(0, 100) + '...');
         
-        // Add a small initial delay to let the page settle
-        await delay(300);
+        // Add a longer initial delay to let the page settle
+        await delay(1000);
         
         // Check for text input (textarea or input)
         const textInput = document.querySelector('textarea.text-input') ||
@@ -122,7 +122,7 @@
             console.log('🤖 Found rating buttons (Likert scale)...');
             console.log('🤖 Number of rating buttons:', ratingButtons.length);
             
-            await delay(400); // Pause to "read" the question
+            await delay(1500); // Longer pause to "read" the question
             
             // Always select the middle button for neutral response
             // Works for any scale: 1-5 (select 3), 1-7 (select 4), etc.
@@ -147,7 +147,7 @@
         if (optionButtons.length > 0) {
             console.log('🤖 Found option buttons, selecting appropriate answer...');
             
-            await delay(400); // Pause to "read" options
+            await delay(1500); // Longer pause to "read" options
             
             let selectedButton = null;
             
@@ -209,7 +209,7 @@
         if (radioButtons.length > 0) {
             console.log('🤖 Found radio buttons, selecting appropriate answer...');
             
-            await delay(400); // Pause to "read" options
+            await delay(1500); // Longer pause to "read" options
             
             // Group by name
             const radioGroups = {};
@@ -270,8 +270,8 @@
     
     // Navigation function for new interface
     async function clickNextV2() {
-        // Add a small delay before clicking next
-        await delay(500);
+        // Add a longer delay before clicking next
+        await delay(2000);
         
         // Try TestSession.submitAnswer() first
         if (typeof TestSession !== 'undefined' && TestSession.submitAnswer) {
@@ -307,11 +307,11 @@
     // Auto-run function
     async function autoRunV2() {
         await quickFillV2();
-        await delay(1000); // Wait 1 second before clicking next
+        await delay(3000); // Wait 3 seconds before clicking next
         await clickNextV2();
     }
     
-    // Continuous automation
+    // Continuous automation with better debouncing
     function startContinuousV2() {
         console.log('🤖 Starting continuous automation...');
         
@@ -326,15 +326,43 @@
             window.simpleAutoObserver.disconnect();
         }
         
-        window.simpleAutoObserver = new MutationObserver(async () => {
+        // Track the last processed question to avoid duplicates
+        let lastProcessedQuestion = '';
+        let isProcessing = false;
+        
+        window.simpleAutoObserver = new MutationObserver(async (mutations) => {
+            // Debounce rapid mutations
+            if (isProcessing) return;
+            
             const questionCard = document.getElementById('questionCard');
-            if (questionCard && questionCard.style.display !== 'none') {
-                // Add delay before starting to fill the new question
-                await delay(800);
-                await quickFillV2();
-                await delay(1000);
-                await clickNextV2();
-            }
+            if (!questionCard || questionCard.style.display === 'none') return;
+            
+            // Get current question text to check if it's new
+            const questionElement = document.getElementById('questionText') || 
+                                   document.querySelector('.question-text') ||
+                                   document.querySelector('h3');
+            
+            if (!questionElement) return;
+            
+            const currentQuestion = questionElement.textContent || questionElement.innerText;
+            
+            // Skip if we've already processed this question
+            if (currentQuestion === lastProcessedQuestion) return;
+            
+            isProcessing = true;
+            lastProcessedQuestion = currentQuestion;
+            
+            console.log('🤖 New question detected, processing...');
+            
+            // Much longer delays for stability
+            await delay(2000); // 2 second pause before starting
+            await quickFillV2();
+            await delay(3000); // 3 second pause before submitting
+            await clickNextV2();
+            
+            // Allow time for page transition
+            await delay(2000);
+            isProcessing = false;
         });
         
         window.simpleAutoObserver.observe(document.body, {
@@ -344,14 +372,22 @@
             attributeFilter: ['style']
         });
         
-        // Fill current question immediately
-        setTimeout(autoRunV2, 500);
+        // Fill current question immediately with delay
+        setTimeout(async () => {
+            isProcessing = true;
+            await delay(1000);
+            await autoRunV2();
+            await delay(2000);
+            isProcessing = false;
+        }, 1000);
         
         window.stopContinuousV2 = () => {
             if (window.simpleAutoObserver) {
                 window.simpleAutoObserver.disconnect();
                 window.simpleAutoObserver = null;
             }
+            isProcessing = false;
+            lastProcessedQuestion = '';
             console.log('🤖 Continuous automation stopped');
         };
     }
@@ -392,9 +428,11 @@
     console.log('  startContinuousV2() - Fully automated test completion');
     console.log('  stopContinuousV2() - Stop continuous automation');
     console.log('  ensureCleanAutomation() - Stop all running automations');
-    console.log('\n🤖 Delays added for more natural interaction:');
-    console.log('  - 300ms initial delay when filling');
+    console.log('\n🤖 MUCH LONGER delays added for stability:');
+    console.log('  - 1000ms initial delay when filling');
     console.log('  - 50-100ms between keystrokes for text input');
-    console.log('  - 400ms pause before selecting options');
-    console.log('  - 800ms delay between questions');
+    console.log('  - 1500ms pause before selecting options');
+    console.log('  - 2000ms delay before processing new questions');
+    console.log('  - 3000ms delay before submitting answers');
+    console.log('  - Debouncing to prevent duplicate processing');
 })();
