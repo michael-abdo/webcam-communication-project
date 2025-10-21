@@ -139,6 +139,8 @@ Example session creation payload:
 }
 ```
 
+> **Auth:** Set `CAPTURE_API_TOKEN` in the environment to enforce facilitator authentication. The capture UI now prompts for this value and injects it into all Phase 1 API requests per the spec’s “Auth & Data” requirement.
+
 ## 🔍 Test-Driven Validation
 
 ### Foundation Test (Layer 0)

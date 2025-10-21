@@ -19,3 +19,17 @@ def get_database_url() -> str:
     os.makedirs(data_dir, exist_ok=True)
     sqlite_path = os.path.join(data_dir, "app.db")
     return f"sqlite:///{sqlite_path}"
+
+
+@lru_cache(maxsize=1)
+def get_capture_api_token() -> str | None:
+    """
+    Return the shared capture API token required by Phase 1 endpoints.
+
+    Stays optional so local development can opt-in; production should set
+    CAPTURE_API_TOKEN to a facilitator credential per the Phase 1 auth spec.
+    """
+    token = os.getenv("CAPTURE_API_TOKEN")
+    if token:
+        return token.strip()
+    return None

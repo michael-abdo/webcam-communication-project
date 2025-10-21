@@ -20,6 +20,7 @@ let lastChunkTimestamp = null;
 let facilitatorIdInput = null;
 let deviceKindInput = null;
 let consentCheckbox = null;
+let apiTokenInput = null;
 let isCameraReady = false;
 
 // Configuration
@@ -31,16 +32,28 @@ window.addEventListener('DOMContentLoaded', async () => {
     facilitatorIdInput = document.getElementById('facilitatorIdInput');
     deviceKindInput = document.getElementById('deviceKindInput');
     consentCheckbox = document.getElementById('consentCheckbox');
+    apiTokenInput = document.getElementById('apiTokenInput');
+    if (apiTokenInput) {
+        const savedToken = localStorage.getItem('captureApiToken');
+        if (savedToken) {
+            apiTokenInput.value = savedToken;
+        }
+    }
 
     if (deviceKindInput && !deviceKindInput.value) {
         deviceKindInput.value = (navigator.userAgent || 'unknown-device').toLowerCase();
     }
 
-    [facilitatorIdInput, deviceKindInput].forEach((input) => {
+    [facilitatorIdInput, deviceKindInput, apiTokenInput].forEach((input) => {
         if (input) {
             input.addEventListener('input', updateCaptureEligibility);
         }
     });
+    if (apiTokenInput) {
+        apiTokenInput.addEventListener('input', () => {
+            localStorage.setItem('captureApiToken', apiTokenInput.value.trim());
+        });
+    }
 
     if (consentCheckbox) {
         consentCheckbox.addEventListener('change', updateCaptureEligibility);
@@ -95,8 +108,15 @@ function updateCaptureEligibility() {
     const facilitatorReady = facilitatorIdInput && facilitatorIdInput.value.trim().length > 0;
     const consentGranted = consentCheckbox ? consentCheckbox.checked : false;
     const deviceReady = !!mediaStream && isCameraReady;
+    const tokenProvided = apiTokenInput && apiTokenInput.value.trim().length > 0;
 
-    recordBtn.disabled = !(facilitatorReady && consentGranted && deviceReady && !isRecording);
+    recordBtn.disabled = !(
+        facilitatorReady &&
+        consentGranted &&
+        deviceReady &&
+        tokenProvided &&
+        !isRecording
+    );
 }
 
 /**
@@ -113,6 +133,10 @@ async function startRecording() {
     }
     if (!consentCheckbox || !consentCheckbox.checked) {
         showError('Facilitator consent must be confirmed before recording.');
+        return;
+    }
+    if (!apiTokenInput || apiTokenInput.value.trim().length === 0) {
+        showError('Capture API token required before recording.');
         return;
     }
     
@@ -196,7 +220,8 @@ async function ensureSessionRegistered() {
     const sessionResponse = await fetch('/api/sessions', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...authHeaders()
         },
         body: JSON.stringify({
             facilitator_id: facilitatorId,
@@ -217,7 +242,8 @@ async function ensureSessionRegistered() {
     const participantResponse = await fetch(`/api/sessions/${sessionId}/participants`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...authHeaders()
         },
         body: JSON.stringify({
             device_id: deviceKind,
@@ -354,7 +380,8 @@ async function recordChunkMetadata({ sequenceNo, durationMs, storageKey, checksu
     const response = await fetch(`/api/sessions/${sessionId}/chunks`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...authHeaders()
         },
         body: JSON.stringify({
             sequence_no: sequenceNo,
@@ -385,7 +412,8 @@ async function getPresignedUrl(chunkNumber) {
         const response = await fetch('/api/presigned-url', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...authHeaders()
             },
             body: JSON.stringify({
                 session_id: sessionId,
@@ -461,6 +489,16 @@ function stopRecording() {
         
         updateStatus('Recording stopped. Finishing uploads...', 'info');
     }
+}
+
+function authHeaders() {
+    const token = apiTokenInput ? apiTokenInput.value.trim() : '';
+    if (!token) {
+        return {};
+    }
+    return {
+        Authorization: `Bearer ${token}`
+    };
 }
 
 /**

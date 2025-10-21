@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from http import HTTPStatus
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 from services.capture_service import (
     CaptureConflictError,
@@ -16,6 +16,7 @@ from services.capture_service import (
     record_media_chunk,
 )
 
+from config import get_capture_api_token
 
 capture_api = Blueprint("capture_api", __name__, url_prefix="/api")
 
@@ -26,6 +27,35 @@ def _parse_datetime(value: str, field_name: str) -> datetime:
         return datetime.fromisoformat(cleaned)
     except Exception as exc:  # noqa: BLE001
         raise ValueError(f"Invalid datetime format for {field_name}") from exc
+
+
+def _require_api_token():
+    """Enforce facilitator token when CAPTURE_API_TOKEN is configured."""
+    expected = get_capture_api_token()
+    if not expected:
+        return None
+
+    header = request.headers.get("Authorization", "")
+    if not header.startswith("Bearer "):
+        return jsonify(
+            {
+                "error": "unauthorized",
+                "details": "Authorization header with Bearer token required",
+            }
+        ), HTTPStatus.UNAUTHORIZED
+
+    provided = header.split(" ", 1)[1].strip()
+    if provided != expected:
+        return jsonify({"error": "forbidden", "details": "Invalid facilitator token"}), HTTPStatus.FORBIDDEN
+
+    return None
+
+
+@capture_api.before_request
+def enforce_authentication():
+    maybe_response = _require_api_token()
+    if maybe_response:
+        return maybe_response
 
 
 @capture_api.route("/sessions", methods=["POST"])
@@ -67,6 +97,14 @@ def create_session():
         consent_at=consent_at_dt,
         device_kind=device_kind,
         locale=locale,
+    )
+
+    current_app.logger.info(
+        "phase1.session.created",
+        extra={
+            "session_id": session_record["id"],
+            "device_kind": device_kind,
+        },
     )
 
     return jsonify(session_record), HTTPStatus.CREATED
@@ -113,6 +151,15 @@ def register_participant(session_id: str):
         )
     except CaptureNotFoundError as exc:
         return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
+
+    current_app.logger.info(
+        "phase1.participant.registered",
+        extra={
+            "session_id": session_id,
+            "participant_id": participant["id"],
+            "status": participant["status"],
+        },
+    )
 
     return jsonify(participant), HTTPStatus.CREATED
 
@@ -189,6 +236,16 @@ def record_chunk(session_id: str):
         return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
     except CaptureConflictError as exc:
         return jsonify({"error": "conflict", "details": str(exc)}), HTTPStatus.CONFLICT
+
+    current_app.logger.info(
+        "phase1.chunk.persisted",
+        extra={
+            "session_id": session_id,
+            "participant_id": participant_id,
+            "sequence_no": sequence_no,
+            "duration_ms": duration_ms,
+        },
+    )
 
     return jsonify(chunk), HTTPStatus.ACCEPTED
 

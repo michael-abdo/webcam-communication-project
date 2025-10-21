@@ -169,6 +169,13 @@
             border-radius: 6px;
             font-size: 15px;
         }
+        .capture-form input[type="password"] {
+            margin-top: 6px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+        }
         .consent-row {
             display: flex;
             align-items: center;
@@ -195,6 +202,10 @@
                 <label>
                     Device Kind
                     <input type="text" id="deviceKindInput" placeholder="e.g. macbook-pro" autocomplete="off">
+                </label>
+                <label>
+                    Capture API Token
+                    <input type="password" id="apiTokenInput" placeholder="Enter facilitator token" autocomplete="off">
                 </label>
                 <div class="consent-row">
                     <input type="checkbox" id="consentCheckbox">
