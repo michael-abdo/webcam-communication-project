@@ -147,6 +147,13 @@ def stream():
     
     return render_template('stream.html')
 
+
+@app.route('/phase1/sessions')
+def phase1_sessions_view():
+    """Phase 1 reviewer dashboard listing capture sessions."""
+    system_state['requests_count'] += 1
+    return render_template('phase1_sessions.html')
+
 @app.route('/api/presigned-url', methods=['POST'])
 def get_presigned_url():
     """Generate presigned URL for direct S3 upload with optional test session linking."""

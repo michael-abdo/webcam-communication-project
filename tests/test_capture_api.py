@@ -83,6 +83,26 @@ def test_session_lifecycle(client):
     assert len(detail_body["chunks"]) == 1
 
 
+def test_session_list_endpoint(client):
+    consent_at = datetime.now(timezone.utc).isoformat()
+    client.post(
+        "/api/sessions",
+        json={
+            "facilitator_id": "fac-list",
+            "consent_at": consent_at,
+            "device_kind": "macbook-pro",
+        },
+        headers=auth_headers(),
+    )
+
+    response = client.get("/api/sessions", headers=auth_headers())
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert "sessions" in payload
+    assert payload["count"] == len(payload["sessions"])
+    assert any(session["facilitator_id"] == "fac-list" for session in payload["sessions"])
+
+
 def test_chunk_conflict(client):
     consent_at = datetime.now(timezone.utc).isoformat()
     session_resp = client.post(

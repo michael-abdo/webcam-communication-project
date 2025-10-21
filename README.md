@@ -141,6 +141,13 @@ Example session creation payload:
 
 > **Auth:** Set `CAPTURE_API_TOKEN` in the environment to enforce facilitator authentication. The capture UI now prompts for this value and injects it into all Phase 1 API requests per the spec’s “Auth & Data” requirement.
 
+### Reviewer Dashboard
+
+- Visit `/phase1/sessions` to open the Phase 1 validation UI.
+- Provide the same capture API token to enumerate recent sessions (limit configurable in the UI).
+- Select a session to review facilitator metadata, participant readiness, and the full chunk manifest (sequence, checksum, storage key, timestamp).
+- This replaces the in-memory `/tests/results` view and reflects the persisted capture data in Postgres.
+
 ## 🔍 Test-Driven Validation
 
 ### Foundation Test (Layer 0)

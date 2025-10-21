@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlalchemy.orm import Session as SASession
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from models import SessionLocal
 from models.database import db_session
@@ -140,3 +140,44 @@ def list_session_chunks(session_id: str) -> list[dict]:
             raise CaptureNotFoundError(f"Session {session_id} not found")
         capture.media_chunks  # Trigger load
         return [chunk.to_dict() for chunk in capture.media_chunks]
+
+
+def list_recent_sessions(limit: int = 20) -> list[dict]:
+    """Return recent sessions with participant/chunk counts for reviewers."""
+    with SessionLocal() as session:
+        captures = (
+            session.query(Session)
+            .options(
+                selectinload(Session.participants),
+                selectinload(Session.media_chunks),
+            )
+            .order_by(Session.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+
+        results = []
+        for capture in captures:
+            chunks = capture.media_chunks
+            latest_chunk_at = None
+            if chunks:
+                latest_chunk = max(chunks, key=lambda c: c.stored_at or datetime.min.replace(tzinfo=timezone.utc))
+                latest_chunk_at = (
+                    latest_chunk.stored_at.isoformat() if latest_chunk.stored_at else None
+                )
+
+            results.append(
+                {
+                    "id": capture.id,
+                    "facilitator_id": capture.facilitator_id,
+                    "consent_at": capture.consent_at.isoformat(),
+                    "device_kind": capture.device_kind,
+                    "locale": capture.locale,
+                    "created_at": capture.created_at.isoformat(),
+                    "participant_count": len(capture.participants),
+                    "chunk_count": len(chunks),
+                    "latest_chunk_at": latest_chunk_at,
+                }
+            )
+
+        return results

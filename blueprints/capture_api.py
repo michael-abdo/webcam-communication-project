@@ -13,6 +13,7 @@ from services.capture_service import (
     create_participant_record,
     create_session_record,
     get_session_record,
+    list_recent_sessions,
     record_media_chunk,
 )
 
@@ -56,6 +57,14 @@ def enforce_authentication():
     maybe_response = _require_api_token()
     if maybe_response:
         return maybe_response
+
+
+@capture_api.route("/sessions", methods=["GET"])
+def list_sessions():
+    limit = request.args.get("limit", default=20, type=int)
+    limit = max(1, min(limit, 100))
+    sessions = list_recent_sessions(limit=limit)
+    return jsonify({"sessions": sessions, "count": len(sessions)}), HTTPStatus.OK
 
 
 @capture_api.route("/sessions", methods=["POST"])
