@@ -1,6 +1,13 @@
 # Phase 1 Capture TODOs
 
-- [ ] **Add structured metrics + alerts** — Extend `blueprints/capture_api.py::record_chunk` to emit `phase1.chunk.uploaded` telemetry via StatsD/cloud metrics and wire alerting for sustained 5xx responses (Phase 1 APIs · Bare Minimum Support: Telemetry).
+- [ ] **Add structured metrics + alerts**
+    - [ ] Confirm telemetry backend (StatsD/CloudWatch/etc.) and ensure dependencies/config are in place.
+    - [ ] Instrument `blueprints/capture_api.py::record_chunk` to emit `phase1.chunk.uploaded` metric with sequence/duration/participant tags.
+    - [ ] Emit failure metrics/logs for upload exceptions (e.g., `phase1.chunk.failed`).
+    - [ ] Add configuration variables (env docs) describing telemetry endpoint setup.
+    - [ ] Document alert rule for sustained 5xx or missing uploads per Phase 1 spec.
+    - [ ] Write unit/integration test that verifies metric emission using stubs/mocks.
+    - [ ] Ensure reviewer dashboard or ops tooling notes where metrics surface. — Extend `blueprints/capture_api.py::record_chunk` to emit `phase1.chunk.uploaded` telemetry via StatsD/cloud metrics and wire alerting for sustained 5xx responses (Phase 1 APIs · Bare Minimum Support: Telemetry).
 - [x] **Reconcile chunk upload contract** — Update `/api/sessions/<id>/chunks` (and capture client) to accept the multipart upload workflow described in Phase 1 APIs.md, or revise the spec to officially bless the current presigned-upload + metadata POST pattern.
     - [x] Review Phase 1 APIs.md multipart handshake details and catalog required request parts (metadata JSON + binary chunk).
     - [x] Audit current upload flow in `static/js/stream_recorder.js` and `/api/presigned-url` to map presigned dependencies.
@@ -16,6 +23,14 @@
     - [x] Execute manual capture smoke test (browser → API → S3 → DB) to confirm end-to-end behavior.
 - [x] **Build validation dashboard** — Replace the in-memory `/tests/results` flow with a DB-backed reviewer experience that lists Phase 1 sessions and surfaces raw media/transcript/log status (`app_lightweight.py`, `templates/tests/test_results.html`) to satisfy Phase 1 Output requirements.
 - [x] **Service: list recent sessions** — Add a helper in `services/capture_service.py` that returns recent sessions with participant and chunk counts for reviewer dashboards.
+- [ ] **Enhance validation tooling** — Extend the Phase 1 reviewer dashboard to surface raw media/transcripts/log error signals in line with the Output brief.
+    - [ ] Add API endpoint(s) or fields to expose transcript/log references (or status) for each session.
+    - [ ] Update `static/js/phase1_sessions.js` and template to display transcript availability, error states, and links/downloads.
+    - [ ] Provide raw media previews or download links using signed URLs (ensure permissions).
+    - [ ] Surface failed chunk/error status clearly in the dashboard UI.
+    - [ ] Document reviewer workflow for validating media/transcripts/logs in README.
+    - [ ] Add regression tests to confirm new metadata fields appear in the JSON response.
+
 - [x] **API: GET /api/sessions list** — Implement a JSON listing route in `blueprints/capture_api.py` (and associated tests) that surfaces recent sessions for the new dashboard.
 - [x] **UI Route: /phase1/sessions page** — Add a Flask route in `app_lightweight.py` plus template plumbing to render the Phase 1 session list.
 - [x] **Template & JS: phase1 session dashboard** — Create `templates/phase1_sessions.html` and accompanying JS under `static/js/` that fetches the new APIs, displays session tables, and shows chunk details.
