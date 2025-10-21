@@ -151,11 +151,57 @@
             border-radius: 4px;
             margin: 10px 0;
         }
+        .capture-form {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .capture-form label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            color: #333;
+        }
+        .capture-form input[type="text"] {
+            margin-top: 6px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        .consent-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            color: #444;
+        }
+        .consent-row input[type="checkbox"] {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Video/Audio Streaming to S3</h1>
+
+        <div class="status">
+            <h3>Facilitator Session</h3>
+            <form class="capture-form" onsubmit="return false;">
+                <label>
+                    Facilitator ID
+                    <input type="text" id="facilitatorIdInput" placeholder="e.g. fac-123" autocomplete="off" required>
+                </label>
+                <label>
+                    Device Kind
+                    <input type="text" id="deviceKindInput" placeholder="e.g. macbook-pro" autocomplete="off">
+                </label>
+                <div class="consent-row">
+                    <input type="checkbox" id="consentCheckbox">
+                    <span>I have obtained informed consent to record this session.</span>
+                </div>
+            </form>
+        </div>
         
         <div class="video-container">
             <video id="videoPreview" autoplay muted playsinline></video>

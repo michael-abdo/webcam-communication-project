@@ -8,7 +8,7 @@ import os
 import json
 import time
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
@@ -20,10 +20,17 @@ from utils.assessment_transformer import transform_flask_to_assessment, generate
 from blueprints.baseline_blueprint import baseline_bp
 # Import assessments blueprint
 from blueprints.assessments_blueprint import assessment_bp
+from blueprints.capture_api import capture_api
+from models import init_engine
+from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+init_engine()
+
+# Register capture API blueprint
+app.register_blueprint(capture_api)
 # Register baseline blueprint
 app.register_blueprint(baseline_bp)
 # Register assessments blueprint
@@ -1304,40 +1311,48 @@ def get_test_session_events(session_id):
 def get_video_session_chunks(video_session_id):
     """Get list of video chunks for a session with timestamps."""
     try:
-        if video_session_id not in video_sessions:
-            return jsonify({
-                'status': 'error',
-                'message': 'Invalid video session ID'
-            }), 404
-            
-        video_session = video_sessions[video_session_id]
-        
-        # Generate chunk information (this would ideally come from S3 metadata)
+        session_record = get_session_record(video_session_id)
+        chunks = list_session_chunks(video_session_id)
+
+        # Determine session start time preference: recorded start time if available, else consent_at
+        start_time = session_record.get('created_at') or session_record.get('consent_at')
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time)
+        if video_session_id in video_sessions:
+            start_time = video_sessions[video_session_id].get('start_time', start_time)
+
+        if isinstance(start_time, datetime) and start_time.tzinfo is None:
+            start_time = start_time.replace(tzinfo=timezone.utc)
+
+        session_start_ms = int(start_time.timestamp() * 1000)
+
+        relative_cursor = 0
         chunks_info = []
-        chunks_uploaded = video_session.get('chunks_uploaded', 0)
-        
-        for chunk_num in range(chunks_uploaded):
-            # Calculate approximate timestamp for each chunk (5-second intervals)
-            chunk_start_offset_ms = chunk_num * 5000  # 5 seconds per chunk
-            session_start_ms = int(video_session['start_time'].timestamp() * 1000)
-            
+        for chunk in sorted(chunks, key=lambda c: c.get('sequence_no')):
+            chunk_start_time = session_start_ms + relative_cursor
             chunks_info.append({
-                'chunk_number': chunk_num,
-                'chunk_start_time': session_start_ms + chunk_start_offset_ms,
-                'chunk_duration_ms': 5000,  # 5 seconds
-                'relative_start_ms': chunk_start_offset_ms,
-                's3_key': f"{video_session_id}/chunk_{chunk_num:04d}.webm"
+                'chunk_number': chunk.get('sequence_no'),
+                'chunk_start_time': chunk_start_time,
+                'chunk_duration_ms': chunk.get('duration_ms'),
+                'relative_start_ms': relative_cursor,
+                's3_key': chunk.get('storage_key')
             })
-        
+            relative_cursor += chunk.get('duration_ms', 0)
+
         return jsonify({
             'status': 'success',
             'video_session_id': video_session_id,
-            'test_session_id': video_session.get('test_session_id'),
-            'video_start_time': video_session['start_time'].isoformat(),
+            'test_session_id': video_sessions.get(video_session_id, {}).get('test_session_id'),
+            'video_start_time': start_time.isoformat() if start_time else None,
             'chunks': chunks_info,
             'total_chunks': len(chunks_info)
         })
-        
+
+    except CaptureNotFoundError:
+        return jsonify({
+            'status': 'error',
+            'message': 'Invalid video session ID'
+        }), 404
     except Exception as e:
         print(f"Error retrieving video chunks: {e}")
         return jsonify({

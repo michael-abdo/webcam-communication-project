@@ -110,6 +110,35 @@ python3 demo_dashboard.py
 # Access: http://localhost:5000
 ```
 
+## 📦 Data Persistence
+
+- The service now persists capture sessions, participants, and chunk manifests in a SQL database.
+- In production (Heroku, AWS), point `DATABASE_URL` at a managed PostgreSQL instance (e.g. Heroku Postgres, Amazon RDS).
+- For local development the app automatically falls back to a SQLite database stored under `data/app.db`.
+- When provisioning Postgres make sure the role has privileges to create tables; tables are auto-created on boot via SQLAlchemy.
+
+## 🌐 Phase 1 Capture API
+
+These endpoints back the facilitator capture flow and mirror the Phase 1 spec.
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/sessions` | `POST` | Create capture session with facilitator metadata + consent timestamp |
+| `/api/sessions/<id>/participants` | `POST` | Register facilitator device readiness for the session |
+| `/api/sessions/<id>/chunks` | `POST` | Persist chunk manifest (sequence, checksum, S3 key) after upload |
+| `/api/sessions/<id>` | `GET` | Retrieve a session with participants and uploaded chunk manifest |
+
+Example session creation payload:
+
+```json
+{
+  "facilitator_id": "fac-123",
+  "consent_at": "2024-01-15T18:42:00Z",
+  "device_kind": "macbook-pro",
+  "locale": "en-US"
+}
+```
+
 ## 🔍 Test-Driven Validation
 
 ### Foundation Test (Layer 0)
