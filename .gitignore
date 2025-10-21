@@ -36,6 +36,9 @@ Thumbs.db
 baseline_capture/
 cognitive_overload/
 worktrees/
+data/files/
+docs/temp/
+deployment/
 
 # Project specific
 assessments/baseline_data/
