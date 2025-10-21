@@ -1,7 +1,19 @@
 # Phase 1 Capture TODOs
 
 - [ ] **Add structured metrics + alerts** — Extend `blueprints/capture_api.py::record_chunk` to emit `phase1.chunk.uploaded` telemetry via StatsD/cloud metrics and wire alerting for sustained 5xx responses (Phase 1 APIs · Bare Minimum Support: Telemetry).
-- [ ] **Reconcile chunk upload contract** — Update `/api/sessions/<id>/chunks` (and capture client) to accept the multipart upload workflow described in Phase 1 APIs.md, or revise the spec to officially bless the current presigned-upload + metadata POST pattern.
+- [x] **Reconcile chunk upload contract** — Update `/api/sessions/<id>/chunks` (and capture client) to accept the multipart upload workflow described in Phase 1 APIs.md, or revise the spec to officially bless the current presigned-upload + metadata POST pattern.
+    - [x] Review Phase 1 APIs.md multipart handshake details and catalog required request parts (metadata JSON + binary chunk).
+    - [x] Audit current upload flow in `static/js/stream_recorder.js` and `/api/presigned-url` to map presigned dependencies.
+    - [x] Decide on migration strategy (full replacement vs. feature-flagged rollout) for presigned uploads.
+    - [x] Extend `streaming/s3_handler.py` or add a new helper to upload chunk binaries to S3 from the Flask server.
+    - [x] Update `blueprints/capture_api.py::record_chunk` to parse multipart/form-data, validate metadata, stream the file to S3, and persist DB rows.
+    - [x] Adjust `services/capture_service.py::record_media_chunk` if additional metadata (size, content-type) must be stored.
+    - [x] Modify `static/js/stream_recorder.js` so MediaRecorder chunks post directly to `/api/sessions/<id>/chunks` with FormData (metadata + Blob).
+    - [x] Remove/refactor `/api/presigned-url` and client usages, keeping backwards compatibility only if flagged.
+    - [x] Expand `tests/test_capture_api.py` to cover multipart uploads using Flask test file uploads.
+    - [x] Verify Phase 1 reviewer dashboard renders chunk manifests correctly after the change.
+    - [x] Update README/docs to describe the new chunk submission contract and rollout notes.
+    - [x] Execute manual capture smoke test (browser → API → S3 → DB) to confirm end-to-end behavior.
 - [x] **Build validation dashboard** — Replace the in-memory `/tests/results` flow with a DB-backed reviewer experience that lists Phase 1 sessions and surfaces raw media/transcript/log status (`app_lightweight.py`, `templates/tests/test_results.html`) to satisfy Phase 1 Output requirements.
 - [x] **Service: list recent sessions** — Add a helper in `services/capture_service.py` that returns recent sessions with participant and chunk counts for reviewer dashboards.
 - [x] **API: GET /api/sessions list** — Implement a JSON listing route in `blueprints/capture_api.py` (and associated tests) that surfaces recent sessions for the new dashboard.

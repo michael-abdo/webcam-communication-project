@@ -11,7 +11,7 @@ import random
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
-from streaming.s3_handler import generate_presigned_post, ensure_bucket_exists
+from streaming.s3_handler import ensure_bucket_exists
 
 # Import utils
 from utils.assessment_transformer import transform_flask_to_assessment, generate_assessment_data
@@ -23,6 +23,7 @@ from blueprints.assessments_blueprint import assessment_bp
 from blueprints.capture_api import capture_api
 from models import init_engine
 from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
+from services.video_state import video_sessions, test_video_links
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -153,68 +154,6 @@ def phase1_sessions_view():
     """Phase 1 reviewer dashboard listing capture sessions."""
     system_state['requests_count'] += 1
     return render_template('phase1_sessions.html')
-
-@app.route('/api/presigned-url', methods=['POST'])
-def get_presigned_url():
-    """Generate presigned URL for direct S3 upload with optional test session linking."""
-    try:
-        data = request.get_json()
-        session_id = data.get('session_id')  # video session ID
-        chunk_number = data.get('chunk_number', 0)
-        test_session_id = data.get('test_session_id')  # optional test session link
-        
-        # Store video session info if not exists
-        if session_id not in video_sessions:
-            video_sessions[session_id] = {
-                'video_session_id': session_id,
-                'test_session_id': test_session_id,
-                'start_time': datetime.now(),
-                'chunks_uploaded': 0,
-                'status': 'active'
-            }
-            
-            # Create link if test session provided
-            if test_session_id and test_session_id in test_sessions:
-                test_video_links[test_session_id] = session_id
-                print(f"[VideoLink] Linked test session {test_session_id} with video session {session_id}")
-        
-        # Update chunk count
-        if session_id in video_sessions:
-            video_sessions[session_id]['chunks_uploaded'] += 1
-        
-        # Generate presigned POST URL
-        presigned_data = generate_presigned_post(session_id, chunk_number)
-        
-        if presigned_data:
-            return jsonify({
-                'success': True,
-                'upload_url': presigned_data['url'],
-                'fields': presigned_data['fields'],
-                'key': presigned_data['key'],
-                'session_id': presigned_data['session_id']
-            })
-        else:
-            error_msg = (
-                "Failed to generate presigned URL. This typically happens when:\n"
-                "1. AWS credentials are not configured\n"
-                "2. The S3 bucket doesn't exist or is inaccessible\n"
-                "3. IAM permissions are insufficient\n"
-                "Please check the server logs for more details."
-            )
-            return jsonify({
-                'success': False, 
-                'error': error_msg,
-                'help': 'For Heroku: Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables'
-            }), 500
-            
-    except Exception as e:
-        print(f"Error in presigned URL endpoint: {str(e)}")
-        return jsonify({
-            'success': False, 
-            'error': f'Server error: {str(e)}',
-            'help': 'Check server logs for detailed error information'
-        }), 500
-
 
 @app.route('/health')
 def health():
@@ -924,8 +863,6 @@ test_loader = TestLoader()
 test_sessions = {}
 
 # Video session storage and linking
-video_sessions = {}
-test_video_links = {}  # Maps test_session_id -> video_session_id
 
 @app.route('/tests')
 def tests_dashboard():

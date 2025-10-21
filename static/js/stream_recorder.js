@@ -310,24 +310,8 @@ async function processUploadQueue() {
         uploadItem.classList.add('upload-uploading');
         uploadItem.querySelector('.upload-status').textContent = 'Uploading...';
         
-        // Get presigned URL
-        const presignedData = await getPresignedUrl(chunk.number);
-        
-        if (!presignedData) {
-            throw new Error('Failed to get presigned URL');
-        }
-
         const checksum = await computeChunkChecksum(chunk.data);
-        
-        // Upload to S3
-        await uploadToS3(chunk.data, presignedData);
-
-        await recordChunkMetadata({
-            sequenceNo: chunk.number,
-            durationMs: chunk.durationMs || CHUNK_DURATION_MS,
-            storageKey: presignedData.key,
-            checksum
-        });
+        await uploadChunkDirect(chunk, checksum);
         
         // Update success
         uploadItem.classList.remove('upload-uploading');
@@ -372,95 +356,45 @@ async function computeChunkChecksum(blob) {
 /**
  * Persist chunk metadata via capture API.
  */
-async function recordChunkMetadata({ sequenceNo, durationMs, storageKey, checksum }) {
+async function uploadChunkDirect(chunk, checksum) {
     if (!sessionId) {
         throw new Error('Session ID missing when recording chunk metadata.');
     }
 
+    const metadata = {
+        sequence_no: chunk.number,
+        duration_ms: chunk.durationMs || CHUNK_DURATION_MS,
+        checksum: checksum || 'unavailable',
+        mime_type: MIME_TYPE,
+        file_extension: 'webm',
+        stored_at: new Date().toISOString(),
+        content_length: chunk.data.size
+    };
+
+    if (participantId) {
+        metadata.participant_id = participantId;
+    }
+
+    const formData = new FormData();
+    formData.append('metadata', JSON.stringify(metadata));
+    formData.append('media', chunk.data, `chunk_${String(chunk.number + 1).padStart(4, '0')}.webm`);
+
     const response = await fetch(`/api/sessions/${sessionId}/chunks`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders()
-        },
-        body: JSON.stringify({
-            sequence_no: sequenceNo,
-            duration_ms: durationMs,
-            checksum: checksum || 'unavailable',
-            storage_key: storageKey,
-            participant_id: participantId || undefined,
-            stored_at: new Date().toISOString()
-        })
+        headers: authHeaders(),
+        body: formData
     });
 
     if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({}));
-        throw new Error(errorBody.details || 'Failed to persist chunk metadata');
-    }
-
-    return response.json();
-}
-
-/**
- * Get presigned URL from server
- */
-async function getPresignedUrl(chunkNumber) {
-    if (!sessionId) {
-        throw new Error('Session not initialized');
-    }
-    try {
-        const response = await fetch('/api/presigned-url', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...authHeaders()
-            },
-            body: JSON.stringify({
-                session_id: sessionId,
-                chunk_number: chunkNumber
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to get presigned URL');
+        let errorDetails = 'Failed to upload chunk.';
+        try {
+            const errorBody = await response.json();
+            errorDetails = errorBody.details || errorBody.error || errorDetails;
+        } catch {
+            // ignore parse errors
         }
-        
-        const data = await response.json();
-        return data;
-        
-    } catch (error) {
-        console.error('Error getting presigned URL:', error);
-        return null;
+        throw new Error(errorDetails);
     }
-}
-
-/**
- * Upload chunk to S3 using presigned URL
- */
-async function uploadToS3(blob, presignedData) {
-    const formData = new FormData();
-    
-    // Add all fields from presigned data
-    Object.entries(presignedData.fields).forEach(([key, value]) => {
-        formData.append(key, value);
-    });
-    
-    // Add file last (important for S3)
-    formData.append('file', blob, 'chunk.webm');
-    
-    const response = await fetch(presignedData.upload_url, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Origin': window.location.origin
-        }
-    });
-    
-    if (!response.ok) {
-        throw new Error(`S3 upload failed: ${response.status}`);
-    }
-    
-    return true;
 }
 
 /**

@@ -1,11 +1,12 @@
-"""S3 handler for generating presigned URLs for direct browser uploads."""
+"""S3 helpers for Phase 1 capture storage."""
 
 import os
 import boto3
 from datetime import datetime
-import uuid
-import time
 from botocore.exceptions import ClientError
+from typing import IO, Optional
+import uuid
+import mimetypes
 
 # AWS Configuration
 AWS_PROFILE = 'zenex'
@@ -58,61 +59,58 @@ def get_s3_client():
         print(f"Error creating S3 client: {e}")
         raise
 
-def generate_presigned_post(session_id=None, chunk_number=0):
+def build_chunk_key(session_id: str, sequence_no: Optional[int] = None, extension: str = "webm") -> str:
+    """Create an S3 object key for a chunk."""
+    safe_ext = extension.lstrip(".") if extension else "webm"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_id = uuid.uuid4().hex[:8]
+    if sequence_no is not None:
+        return f"recordings/{session_id}/{timestamp}_chunk_{sequence_no:04d}_{unique_id}.{safe_ext}"
+    return f"recordings/{session_id}/{timestamp}_{unique_id}.{safe_ext}"
+
+
+def upload_chunk_file(
+    session_id: str,
+    file_obj: IO[bytes],
+    content_type: Optional[str],
+    sequence_no: Optional[int] = None,
+    extension: Optional[str] = None,
+) -> str:
     """
-    Generate a presigned POST URL for direct browser upload to S3.
-    
+    Upload a chunk file object to S3 and return the storage key.
+
     Args:
-        session_id: Unique session identifier (generated if not provided)
-        chunk_number: Sequential chunk number for this session
-        
-    Returns:
-        dict: Contains 'url' and 'fields' for the presigned POST, or None on error
+        session_id: Capture session identifier
+        file_obj: File-like object positioned at start
+        content_type: MIME type to set on S3 object
+        sequence_no: Optional sequence number for predictable naming
+        extension: Optional extension (without dot). Derived from MIME if missing.
     """
-    try:
-        # Attempt to get S3 client - this will raise exception if credentials missing
-        s3_client = get_s3_client()
-        
-        # Generate session ID if not provided
-        if not session_id:
-            session_id = str(uuid.uuid4())
-        
-        # Create S3 key with timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        key = f"recordings/{session_id}/{timestamp}_chunk_{chunk_number:04d}.webm"
-        
-        # Generate presigned POST URL
-        # Expires in 5 minutes  
-        response = s3_client.generate_presigned_post(
-            Bucket=S3_BUCKET,
-            Key=key,
-            ExpiresIn=300,  # 5 minutes
-            Conditions=[
-                {'content-type': 'video/webm;codecs=vp8,opus'},
-                ['content-length-range', 0, 50 * 1024 * 1024]  # Max 50MB
-            ]
-        )
-        
-        # Add additional fields for browser upload
-        response['fields']['Content-Type'] = 'video/webm;codecs=vp8,opus'
-        response['key'] = key
-        response['session_id'] = session_id
-        
-        return response
-        
-    except ClientError as e:
-        error_msg = f"AWS S3 Error generating presigned URL: {e}"
-        print(error_msg)
-        # Check if it's a credentials error
-        if e.response['Error']['Code'] == 'InvalidAccessKeyId':
-            print("Invalid AWS Access Key ID - check your credentials")
-        elif e.response['Error']['Code'] == 'SignatureDoesNotMatch':
-            print("Invalid AWS Secret Access Key - check your credentials")
-        return None
-    except Exception as e:
-        # This will catch credential configuration errors from get_s3_client
-        print(f"Error in generate_presigned_post: {e}")
-        return None
+    s3_client = get_s3_client()
+
+    resolved_ext = extension
+    if not resolved_ext and content_type:
+        resolved_ext = mimetypes.guess_extension(content_type.split(";")[0] if content_type else "")
+        if resolved_ext:
+            resolved_ext = resolved_ext.lstrip(".")
+    if not resolved_ext:
+        resolved_ext = "webm"
+
+    key = build_chunk_key(session_id, sequence_no=sequence_no, extension=resolved_ext)
+
+    extra_args = {}
+    if content_type:
+        extra_args["ContentType"] = content_type
+
+    file_obj.seek(0)
+    s3_client.upload_fileobj(
+        file_obj,
+        S3_BUCKET,
+        key,
+        ExtraArgs=extra_args or None,
+    )
+
+    return key
 
 def ensure_bucket_exists():
     """Ensure S3 bucket exists with proper configuration."""

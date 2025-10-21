@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from http import HTTPStatus
+import json
 
 from flask import Blueprint, current_app, jsonify, request
+from werkzeug.datastructures import FileStorage
 
 from services.capture_service import (
     CaptureConflictError,
@@ -18,6 +20,8 @@ from services.capture_service import (
 )
 
 from config import get_capture_api_token
+from streaming.s3_handler import upload_chunk_file
+from services.video_state import video_sessions, test_video_links
 
 capture_api = Blueprint("capture_api", __name__, url_prefix="/api")
 
@@ -175,49 +179,86 @@ def register_participant(session_id: str):
 
 @capture_api.route("/sessions/<session_id>/chunks", methods=["POST"])
 def record_chunk(session_id: str):
-    payload = request.get_json(silent=True) or {}
+    media: FileStorage | None = request.files.get("media")
+    metadata_raw = request.form.get("metadata")
 
-    sequence_no = payload.get("sequence_no")
-    checksum = payload.get("checksum")
-    duration_ms = payload.get("duration_ms")
-    storage_key = payload.get("storage_key")
-    participant_id = payload.get("participant_id")
-    stored_at = payload.get("stored_at")
+    if not media:
+        return (
+            jsonify({"error": "missing_media", "details": "Multipart field 'media' is required."}),
+            HTTPStatus.BAD_REQUEST,
+        )
 
-    missing_fields = [
+    if not metadata_raw:
+        return (
+            jsonify({"error": "missing_metadata", "details": "Multipart field 'metadata' is required."}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    try:
+        metadata = json.loads(metadata_raw)
+    except json.JSONDecodeError:
+        return (
+            jsonify({"error": "invalid_metadata", "details": "metadata field must be valid JSON."}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    sequence_no = metadata.get("sequence_no")
+    checksum = metadata.get("checksum")
+    duration_ms = metadata.get("duration_ms")
+    participant_id = metadata.get("participant_id")
+    stored_at = metadata.get("stored_at")
+    extension = metadata.get("file_extension")
+    content_type_override = metadata.get("mime_type")
+
+    required_missing = [
         field
         for field, value in (
             ("sequence_no", sequence_no),
             ("checksum", checksum),
             ("duration_ms", duration_ms),
-            ("storage_key", storage_key),
         )
         if value in (None, "")
     ]
-    if missing_fields:
+    if required_missing:
         return (
             jsonify(
                 {
                     "error": "missing_fields",
-                    "details": f"Missing required fields: {', '.join(missing_fields)}",
+                    "details": f"Missing required metadata fields: {', '.join(required_missing)}",
                 }
             ),
             HTTPStatus.BAD_REQUEST,
         )
 
-    if not isinstance(sequence_no, int) or sequence_no < 0:
+    try:
+        sequence_no = int(sequence_no)
+    except (TypeError, ValueError):
         return (
             jsonify(
-                {"error": "invalid_sequence", "details": "sequence_no must be a non-negative integer"}
+                {"error": "invalid_sequence", "details": "sequence_no must be an integer."}
             ),
             HTTPStatus.BAD_REQUEST,
         )
 
-    if not isinstance(duration_ms, int) or duration_ms <= 0:
+    if sequence_no < 0:
         return (
             jsonify(
-                {"error": "invalid_duration", "details": "duration_ms must be a positive integer"}
+                {"error": "invalid_sequence", "details": "sequence_no must be non-negative."}
             ),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    try:
+        duration_ms = int(duration_ms)
+    except (TypeError, ValueError):
+        return (
+            jsonify({"error": "invalid_duration", "details": "duration_ms must be an integer."}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    if duration_ms <= 0:
+        return (
+            jsonify({"error": "invalid_duration", "details": "duration_ms must be positive."}),
             HTTPStatus.BAD_REQUEST,
         )
 
@@ -230,6 +271,41 @@ def record_chunk(session_id: str):
                 jsonify({"error": "invalid_datetime", "details": str(exc)}),
                 HTTPStatus.BAD_REQUEST,
             )
+
+    content_type = content_type_override or media.mimetype
+    test_session_id = metadata.get("test_session_id")
+
+    # Maintain legacy session mappings for test dashboards
+    default_start = stored_at_dt or datetime.now(timezone.utc)
+    session_state = video_sessions.setdefault(
+        session_id,
+        {
+            "video_session_id": session_id,
+            "start_time": default_start,
+            "chunks_uploaded": 0,
+            "status": "active",
+        },
+    )
+    session_state["chunks_uploaded"] = session_state.get("chunks_uploaded", 0) + 1
+    session_state["last_chunk_at"] = stored_at_dt or datetime.now(timezone.utc)
+    if test_session_id:
+        session_state["test_session_id"] = test_session_id
+        test_video_links[test_session_id] = session_id
+
+    try:
+        storage_key = upload_chunk_file(
+            session_id=session_id,
+            file_obj=media.stream,
+            content_type=content_type,
+            sequence_no=sequence_no,
+            extension=extension,
+        )
+    except Exception as exc:  # noqa: BLE001
+        current_app.logger.exception("phase1.chunk.upload_failed", extra={"session_id": session_id})
+        return (
+            jsonify({"error": "upload_failed", "details": str(exc)}),
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
     try:
         chunk = record_media_chunk(

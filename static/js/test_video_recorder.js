@@ -30,6 +30,7 @@ class VideoRecorder {
         this.uploadQueue = [];
         this.durationInterval = null;
         this.testSessionId = null; // Link to test session
+        this.apiToken = options.apiToken || localStorage.getItem('captureApiToken') || null;
         
         // Callbacks
         this.onRecordingStart = options.onRecordingStart || null;
@@ -103,6 +104,10 @@ class VideoRecorder {
             
             // Store test session link
             this.testSessionId = testSessionId;
+
+            if (!this.apiToken) {
+                this.apiToken = localStorage.getItem('captureApiToken') || null;
+            }
             
             // Generate new video session ID
             this.sessionId = this.generateSessionId();
@@ -285,17 +290,10 @@ class VideoRecorder {
         
         try {
             console.log(`[VideoRecorder] Uploading chunk ${chunk.number}...`);
-            
-            // Get presigned URL
-            const presignedData = await this.getPresignedUrl(chunk.number, chunk.testSessionId);
-            
-            if (!presignedData) {
-                throw new Error('Failed to get presigned URL');
-            }
-            
-            // Upload to S3
-            await this.uploadToS3(chunk.data, presignedData);
-            
+
+            const checksum = await this.computeChunkChecksum(chunk.data);
+            await this.uploadChunkToApi(chunk, checksum);
+
             this.chunksUploaded++;
             console.log(`[VideoRecorder] Chunk ${chunk.number} uploaded successfully`);
             
@@ -324,63 +322,63 @@ class VideoRecorder {
         }
     }
     
-    /**
-     * Get presigned URL from server
-     */
-    async getPresignedUrl(chunkNumber, testSessionId = null) {
-        try {
-            const response = await fetch('/api/presigned-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    session_id: this.sessionId,
-                    chunk_number: chunkNumber,
-                    test_session_id: testSessionId
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to get presigned URL');
-            }
-            
-            return await response.json();
-            
-        } catch (error) {
-            console.error('[VideoRecorder] Error getting presigned URL:', error);
-            return null;
+    async computeChunkChecksum(blob) {
+        if (!window.crypto || !window.crypto.subtle) {
+            return 'unavailable';
         }
+        const buffer = await blob.arrayBuffer();
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     }
-    
-    /**
-     * Upload chunk to S3 using presigned URL
-     */
-    async uploadToS3(blob, presignedData) {
-        const formData = new FormData();
-        
-        // Add all fields from presigned data
-        Object.entries(presignedData.fields).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-        
-        // Add file
-        formData.append('file', blob, 'chunk.webm');
-        
-        const response = await fetch(presignedData.upload_url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Origin': window.location.origin
-            }
-        });
-        
-        if (!response.ok) {
-            const responseText = await response.text();
-            throw new Error(`S3 upload failed: ${response.status} - ${responseText}`);
+
+    authHeaders() {
+        if (!this.apiToken) {
+            return {};
         }
-        
-        return true;
+        return {
+            Authorization: `Bearer ${this.apiToken}`
+        };
+    }
+
+    async uploadChunkToApi(chunk, checksum) {
+        if (!this.sessionId) {
+            throw new Error('Session not initialized');
+        }
+
+        const metadata = {
+            sequence_no: chunk.number,
+            duration_ms: this.CHUNK_DURATION_MS,
+            checksum: checksum || 'unavailable',
+            mime_type: this.MIME_TYPE,
+            file_extension: 'webm',
+            stored_at: new Date().toISOString()
+        };
+
+        if (this.testSessionId) {
+            metadata.test_session_id = this.testSessionId;
+        }
+
+        const formData = new FormData();
+        formData.append('metadata', JSON.stringify(metadata));
+        formData.append('media', chunk.data, `chunk_${String(chunk.number + 1).padStart(4, '0')}.webm`);
+
+        const response = await fetch(`/api/sessions/${this.sessionId}/chunks`, {
+            method: 'POST',
+            headers: this.authHeaders(),
+            body: formData
+        });
+
+        if (!response.ok) {
+            let details = `Failed to upload chunk ${chunk.number}`;
+            try {
+                const payload = await response.json();
+                details = payload.details || payload.error || details;
+            } catch {
+                // ignore
+            }
+            throw new Error(details);
+        }
     }
     
     /**

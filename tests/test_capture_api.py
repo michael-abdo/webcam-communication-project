@@ -1,4 +1,6 @@
 import os
+import io
+import json
 from datetime import datetime, timezone
 
 import pytest
@@ -62,16 +64,22 @@ def test_session_lifecycle(client):
     assert participant_resp.status_code == 201
     participant_body = participant_resp.get_json()
 
+    metadata = {
+        "sequence_no": 0,
+        "checksum": "abc123",
+        "duration_ms": 5000,
+        "participant_id": participant_body["id"],
+        "mime_type": "video/webm;codecs=vp8,opus",
+        "file_extension": "webm",
+    }
     chunk_resp = client.post(
         f"/api/sessions/{session_id}/chunks",
-        json={
-            "sequence_no": 0,
-            "checksum": "abc123",
-            "duration_ms": 5000,
-            "storage_key": "recordings/test/chunk_0000.webm",
-            "participant_id": participant_body["id"],
+        data={
+            "metadata": json.dumps(metadata),
+            "media": (io.BytesIO(b"fake-chunk"), "chunk0000.webm", "video/webm"),
         },
         headers=auth_headers(),
+        content_type="multipart/form-data",
     )
     assert chunk_resp.status_code == 202
 
@@ -116,27 +124,39 @@ def test_chunk_conflict(client):
     )
     session_id = session_resp.get_json()["id"]
 
+    first_meta = {
+        "sequence_no": 1,
+        "checksum": "abc",
+        "duration_ms": 5000,
+        "mime_type": "video/webm",
+        "file_extension": "webm",
+    }
     first = client.post(
         f"/api/sessions/{session_id}/chunks",
-        json={
-            "sequence_no": 1,
-            "checksum": "abc",
-            "duration_ms": 5000,
-            "storage_key": "recordings/test/chunk_0001.webm",
+        data={
+            "metadata": json.dumps(first_meta),
+            "media": (io.BytesIO(b"chunk-a"), "chunk0001.webm", "video/webm"),
         },
         headers=auth_headers(),
+        content_type="multipart/form-data",
     )
     assert first.status_code == 202
 
+    dup_meta = {
+        "sequence_no": 1,
+        "checksum": "def",
+        "duration_ms": 5000,
+        "mime_type": "video/webm",
+        "file_extension": "webm",
+    }
     second = client.post(
         f"/api/sessions/{session_id}/chunks",
-        json={
-            "sequence_no": 1,
-            "checksum": "def",
-            "duration_ms": 5000,
-            "storage_key": "recordings/test/chunk_0001_dup.webm",
+        data={
+            "metadata": json.dumps(dup_meta),
+            "media": (io.BytesIO(b"chunk-b"), "chunk0001b.webm", "video/webm"),
         },
         headers=auth_headers(),
+        content_type="multipart/form-data",
     )
     assert second.status_code == 409
 

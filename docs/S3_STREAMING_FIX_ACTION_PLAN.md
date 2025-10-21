@@ -1,5 +1,7 @@
 # S3 Streaming Fix Action Plan
 
+> **Note:** As of 2025-07 the system no longer uses `/api/presigned-url`; uploads flow through `/api/sessions/<id>/chunks` via multipart form submissions handled server-side.
+
 ## Quick Fix (Restore Working S3)
 
 ### Step 1: Backup Current Changes
