@@ -95,7 +95,18 @@ function playAudioFrame(frame) {
 
 function activateAudio() {
   if (audioContext) {
-    return audioContext.state === "running";
+    if (audioContext.state === "running") {
+      return Promise.resolve(true);
+    }
+
+    return audioContext.resume().then(() => {
+      audioReady = true;
+      while (pendingAudio.length > 0) {
+        const frame = pendingAudio.shift();
+        playAudioFrame(frame);
+      }
+      return true;
+    });
   }
 
   audioContext = new AudioContext({ sampleRate: 16000 });
