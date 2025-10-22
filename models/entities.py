@@ -58,6 +58,18 @@ class Session(Base):
         cascade="all, delete-orphan",
         order_by="MediaChunk.sequence_no",
     )
+    transcript: Mapped["SessionTranscript | None"] = relationship(
+        "SessionTranscript",
+        back_populates="session",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    logs: Mapped[list["SessionLog"]] = relationship(
+        "SessionLog",
+        back_populates="session",
+        cascade="all, delete-orphan",
+        order_by="SessionLog.recorded_at.desc()",
+    )
 
     def to_dict(self) -> dict:
         return {
@@ -70,6 +82,8 @@ class Session(Base):
             "updated_at": self.updated_at.isoformat(),
             "participants": [participant.to_dict() for participant in self.participants],
             "chunks": [chunk.to_dict() for chunk in self.media_chunks],
+            "transcript": self.transcript.to_dict() if self.transcript else None,
+            "logs": [log.to_dict() for log in self.logs],
         }
 
 
@@ -160,4 +174,77 @@ class MediaChunk(Base):
             "storage_key": self.storage_key,
             "stored_at": self.stored_at.isoformat(),
             "created_at": self.created_at.isoformat(),
+        }
+
+
+class SessionTranscript(Base):
+    """Session transcript artifact metadata."""
+
+    __tablename__ = "session_transcripts"
+
+    id: Mapped[str] = mapped_column(CHAR(36), primary_key=True, default=_uuid)
+    session_id: Mapped[str] = mapped_column(
+        CHAR(36), ForeignKey("sessions.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    storage_key: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="pending")
+    mime_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    generated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    source: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+    session: Mapped["Session"] = relationship("Session", back_populates="transcript")
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "session_id": self.session_id,
+            "storage_key": self.storage_key,
+            "status": self.status,
+            "mime_type": self.mime_type,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "generated_at": self.generated_at.isoformat() if self.generated_at else None,
+            "source": self.source,
+        }
+
+
+class SessionLog(Base):
+    """Session log artifact metadata."""
+
+    __tablename__ = "session_logs"
+
+    id: Mapped[str] = mapped_column(CHAR(36), primary_key=True, default=_uuid)
+    session_id: Mapped[str] = mapped_column(
+        CHAR(36), ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False
+    )
+    log_type: Mapped[str] = mapped_column(String(100), nullable=False, default="capture")
+    storage_key: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="pending")
+    message: Mapped[str | None] = mapped_column(String(1024), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+    recorded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    session: Mapped["Session"] = relationship("Session", back_populates="logs")
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "session_id": self.session_id,
+            "log_type": self.log_type,
+            "storage_key": self.storage_key,
+            "status": self.status,
+            "message": self.message,
+            "created_at": self.created_at.isoformat(),
+            "recorded_at": self.recorded_at.isoformat() if self.recorded_at else None,
         }

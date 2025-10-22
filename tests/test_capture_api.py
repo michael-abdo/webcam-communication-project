@@ -126,14 +126,42 @@ def test_session_lifecycle(client, metrics_stub):
     assert any(name == "phase1.chunk.uploaded" for name, _, _ in metrics_stub.incr_calls)
     assert any(name == "phase1.chunk.upload_latency_ms" for name, _, _ in metrics_stub.timing_calls)
 
-    session_detail = client.get(f"/api/sessions/{session_id}", headers=auth_headers())
-    assert session_detail.status_code == 200
-    detail_body = session_detail.get_json()
+    transcript_resp = client.post(
+        f"/api/sessions/{session_id}/transcript",
+        json={
+            "status": "completed",
+            "storage_key": "transcripts/test.txt",
+            "mime_type": "text/plain",
+            "generated_at": consent_at,
+            "source": "unit-test",
+        },
+        headers=auth_headers(),
+    )
+    assert transcript_resp.status_code == 200
+    assert any(name == "phase1.transcript.updated" for name, _, _ in metrics_stub.incr_calls)
+
+    log_resp = client.post(
+        f"/api/sessions/{session_id}/logs",
+        json={
+            "status": "completed",
+            "log_type": "ingest",
+            "storage_key": "logs/test.log",
+            "message": "ingest finished",
+            "recorded_at": consent_at,
+        },
+        headers=auth_headers(),
+    )
+    assert log_resp.status_code == 201
+    assert any(name == "phase1.log.updated" for name, _, _ in metrics_stub.incr_calls)
+
+    detail_body = client.get(f"/api/sessions/{session_id}", headers=auth_headers()).get_json()
     assert detail_body["id"] == session_id
     assert len(detail_body["participants"]) == 1
     assert len(detail_body["chunks"]) == 1
-    assert detail_body["transcript_status"] == "not_available"
-    assert detail_body["log_status"] == "not_available"
+    assert detail_body["transcript_status"] == "completed"
+    assert detail_body["log_status"] == "completed"
+    assert detail_body["transcript"]["download_url"].startswith("https://example.com/")
+    assert detail_body["logs"][0]["download_url"].startswith("https://example.com/")
     assert detail_body["chunks"][0]["download_url"].startswith("https://example.com/")
 
     download_resp = client.get(
@@ -143,6 +171,23 @@ def test_session_lifecycle(client, metrics_stub):
     assert download_resp.status_code == 200
     assert download_resp.get_json()["url"].startswith("https://example.com/")
     assert any(name == "phase1.chunk.download_requested" for name, _, _ in metrics_stub.incr_calls)
+
+    transcript_download = client.get(
+        f"/api/sessions/{session_id}/transcript/download",
+        headers=auth_headers(),
+    )
+    assert transcript_download.status_code == 200
+    assert transcript_download.get_json()["url"].startswith("https://example.com/")
+    assert any(name == "phase1.transcript.download_requested" for name, _, _ in metrics_stub.incr_calls)
+
+    log_id = detail_body["logs"][0]["id"]
+    log_download = client.get(
+        f"/api/sessions/{session_id}/logs/{log_id}/download",
+        headers=auth_headers(),
+    )
+    assert log_download.status_code == 200
+    assert log_download.get_json()["url"].startswith("https://example.com/")
+    assert any(name == "phase1.log.download_requested" for name, _, _ in metrics_stub.incr_calls)
 
 
 def test_session_list_endpoint(client, metrics_stub):
@@ -174,14 +219,26 @@ def test_session_list_endpoint(client, metrics_stub):
         content_type="multipart/form-data",
     )
 
+    client.post(
+        f"/api/sessions/{session_id}/transcript",
+        json={"status": "completed", "storage_key": "transcripts/list.txt"},
+        headers=auth_headers(),
+    )
+
+    client.post(
+        f"/api/sessions/{session_id}/logs",
+        json={"status": "completed", "storage_key": "logs/list.log"},
+        headers=auth_headers(),
+    )
+
     response = client.get("/api/sessions", headers=auth_headers())
     assert response.status_code == 200
     payload = response.get_json()
     assert "sessions" in payload
     assert payload["count"] == len(payload["sessions"])
     session = next(item for item in payload["sessions"] if item["facilitator_id"] == "fac-list")
-    assert session["transcript_status"] == "not_available"
-    assert session["log_status"] == "not_available"
+    assert session["transcript_status"] == "completed"
+    assert session["log_status"] == "completed"
     assert session["chunk_count"] == 1
 
 

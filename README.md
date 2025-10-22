@@ -152,8 +152,15 @@ Example session creation payload:
 
 - Visit `/phase1/sessions` to open the Phase 1 validation UI.
 - Provide the same capture API token to enumerate recent sessions (limit configurable in the UI).
-- Select a session to review facilitator metadata, participant readiness, and the full chunk manifest (sequence, checksum, storage key, timestamp).
+- Select a session to review facilitator metadata, participant readiness, chunk manifest, transcript/log statuses, and grab time-limited download links for raw media or artifacts.
 - This replaces the in-memory `/tests/results` view and reflects the persisted capture data in Postgres.
+
+### Transcript & Log APIs
+
+- `POST /api/sessions/<id>/transcript` – ingest transcript metadata and optional file upload (`status`, optional `storage_key`, `mime_type`, `generated_at`).
+- `POST /api/sessions/<id>/logs` – record processing logs with status/message and optional upload payload.
+- `GET /api/sessions/<id>/transcript/download` – retrieve signed URL for the latest transcript artifact.
+- `GET /api/sessions/<id>/logs/<log_id>/download` – retrieve signed URL for a stored log artifact.
 
 ## 🔍 Test-Driven Validation
 

@@ -59,14 +59,20 @@ def get_s3_client():
         print(f"Error creating S3 client: {e}")
         raise
 
-def build_chunk_key(session_id: str, sequence_no: Optional[int] = None, extension: str = "webm") -> str:
-    """Create an S3 object key for a chunk."""
+def build_object_key(
+    session_id: str,
+    category: str = "recordings",
+    sequence_no: Optional[int] = None,
+    extension: str = "webm",
+) -> str:
+    """Create an S3 object key for a capture artifact."""
     safe_ext = extension.lstrip(".") if extension else "webm"
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     unique_id = uuid.uuid4().hex[:8]
+    prefix = category.strip("/") or "recordings"
     if sequence_no is not None:
-        return f"recordings/{session_id}/{timestamp}_chunk_{sequence_no:04d}_{unique_id}.{safe_ext}"
-    return f"recordings/{session_id}/{timestamp}_{unique_id}.{safe_ext}"
+        return f"{prefix}/{session_id}/{timestamp}_chunk_{sequence_no:04d}_{unique_id}.{safe_ext}"
+    return f"{prefix}/{session_id}/{timestamp}_{unique_id}.{safe_ext}"
 
 
 def upload_chunk_file(
@@ -96,7 +102,52 @@ def upload_chunk_file(
     if not resolved_ext:
         resolved_ext = "webm"
 
-    key = build_chunk_key(session_id, sequence_no=sequence_no, extension=resolved_ext)
+    key = build_object_key(
+        session_id,
+        category="recordings",
+        sequence_no=sequence_no,
+        extension=resolved_ext,
+    )
+
+    extra_args = {}
+    if content_type:
+        extra_args["ContentType"] = content_type
+
+    file_obj.seek(0)
+    s3_client.upload_fileobj(
+        file_obj,
+        S3_BUCKET,
+        key,
+        ExtraArgs=extra_args or None,
+    )
+
+    return key
+
+
+def upload_artifact_file(
+    session_id: str,
+    file_obj: IO[bytes],
+    content_type: Optional[str],
+    category: str,
+    extension: Optional[str] = None,
+) -> str:
+    """Upload a non-chunk artifact (transcripts/logs) to S3."""
+    s3_client = get_s3_client()
+
+    resolved_ext = extension
+    if not resolved_ext and content_type:
+        resolved_ext = mimetypes.guess_extension(content_type.split(";")[0] if content_type else "")
+        if resolved_ext:
+            resolved_ext = resolved_ext.lstrip(".")
+    if not resolved_ext:
+        resolved_ext = "dat"
+
+    key = build_object_key(
+        session_id,
+        category=category,
+        sequence_no=None,
+        extension=resolved_ext,
+    )
 
     extra_args = {}
     if content_type:

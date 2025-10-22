@@ -226,6 +226,33 @@ function renderSessionDetail(session) {
 
     const participants = session.participants || [];
     const chunks = session.chunks || [];
+    const transcript = session.transcript || null;
+    const logs = session.logs || [];
+
+    const transcriptHtml = transcript
+        ? `
+            <div class="artifact-item">
+                <div class="artifact-meta"><strong>Status:</strong> ${renderStatusPill(transcript.status)}</div>
+                <div class="artifact-meta"><strong>Source:</strong> ${escapeHtml(transcript.source || '—')}</div>
+                <div class="artifact-meta"><strong>Generated:</strong> ${formatDate(transcript.generated_at) || '—'}</div>
+                ${transcript.download_url ? `<button class="chunk-download" onclick="downloadTranscript()">Download Transcript</button>` : '<span class="chunk-meta">Download unavailable</span>'}
+            </div>`
+        : '<div class="empty-state" style="padding: 12px 0;">Transcript not yet available.</div>';
+
+    const logsHtml = logs.length
+        ? logs
+              .map(
+                  (log) => `
+                <div class="artifact-item">
+                    <div class="artifact-meta"><strong>Type:</strong> ${escapeHtml(log.log_type || 'capture')}</div>
+                    <div class="artifact-meta"><strong>Status:</strong> ${renderStatusPill(log.status)}</div>
+                    <div class="artifact-meta"><strong>Recorded:</strong> ${formatDate(log.recorded_at) || '—'}</div>
+                    <div class="artifact-meta"><strong>Message:</strong> ${escapeHtml(log.message || '—')}</div>
+                    ${log.download_url ? `<button class="chunk-download" onclick="downloadLog('${log.id}')">Download Log</button>` : '<span class="chunk-meta">Download unavailable</span>'}
+                </div>`
+              )
+              .join('')
+        : '<div class="empty-state" style="padding: 12px 0;">No logs recorded yet.</div>';
 
     sessionDetail.innerHTML = `
         <div>
@@ -259,6 +286,16 @@ function renderSessionDetail(session) {
                 <dd>${renderStatusPill(session.alert_state)}</dd>
             </dl>
 
+            <div class="artifact-section">
+                <h4>Transcript</h4>
+                ${transcriptHtml}
+            </div>
+
+            <div class="artifact-section">
+                <h4>Logs</h4>
+                ${logsHtml}
+            </div>
+
             <div class="chunk-list">
                 <h4>Chunk Manifest</h4>
                 ${chunks.length === 0 ? '<div class="empty-state" style="padding: 12px 0;">No chunks uploaded yet.</div>' : ''}
@@ -271,8 +308,6 @@ function renderSessionDetail(session) {
                             <div class="chunk-meta">Stored At: ${formatDate(chunk.stored_at) || '—'}</div>
                             <div class="chunk-meta">Checksum: ${escapeHtml(chunk.checksum)}</div>
                             <div class="chunk-meta">Storage Key: ${escapeHtml(chunk.storage_key)}</div>
-                            <div class="chunk-meta">Transcript: ${renderStatusPill(chunk.transcript_status)}</div>
-                            <div class="chunk-meta">Logs: ${renderStatusPill(chunk.log_status)}</div>
                             ${chunk.download_url ? `<button class="chunk-download" data-seq="${chunk.sequence_no}">Download Chunk</button>` : '<span class="chunk-meta">Download URL unavailable</span>'}
                         </div>
                     `
@@ -283,11 +318,13 @@ function renderSessionDetail(session) {
     `;
 
     sessionDetail.querySelectorAll('.chunk-download').forEach((btn) => {
-        btn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const sequence = Number(btn.dataset.seq);
-            downloadChunk(sequence);
-        });
+        if (btn.dataset.seq) {
+            btn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const sequence = Number(btn.dataset.seq);
+                downloadChunk(sequence);
+            });
+        }
     });
 }
 
@@ -316,6 +353,64 @@ async function downloadChunk(sequenceNo) {
         }
     } catch (err) {
         console.error('Chunk download error', err);
+        showError(err.message || 'Failed to generate download link.');
+    }
+}
+
+async function downloadTranscript() {
+    if (!activeSessionId) {
+        showError('No session selected.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/sessions/${activeSessionId}/transcript/download`, {
+            headers: {
+                ...authHeaders(),
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to generate download link (${response.status})`);
+        }
+
+        const payload = await response.json();
+        if (payload.url) {
+            window.open(payload.url, '_blank', 'noopener');
+        } else {
+            showError('Transcript download unavailable.');
+        }
+    } catch (err) {
+        console.error('Transcript download error', err);
+        showError(err.message || 'Failed to generate download link.');
+    }
+}
+
+async function downloadLog(logId) {
+    if (!activeSessionId) {
+        showError('No session selected.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/sessions/${activeSessionId}/logs/${logId}/download`, {
+            headers: {
+                ...authHeaders(),
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to generate download link (${response.status})`);
+        }
+
+        const payload = await response.json();
+        if (payload.url) {
+            window.open(payload.url, '_blank', 'noopener');
+        } else {
+            showError('Log download unavailable.');
+        }
+    } catch (err) {
+        console.error('Log download error', err);
         showError(err.message || 'Failed to generate download link.');
     }
 }

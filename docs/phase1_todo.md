@@ -30,6 +30,7 @@
     - [x] Surface failed chunk/error status clearly in the dashboard UI.
     - [x] Document reviewer workflow for validating media/transcripts/logs in README.
     - [x] Add regression tests to confirm new metadata fields appear in the JSON response.
+    - [x] Integrate actual transcript/log ingestion pipeline so statuses reflect real data (Phase 1 Output validation tooling).
 
 - [x] **API: GET /api/sessions list** — Implement a JSON listing route in `blueprints/capture_api.py` (and associated tests) that surfaces recent sessions for the new dashboard.
 - [x] **UI Route: /phase1/sessions page** — Add a Flask route in `app_lightweight.py` plus template plumbing to render the Phase 1 session list.

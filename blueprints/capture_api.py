@@ -18,10 +18,13 @@ from services.capture_service import (
     list_recent_sessions,
     list_session_chunks,
     record_media_chunk,
+    upsert_transcript_record,
+    create_log_record,
+    list_session_logs,
 )
 
 from config import get_capture_api_token
-from streaming.s3_handler import upload_chunk_file, generate_download_url
+from streaming.s3_handler import upload_chunk_file, upload_artifact_file, generate_download_url
 from telemetry import metrics
 from services.video_state import video_sessions, test_video_links
 
@@ -347,6 +350,164 @@ def record_chunk(session_id: str):
     return jsonify(chunk), HTTPStatus.ACCEPTED
 
 
+@capture_api.route("/sessions/<session_id>/transcript", methods=["POST"])
+def upload_transcript(session_id: str):
+    media: FileStorage | None = request.files.get("media")
+
+    if media:
+        metadata_raw = request.form.get("metadata")
+        if not metadata_raw:
+            return (
+                jsonify({"error": "missing_metadata", "details": "metadata field is required"}),
+                HTTPStatus.BAD_REQUEST,
+            )
+        try:
+            metadata = json.loads(metadata_raw)
+        except json.JSONDecodeError:
+            return (
+                jsonify({"error": "invalid_metadata", "details": "metadata must be valid JSON"}),
+                HTTPStatus.BAD_REQUEST,
+            )
+    else:
+        metadata = request.get_json(silent=True) or {}
+
+    status = metadata.get("status")
+    if not status:
+        return (
+            jsonify({"error": "missing_fields", "details": "status is required"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    storage_key = metadata.get("storage_key")
+    mime_type = metadata.get("mime_type")
+    generated_at = metadata.get("generated_at")
+    source = metadata.get("source")
+
+    if media:
+        content_type = mime_type or media.mimetype
+        extension = metadata.get("file_extension")
+        try:
+            storage_key = upload_artifact_file(
+                session_id=session_id,
+                file_obj=media.stream,
+                content_type=content_type,
+                category="transcripts",
+                extension=extension,
+            )
+        except Exception as exc:  # noqa: BLE001
+            current_app.logger.exception("phase1.transcript.upload_failed", extra={"session_id": session_id})
+            return (
+                jsonify({"error": "upload_failed", "details": str(exc)}),
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+        mime_type = content_type
+    elif not storage_key:
+        return (
+            jsonify({"error": "missing_fields", "details": "storage_key or media file required"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    generated_dt = None
+    if generated_at:
+        try:
+            generated_dt = _parse_datetime(generated_at, "generated_at")
+        except ValueError as exc:
+            return jsonify({"error": "invalid_datetime", "details": str(exc)}), HTTPStatus.BAD_REQUEST
+
+    transcript = upsert_transcript_record(
+        session_id=session_id,
+        status=status,
+        storage_key=storage_key,
+        mime_type=mime_type,
+        generated_at=generated_dt,
+        source=source,
+    )
+    transcript["download_url"] = (
+        generate_download_url(transcript.get("storage_key")) if transcript.get("storage_key") else None
+    )
+    metrics().incr("phase1.transcript.updated")
+    return jsonify(transcript), HTTPStatus.OK
+
+
+@capture_api.route("/sessions/<session_id>/logs", methods=["POST"])
+def upload_log(session_id: str):
+    media: FileStorage | None = request.files.get("media")
+
+    if media:
+        metadata_raw = request.form.get("metadata")
+        if not metadata_raw:
+            return (
+                jsonify({"error": "missing_metadata", "details": "metadata field is required"}),
+                HTTPStatus.BAD_REQUEST,
+            )
+        try:
+            metadata = json.loads(metadata_raw)
+        except json.JSONDecodeError:
+            return (
+                jsonify({"error": "invalid_metadata", "details": "metadata must be valid JSON"}),
+                HTTPStatus.BAD_REQUEST,
+            )
+    else:
+        metadata = request.get_json(silent=True) or {}
+
+    status = metadata.get("status")
+    log_type = metadata.get("log_type", "capture")
+    message = metadata.get("message")
+    recorded_at = metadata.get("recorded_at")
+    storage_key = metadata.get("storage_key")
+    mime_type = metadata.get("mime_type")
+
+    if not status:
+        return (
+            jsonify({"error": "missing_fields", "details": "status is required"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    if media:
+        content_type = mime_type or media.mimetype
+        extension = metadata.get("file_extension") or "log"
+        try:
+            storage_key = upload_artifact_file(
+                session_id=session_id,
+                file_obj=media.stream,
+                content_type=content_type,
+                category="logs",
+                extension=extension,
+            )
+        except Exception as exc:  # noqa: BLE001
+            current_app.logger.exception("phase1.log.upload_failed", extra={"session_id": session_id})
+            return (
+                jsonify({"error": "upload_failed", "details": str(exc)}),
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+    elif not storage_key:
+        return (
+            jsonify({"error": "missing_fields", "details": "storage_key or media file required"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    recorded_dt = None
+    if recorded_at:
+        try:
+            recorded_dt = _parse_datetime(recorded_at, "recorded_at")
+        except ValueError as exc:
+            return jsonify({"error": "invalid_datetime", "details": str(exc)}), HTTPStatus.BAD_REQUEST
+
+    log_entry = create_log_record(
+        session_id=session_id,
+        log_type=log_type,
+        status=status,
+        storage_key=storage_key,
+        message=message,
+        recorded_at=recorded_dt,
+    )
+    log_entry["download_url"] = (
+        generate_download_url(log_entry.get("storage_key")) if log_entry.get("storage_key") else None
+    )
+    metrics().incr("phase1.log.updated")
+    return jsonify(log_entry), HTTPStatus.CREATED
+
+
 @capture_api.route("/sessions/<session_id>", methods=["GET"])
 def get_session(session_id: str):
     try:
@@ -363,10 +524,52 @@ def get_session(session_id: str):
         chunk_copy.setdefault("log_status", "not_available")
         chunks_with_links.append(chunk_copy)
 
+    transcript = session_record.get("transcript")
+    transcript_status = "not_available"
+    if transcript:
+        transcript_status = (transcript.get("status") or "unknown").lower()
+        transcript["download_url"] = (
+            generate_download_url(transcript.get("storage_key"))
+            if transcript.get("storage_key")
+            else None
+        )
+
+    logs_with_links = []
+    log_status = "not_available"
+    log_statuses: list[str] = []
+    for log in session_record.get("logs", []):
+        entry = dict(log)
+        entry["download_url"] = (
+            generate_download_url(log.get("storage_key")) if log.get("storage_key") else None
+        )
+        logs_with_links.append(entry)
+        if log.get("status"):
+            log_statuses.append(log["status"].lower())
+
+    if log_statuses:
+        if any(status in {"failed", "error"} for status in log_statuses):
+            log_status = "failed"
+        elif any(status in {"attention_required", "processing", "pending"} for status in log_statuses):
+            log_status = "attention_required"
+        elif any(status == "completed" for status in log_statuses):
+            log_status = "completed"
+        else:
+            log_status = log_statuses[0]
+
     session_record["chunks"] = chunks_with_links
-    session_record.setdefault("transcript_status", "not_available")
-    session_record.setdefault("log_status", "not_available")
-    session_record["alert_state"] = "attention_required" if not chunks_with_links else "ok"
+    session_record["transcript"] = transcript
+    session_record["logs"] = logs_with_links
+    session_record["transcript_status"] = transcript_status
+    session_record["log_status"] = log_status
+
+    alert_state = "ok"
+    if (
+        not chunks_with_links
+        or transcript_status in {"failed", "attention_required"}
+        or log_status in {"failed", "attention_required"}
+    ):
+        alert_state = "attention_required"
+    session_record["alert_state"] = alert_state
 
     return jsonify(session_record), HTTPStatus.OK
 
@@ -387,3 +590,46 @@ def get_chunk_download(session_id: str, sequence_no: int):
 
     return jsonify({"error": "not_found", "details": "Chunk not found"}), HTTPStatus.NOT_FOUND
 
+
+@capture_api.route("/sessions/<session_id>/transcript/download", methods=["GET"])
+def get_transcript_download(session_id: str):
+    try:
+        session_record = get_session_record(session_id)
+    except CaptureNotFoundError as exc:
+        return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
+
+    transcript = session_record.get("transcript")
+    if not transcript or not transcript.get("storage_key"):
+        return jsonify({"error": "not_found", "details": "Transcript not available"}), HTTPStatus.NOT_FOUND
+
+    url = generate_download_url(transcript.get("storage_key"))
+    if not url:
+        return (
+            jsonify({"error": "unavailable", "details": "Download URL could not be generated"}),
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+    metrics().incr("phase1.transcript.download_requested")
+    return jsonify({"url": url, "expires_in": 3600}), HTTPStatus.OK
+
+
+@capture_api.route("/sessions/<session_id>/logs/<log_id>/download", methods=["GET"])
+def get_log_download(session_id: str, log_id: str):
+    try:
+        logs = list_session_logs(session_id)
+    except CaptureNotFoundError as exc:
+        return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
+
+    for log in logs:
+        if log.get("id") == log_id:
+            if not log.get("storage_key"):
+                return jsonify({"error": "not_found", "details": "Log has no storage backing"}), HTTPStatus.NOT_FOUND
+            url = generate_download_url(log.get("storage_key"))
+            if not url:
+                return (
+                    jsonify({"error": "unavailable", "details": "Download URL could not be generated"}),
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
+            metrics().incr("phase1.log.download_requested")
+            return jsonify({"url": url, "expires_in": 3600}), HTTPStatus.OK
+
+    return jsonify({"error": "not_found", "details": "Log not found"}), HTTPStatus.NOT_FOUND
