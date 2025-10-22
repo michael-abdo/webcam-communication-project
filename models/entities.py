@@ -35,7 +35,7 @@ class Session(Base):
     )
     facilitator_id: Mapped[str] = mapped_column(String(255), nullable=False)
     consent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    device_kind: Mapped[str] = mapped_column(String(100), nullable=False)
+    device_kind: Mapped[str] = mapped_column(String(255), nullable=False)
     locale: Mapped[str | None] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
