@@ -11,6 +11,8 @@ def get_database_url() -> str:
     """Return the database URL, defaulting to a local SQLite file for dev."""
     env_url = os.getenv("DATABASE_URL")
     if env_url:
+        if env_url.startswith("postgres://"):
+            env_url = env_url.replace("postgres://", "postgresql+psycopg2://", 1)
         return env_url
 
     # Fallback to SQLite stored under the project data directory

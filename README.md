@@ -147,6 +147,7 @@ Example session creation payload:
 - Configure `METRICS_STATSD_HOST`, `METRICS_STATSD_PORT`, and optional `METRICS_PREFIX` to point at your metrics backend.
 - Successful chunk uploads emit `phase1.chunk.uploaded`; failures emit `phase1.chunk.failed`/`phase1.chunk.conflict`, with latency timings under `phase1.chunk.upload_latency_ms`.
 - Build alerts on sustained failures to match the Phase 1 telemetry requirement.
+- `DATABASE_URL` is automatically rewritten from `postgres://` to `postgresql+psycopg2://` at runtime for SQLAlchemy compatibility.
 
 ### Reviewer Dashboard
 
