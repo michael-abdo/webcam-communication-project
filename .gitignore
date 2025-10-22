@@ -52,3 +52,5 @@ test_baseline_demo.html
 
 # Heroku
 heroku_runtime.txt
+
+data/app.db

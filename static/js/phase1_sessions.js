@@ -66,6 +66,41 @@ function showError(message) {
     errorContainer.appendChild(div);
 }
 
+function escapeHtml(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function formatStatusValue(status) {
+    if (!status) return 'unknown';
+    return status.replace(/_/g, ' ');
+}
+
+function statusClass(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'ok':
+        case 'completed':
+            return 'success';
+        case 'attention_required':
+        case 'failed':
+            return 'warning';
+        case 'not_available':
+        default:
+            return 'muted';
+    }
+}
+
+function renderStatusPill(status) {
+    const cls = statusClass(status);
+    const label = escapeHtml(formatStatusValue(status));
+    return `<span class="pill ${cls}">${label}</span>`;
+}
+
 async function loadSessions() {
     clearErrors();
     showStatus('Loading sessions...');
@@ -105,7 +140,7 @@ function renderSessions(sessions) {
     if (sessions.length === 0) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 6;
+        cell.colSpan = 9;
         cell.style.textAlign = 'center';
         cell.style.padding = '32px 0';
         cell.style.color = '#64748b';
@@ -123,11 +158,14 @@ function renderSessions(sessions) {
         }
 
         row.innerHTML = `
-            <td>${session.facilitator_id || '—'}</td>
-            <td>${session.device_kind || '—'}</td>
+            <td>${escapeHtml(session.facilitator_id || '—')}</td>
+            <td>${escapeHtml(session.device_kind || '—')}</td>
             <td>${formatDate(session.consent_at)}</td>
             <td><span class="pill muted">${session.participant_count}</span></td>
             <td><span class="pill ${session.chunk_count > 0 ? 'success' : 'muted'}">${session.chunk_count}</span></td>
+            <td>${renderStatusPill(session.transcript_status)}</td>
+            <td>${renderStatusPill(session.log_status)}</td>
+            <td>${renderStatusPill(session.alert_state)}</td>
             <td>${formatDate(session.latest_chunk_at) || '—'}</td>
         `;
 
@@ -194,22 +232,31 @@ function renderSessionDetail(session) {
             <h3>Session ${session.id}</h3>
             <dl>
                 <dt>Facilitator</dt>
-                <dd>${session.facilitator_id || '—'}</dd>
+                <dd>${escapeHtml(session.facilitator_id || '—')}</dd>
 
                 <dt>Consent At</dt>
                 <dd>${formatDate(session.consent_at)}</dd>
 
                 <dt>Device Kind</dt>
-                <dd>${session.device_kind || '—'}</dd>
+                <dd>${escapeHtml(session.device_kind || '—')}</dd>
 
                 <dt>Locale</dt>
-                <dd>${session.locale || '—'}</dd>
+                <dd>${escapeHtml(session.locale || '—')}</dd>
 
                 <dt>Participants</dt>
                 <dd>${participants.length}</dd>
 
                 <dt>Chunks</dt>
                 <dd>${chunks.length}</dd>
+
+                <dt>Transcript Status</dt>
+                <dd>${renderStatusPill(session.transcript_status)}</dd>
+
+                <dt>Log Status</dt>
+                <dd>${renderStatusPill(session.log_status)}</dd>
+
+                <dt>Alert State</dt>
+                <dd>${renderStatusPill(session.alert_state)}</dd>
             </dl>
 
             <div class="chunk-list">
@@ -222,8 +269,11 @@ function renderSessionDetail(session) {
                             <div><strong>Sequence #${chunk.sequence_no}</strong></div>
                             <div class="chunk-meta">Duration: ${(chunk.duration_ms / 1000).toFixed(1)}s</div>
                             <div class="chunk-meta">Stored At: ${formatDate(chunk.stored_at) || '—'}</div>
-                            <div class="chunk-meta">Checksum: ${chunk.checksum}</div>
-                            <div class="chunk-meta">Storage Key: ${chunk.storage_key}</div>
+                            <div class="chunk-meta">Checksum: ${escapeHtml(chunk.checksum)}</div>
+                            <div class="chunk-meta">Storage Key: ${escapeHtml(chunk.storage_key)}</div>
+                            <div class="chunk-meta">Transcript: ${renderStatusPill(chunk.transcript_status)}</div>
+                            <div class="chunk-meta">Logs: ${renderStatusPill(chunk.log_status)}</div>
+                            ${chunk.download_url ? `<button class="chunk-download" data-seq="${chunk.sequence_no}">Download Chunk</button>` : '<span class="chunk-meta">Download URL unavailable</span>'}
                         </div>
                     `
                     )
@@ -231,6 +281,43 @@ function renderSessionDetail(session) {
             </div>
         </div>
     `;
+
+    sessionDetail.querySelectorAll('.chunk-download').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const sequence = Number(btn.dataset.seq);
+            downloadChunk(sequence);
+        });
+    });
+}
+
+async function downloadChunk(sequenceNo) {
+    if (!activeSessionId) {
+        showError('No session selected.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/sessions/${activeSessionId}/chunks/${sequenceNo}/download`, {
+            headers: {
+                ...authHeaders(),
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to generate download link (${response.status})`);
+        }
+
+        const payload = await response.json();
+        if (payload.url) {
+            window.open(payload.url, '_blank', 'noopener');
+        } else {
+            showError('Download URL unavailable.');
+        }
+    } catch (err) {
+        console.error('Chunk download error', err);
+        showError(err.message || 'Failed to generate download link.');
+    }
 }
 
 function formatDate(value) {

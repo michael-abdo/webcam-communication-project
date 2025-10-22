@@ -142,6 +142,10 @@
             background: #e2e8f0;
             color: #475569;
         }
+        .pill.warning {
+            background: #fef3c7;
+            color: #b45309;
+        }
         .chunk-list {
             margin-top: 18px;
             border-top: 1px solid #e2e8f0;
@@ -158,6 +162,19 @@
         }
         .chunk-item:last-child {
             margin-bottom: 0;
+        }
+        .chunk-download {
+            margin-top: 8px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .chunk-download:hover {
+            background: #1d4ed8;
         }
         .chunk-meta {
             font-size: 13px;
@@ -210,6 +227,9 @@
                                 <th>Consent</th>
                                 <th>Participants</th>
                                 <th>Chunks</th>
+                                <th>Transcript</th>
+                                <th>Logs</th>
+                                <th>Status</th>
                                 <th>Last Chunk</th>
                             </tr>
                         </thead>

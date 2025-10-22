@@ -141,6 +141,13 @@ Example session creation payload:
 
 > **Auth:** Set `CAPTURE_API_TOKEN` in the environment to enforce facilitator authentication. The capture UI now prompts for this value and injects it into all Phase 1 API requests per the spec’s “Auth & Data” requirement.
 
+### Telemetry & Alerts
+
+- Enable `METRICS_ENABLED=true` to activate StatsD metrics.
+- Configure `METRICS_STATSD_HOST`, `METRICS_STATSD_PORT`, and optional `METRICS_PREFIX` to point at your metrics backend.
+- Successful chunk uploads emit `phase1.chunk.uploaded`; failures emit `phase1.chunk.failed`/`phase1.chunk.conflict`, with latency timings under `phase1.chunk.upload_latency_ms`.
+- Build alerts on sustained failures to match the Phase 1 telemetry requirement.
+
 ### Reviewer Dashboard
 
 - Visit `/phase1/sessions` to open the Phase 1 validation UI.

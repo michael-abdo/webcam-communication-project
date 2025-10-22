@@ -16,11 +16,13 @@ from services.capture_service import (
     create_session_record,
     get_session_record,
     list_recent_sessions,
+    list_session_chunks,
     record_media_chunk,
 )
 
 from config import get_capture_api_token
-from streaming.s3_handler import upload_chunk_file
+from streaming.s3_handler import upload_chunk_file, generate_download_url
+from telemetry import metrics
 from services.video_state import video_sessions, test_video_links
 
 capture_api = Blueprint("capture_api", __name__, url_prefix="/api")
@@ -292,6 +294,7 @@ def record_chunk(session_id: str):
         session_state["test_session_id"] = test_session_id
         test_video_links[test_session_id] = session_id
 
+    upload_start = datetime.now(timezone.utc)
     try:
         storage_key = upload_chunk_file(
             session_id=session_id,
@@ -301,6 +304,7 @@ def record_chunk(session_id: str):
             extension=extension,
         )
     except Exception as exc:  # noqa: BLE001
+        metrics().incr("phase1.chunk.failed")
         current_app.logger.exception("phase1.chunk.upload_failed", extra={"session_id": session_id})
         return (
             jsonify({"error": "upload_failed", "details": str(exc)}),
@@ -318,9 +322,16 @@ def record_chunk(session_id: str):
             stored_at=stored_at_dt,
         )
     except CaptureNotFoundError as exc:
+        metrics().incr("phase1.chunk.invalid_session")
         return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
     except CaptureConflictError as exc:
+        metrics().incr("phase1.chunk.conflict")
         return jsonify({"error": "conflict", "details": str(exc)}), HTTPStatus.CONFLICT
+
+    elapsed_ms = max(1, int((datetime.now(timezone.utc) - upload_start).total_seconds() * 1000))
+    metrics().incr("phase1.chunk.uploaded")
+    metrics().timing("phase1.chunk.upload_latency_ms", elapsed_ms)
+    metrics().timing("phase1.chunk.duration_ms", duration_ms)
 
     current_app.logger.info(
         "phase1.chunk.persisted",
@@ -329,6 +340,7 @@ def record_chunk(session_id: str):
             "participant_id": participant_id,
             "sequence_no": sequence_no,
             "duration_ms": duration_ms,
+            "content_length": metadata.get("content_length"),
         },
     )
 
@@ -342,4 +354,36 @@ def get_session(session_id: str):
     except CaptureNotFoundError as exc:
         return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
 
+    chunks_with_links = []
+    for chunk in session_record.get("chunks", []):
+        download_url = generate_download_url(chunk.get("storage_key"))
+        chunk_copy = dict(chunk)
+        chunk_copy["download_url"] = download_url
+        chunk_copy.setdefault("transcript_status", "not_available")
+        chunk_copy.setdefault("log_status", "not_available")
+        chunks_with_links.append(chunk_copy)
+
+    session_record["chunks"] = chunks_with_links
+    session_record.setdefault("transcript_status", "not_available")
+    session_record.setdefault("log_status", "not_available")
+    session_record["alert_state"] = "attention_required" if not chunks_with_links else "ok"
+
     return jsonify(session_record), HTTPStatus.OK
+
+@capture_api.route("/sessions/<session_id>/chunks/<int:sequence_no>/download", methods=["GET"])
+def get_chunk_download(session_id: str, sequence_no: int):
+    try:
+        chunks = list_session_chunks(session_id)
+    except CaptureNotFoundError as exc:
+        return jsonify({"error": "not_found", "details": str(exc)}), HTTPStatus.NOT_FOUND
+
+    for chunk in chunks:
+        if chunk.get("sequence_no") == sequence_no:
+            url = generate_download_url(chunk.get("storage_key"))
+            if not url:
+                return jsonify({"error": "unavailable", "details": "Download URL could not be generated"}), HTTPStatus.INTERNAL_SERVER_ERROR
+            metrics().incr("phase1.chunk.download_requested")
+            return jsonify({"url": url, "expires_in": 3600}), HTTPStatus.OK
+
+    return jsonify({"error": "not_found", "details": "Chunk not found"}), HTTPStatus.NOT_FOUND
+

@@ -177,6 +177,9 @@ def list_recent_sessions(limit: int = 20) -> list[dict]:
                     "participant_count": len(capture.participants),
                     "chunk_count": len(chunks),
                     "latest_chunk_at": latest_chunk_at,
+                    "transcript_status": "not_available",
+                    "log_status": "not_available",
+                    "alert_state": "attention_required" if not chunks else "ok",
                 }
             )
 

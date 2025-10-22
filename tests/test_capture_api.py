@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 
 import pytest
 
+import streaming.s3_handler as s3_handler
+import blueprints.capture_api as capture_api_module
+
 # Configure database before importing application modules
 TEST_DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "test_capture_api.db"))
 os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DB_PATH}"
@@ -21,6 +24,43 @@ def reset_database():
     Base.metadata.create_all(bind=engine)
     yield
 
+
+
+
+@pytest.fixture(autouse=True)
+def metrics_stub(monkeypatch):
+    class Stub:
+        def __init__(self):
+            self.incr_calls = []
+            self.timing_calls = []
+
+        def incr(self, name, count=1, rate=1.0):
+            self.incr_calls.append((name, count, rate))
+
+        def timing(self, name, value, rate=1.0):
+            self.timing_calls.append((name, value, rate))
+
+    stub = Stub()
+    monkeypatch.setattr(capture_api_module, "metrics", lambda: stub)
+    yield stub
+
+
+@pytest.fixture(autouse=True)
+def stub_s3_client(monkeypatch):
+    class StubClient:
+        def upload_fileobj(self, file_obj, bucket, key, ExtraArgs=None):
+            file_obj.seek(0, 2)  # drain file
+
+        def generate_presigned_url(self, operation_name, Params=None, ExpiresIn=3600):
+            return f"https://example.com/{Params['Key']}"
+
+        def head_bucket(self, Bucket):
+            return True
+
+    stub = StubClient()
+    monkeypatch.setattr(s3_handler, "get_s3_client", lambda: stub)
+    monkeypatch.setattr(s3_handler, "generate_download_url", lambda key, expiration=3600: f"https://example.com/{key}")
+    yield
 
 @pytest.fixture
 def client():
@@ -39,7 +79,7 @@ def test_create_session_validation(client):
     assert body["error"] == "missing_fields"
 
 
-def test_session_lifecycle(client):
+def test_session_lifecycle(client, metrics_stub):
     consent_at = datetime.now(timezone.utc).isoformat()
     session_resp = client.post(
         "/api/sessions",
@@ -83,17 +123,31 @@ def test_session_lifecycle(client):
     )
     assert chunk_resp.status_code == 202
 
+    assert any(name == "phase1.chunk.uploaded" for name, _, _ in metrics_stub.incr_calls)
+    assert any(name == "phase1.chunk.upload_latency_ms" for name, _, _ in metrics_stub.timing_calls)
+
     session_detail = client.get(f"/api/sessions/{session_id}", headers=auth_headers())
     assert session_detail.status_code == 200
     detail_body = session_detail.get_json()
     assert detail_body["id"] == session_id
     assert len(detail_body["participants"]) == 1
     assert len(detail_body["chunks"]) == 1
+    assert detail_body["transcript_status"] == "not_available"
+    assert detail_body["log_status"] == "not_available"
+    assert detail_body["chunks"][0]["download_url"].startswith("https://example.com/")
+
+    download_resp = client.get(
+        f"/api/sessions/{session_id}/chunks/0/download",
+        headers=auth_headers(),
+    )
+    assert download_resp.status_code == 200
+    assert download_resp.get_json()["url"].startswith("https://example.com/")
+    assert any(name == "phase1.chunk.download_requested" for name, _, _ in metrics_stub.incr_calls)
 
 
-def test_session_list_endpoint(client):
+def test_session_list_endpoint(client, metrics_stub):
     consent_at = datetime.now(timezone.utc).isoformat()
-    client.post(
+    session_resp = client.post(
         "/api/sessions",
         json={
             "facilitator_id": "fac-list",
@@ -102,16 +156,36 @@ def test_session_list_endpoint(client):
         },
         headers=auth_headers(),
     )
+    session_id = session_resp.get_json()["id"]
+
+    client.post(
+        f"/api/sessions/{session_id}/chunks",
+        data={
+            "metadata": json.dumps({
+                "sequence_no": 0,
+                "checksum": "xyz",
+                "duration_ms": 4000,
+                "mime_type": "video/webm",
+                "file_extension": "webm",
+            }),
+            "media": (io.BytesIO(b"temp"), "chunk0000.webm", "video/webm"),
+        },
+        headers=auth_headers(),
+        content_type="multipart/form-data",
+    )
 
     response = client.get("/api/sessions", headers=auth_headers())
     assert response.status_code == 200
     payload = response.get_json()
     assert "sessions" in payload
     assert payload["count"] == len(payload["sessions"])
-    assert any(session["facilitator_id"] == "fac-list" for session in payload["sessions"])
+    session = next(item for item in payload["sessions"] if item["facilitator_id"] == "fac-list")
+    assert session["transcript_status"] == "not_available"
+    assert session["log_status"] == "not_available"
+    assert session["chunk_count"] == 1
 
 
-def test_chunk_conflict(client):
+def test_chunk_conflict(client, metrics_stub):
     consent_at = datetime.now(timezone.utc).isoformat()
     session_resp = client.post(
         "/api/sessions",
@@ -159,6 +233,7 @@ def test_chunk_conflict(client):
         content_type="multipart/form-data",
     )
     assert second.status_code == 409
+    assert any(name == "phase1.chunk.conflict" for name, _, _ in metrics_stub.incr_calls)
 
 
 def test_missing_token_rejected(client):

@@ -33,3 +33,26 @@ def get_capture_api_token() -> str | None:
     if token:
         return token.strip()
     return None
+
+
+@lru_cache(maxsize=1)
+def get_metrics_enabled() -> bool:
+    return os.getenv('METRICS_ENABLED', 'false').lower() in {'1', 'true', 'yes'}
+
+
+@lru_cache(maxsize=1)
+def get_metrics_host() -> str:
+    return os.getenv('METRICS_STATSD_HOST', 'localhost')
+
+
+@lru_cache(maxsize=1)
+def get_metrics_port() -> int:
+    try:
+        return int(os.getenv('METRICS_STATSD_PORT', '8125'))
+    except ValueError:
+        return 8125
+
+
+@lru_cache(maxsize=1)
+def get_metrics_prefix() -> str:
+    return os.getenv('METRICS_PREFIX', 'webcam')

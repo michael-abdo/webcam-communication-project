@@ -5,3 +5,4 @@ boto3==1.37.3
 python-multipart==0.0.6
 SQLAlchemy==2.0.36
 psycopg2-binary==2.9.10
+statsd==4.0.1
