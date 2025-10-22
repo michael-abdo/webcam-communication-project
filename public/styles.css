@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fa;
+  color: #1a1f36;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+
+.hint {
+  margin: 0.5rem 0 1rem;
+  color: #4a4f63;
+}
+
+button {
+  padding: 0.65rem 1.75rem;
+  font-size: 1rem;
+  border-radius: 999px;
+  border: none;
+  background: #0b5cff;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.status {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.preview {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.video-frame {
+  position: relative;
+  background: #101321;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-frame img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(16, 19, 33, 0.5);
+}
+
+.placeholder.hidden {
+  display: none;
+}
+
+.transcript {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.transcript h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.transcript ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.transcript li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e1e5ec;
+}
+
+.transcript li:last-child {
+  border-bottom: none;
+}
+
+.transcript .speaker {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.transcript .time {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .preview {
+    grid-template-columns: 1fr;
+  }
+}
