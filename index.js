@@ -46,6 +46,11 @@ function handleMeetingEvent(body) {
   const event = body?.event;
   const payload = body?.payload;
   const streamId = payload?.rtms_stream_id;
+  const meetingUuid = payload?.meeting_uuid;
+
+  console.log(
+    `[webhook] event=${event ?? "unknown"} streamId=${streamId ?? "none"} meeting=${meetingUuid ?? "none"}`
+  );
 
   if (!streamId) {
     console.log(`[rtms] Ignoring event without stream ID: ${event ?? "unknown"}`);
