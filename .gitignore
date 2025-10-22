@@ -23,6 +23,7 @@ lib/linux-x64/*
 # only allow files where we want them
 *.js
 !index.js
+!public/app.js
 *.c
 *.py
 *.pyi
