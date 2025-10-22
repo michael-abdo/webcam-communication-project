@@ -27,21 +27,35 @@ ZM_RTMS_CLIENT=your_client_id
 ZM_RTMS_SECRET=your_client_secret
 ```
 
+Everything (web UI, WebSocket bridge, and webhook) runs on a single port.  
+For local development the default is `PORT=5000`. Zoom webhooks should target
+`http://localhost:5000/zoom-webhook` (or whatever you configure via `ZM_RTMS_PATH`).
+
 ## 🏃‍♂️ Running the App
 
 Start the application:
 
 ```bash
-npm start
+npm run dev          # loads variables from .env (local development)
+npm start            # production-style start, expects env vars from the OS
 ```
 
 For webhook testing with ngrok:
 
 ```bash
-ngrok http 8080
+ngrok http 5000
 ```
 
-Use the generated ngrok URL as your Zoom webhook endpoint. Then, start a meeting to see your data!
+Use the generated ngrok URL as your Zoom webhook endpoint (append `/zoom-webhook`).  
+Then, start a meeting to see your data!
+
+When deploying to Heroku:
+
+1. `git push heroku <branch>:main`
+2. Set config vars (`PORT` managed by Heroku, but add `CLIENT_ID`, `CLIENT_SECRET`,
+   `ZM_RTMS_CLIENT`, `ZM_RTMS_SECRET`, and optionally `ZM_RTMS_PATH`)
+3. Point Zoom at `https://<app-name>.herokuapp.com/zoom-webhook`
+4. Open the public UI at `https://<app-name>.herokuapp.com/`
 
 ## 🎯 Basic Usage
 

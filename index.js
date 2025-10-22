@@ -9,20 +9,18 @@ import rtms from "@zoom/rtms";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const UI_PORT = parseInt(process.env.UI_PORT || "3200", 10);
+const PORT = parseInt(process.env.PORT || "5000", 10);
+const WEBHOOK_PATH = process.env.ZM_RTMS_PATH || "/zoom-webhook";
 const LOG_DIR = path.join(__dirname, "logs");
 
 fs.mkdirSync(LOG_DIR, { recursive: true });
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json({ limit: "1mb" }));
 
-const httpServer = http.createServer(app);
-const wss = new WebSocketServer({ server: httpServer, path: "/rtms" });
-
-httpServer.listen(UI_PORT, () => {
-  console.log(`[ui] Listening at http://localhost:${UI_PORT}`);
-});
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server, path: "/rtms" });
 
 function broadcast(message) {
   const payload = JSON.stringify(message);
@@ -44,7 +42,9 @@ wss.on("connection", (socket) => {
 
 const streamClients = new Map();
 
-rtms.onWebhookEvent(({ event, payload }) => {
+function handleMeetingEvent(body) {
+  const event = body?.event;
+  const payload = body?.payload;
   const streamId = payload?.rtms_stream_id;
 
   if (!streamId) {
@@ -147,7 +147,24 @@ rtms.onWebhookEvent(({ event, payload }) => {
   });
 
   broadcast({ type: "status", streamId, state: "starting" });
-
   console.log(`[rtms] Joining meeting for stream ${streamId}`);
   client.join(payload);
+}
+
+app.post(WEBHOOK_PATH, (req, res) => {
+  handleMeetingEvent(req.body);
+  res.json({ status: "ok" });
+});
+
+app.all(WEBHOOK_PATH, (_req, res) => {
+  res.status(405).json({ error: "Method Not Allowed" });
+});
+
+app.get("/healthz", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
+server.listen(PORT, () => {
+  console.log(`[server] Listening at http://localhost:${PORT}`);
+  console.log(`[server] Webhook path: ${WEBHOOK_PATH}`);
 });
