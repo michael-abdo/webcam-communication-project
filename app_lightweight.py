@@ -22,6 +22,7 @@ from blueprints.baseline_blueprint import baseline_bp
 from blueprints.assessments_blueprint import assessment_bp
 from blueprints.capture_api import capture_api
 from blueprints.rtms_ingest_api import rtms_ingest_api
+from blueprints.rtms_proxy import rtms_proxy
 from models import init_engine
 from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
 from services.video_state import video_sessions, test_video_links
@@ -38,6 +39,7 @@ app.register_blueprint(baseline_bp)
 # Register assessments blueprint
 app.register_blueprint(assessment_bp)
 app.register_blueprint(rtms_ingest_api)
+app.register_blueprint(rtms_proxy, url_prefix="/rtms")
 
 # Route to serve baseline capture page
 @app.route('/baseline')
