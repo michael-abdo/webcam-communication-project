@@ -26,14 +26,14 @@ AWS credentials are read from the usual environment variables (`AWS_ACCESS_KEY_I
 cd rtms-service
 npm install
 npm start
+
+Open http://localhost:8080/rtms/ui to view the live RTMS dashboard (WebSocket stream and
+auto-play audio/video). The same process also exposes `/rtms/webhook` for Zoom events.
 ```
 
 Expose the webhook (e.g. with `ngrok http 8080`) and register the public URL with Zoom.
-If you want captured media indexed in the Phase-2 database (and the realtime dashboard fed by Flask),
-set `CAPTURE_API_BASE_URL` to the application's `/api/rtms` endpoint and provide the same
-`CAPTURE_API_TOKEN` the Flask app uses. The live UI is rendered by Flask at `/rtms/ui`; this Node
-worker now runs headless and simply uploads frames to S3 / the capture API and POSTs realtime
-payloads back to the Flask websocket hub.
+If you want captured media indexed in the Phase-2 database, set `CAPTURE_API_BASE_URL` to the
+application's `/api/rtms` endpoint and provide the same `CAPTURE_API_TOKEN` the Flask app uses.
 
 ## Deployment
 
