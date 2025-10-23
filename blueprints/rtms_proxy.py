@@ -83,6 +83,10 @@ def proxy_ui_asset(path: str) -> Response:
 @rtms_proxy.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @rtms_proxy.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_http(path: str) -> Response:
+    if request.headers.get("Upgrade", "").lower() == "websocket":
+        target = f"{RTMS_PROXY_BASE_URL}/rtms"
+        current_app.logger.info("rtms.proxy.redirect", extra={"target": target})
+        return redirect(target, code=307)
     if path in ROOT_ASSETS:
         return _forward(path)
     if path == "":
