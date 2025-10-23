@@ -1,2 +1,2 @@
-web: gunicorn app_lightweight:app --bind 0.0.0.0:$PORT --workers 1
+web: gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker --worker-connections 100 --workers 1 --bind 0.0.0.0:$PORT app_lightweight:app
 rtms: node rtms-service/index.js

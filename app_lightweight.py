@@ -9,8 +9,10 @@ import json
 import time
 import random
 from datetime import datetime, timezone
-from flask import Flask, jsonify, request, render_template, send_file, abort
+from flask import Flask, jsonify, request, render_template, send_file, abort, current_app
 from flask_cors import CORS
+from flask_sock import Sock
+from simple_websocket import ConnectionClosed
 from streaming.s3_handler import ensure_bucket_exists
 
 # Import utils
@@ -22,13 +24,18 @@ from blueprints.baseline_blueprint import baseline_bp
 from blueprints.assessments_blueprint import assessment_bp
 from blueprints.capture_api import capture_api
 from blueprints.rtms_ingest_api import rtms_ingest_api
-from blueprints.rtms_proxy import rtms_proxy
+from blueprints.rtms_ui import rtms_ui
 from models import init_engine
 from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
 from services.video_state import video_sessions, test_video_links
+from rtms import RTMSHub
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+sock = Sock(app)
+
+rtms_hub = RTMSHub()
+app.config["RTMS_HUB"] = rtms_hub
 
 init_engine()
 
@@ -39,8 +46,36 @@ app.register_blueprint(baseline_bp)
 # Register assessments blueprint
 app.register_blueprint(assessment_bp)
 app.register_blueprint(rtms_ingest_api)
-app.register_blueprint(rtms_proxy, url_prefix="/rtms")
+app.register_blueprint(rtms_ui, url_prefix="/rtms")
 
+
+@sock.route("/rtms/ws")
+def rtms_websocket(ws):
+    """Bridge RTMS realtime frames to connected dashboard clients."""
+    hub: RTMSHub = current_app.config["RTMS_HUB"]
+    client_details = {
+        "remote_addr": ws.environ.get("REMOTE_ADDR"),
+        "forwarded_for": ws.environ.get("HTTP_X_FORWARDED_FOR"),
+        "path": ws.environ.get("PATH_INFO"),
+        "user_agent": ws.environ.get("HTTP_USER_AGENT"),
+    }
+    hub.register(ws, metadata=client_details)
+    current_app.logger.info("rtms.ws.connected", extra=client_details)
+
+    try:
+        while True:
+            message = ws.receive()
+            if message is None:
+                continue
+            current_app.logger.debug(
+                "rtms.ws.unexpected_message", extra={"message_length": len(str(message))}
+            )
+    except ConnectionClosed:
+        current_app.logger.info("rtms.ws.disconnected", extra=client_details)
+    except Exception:  # pragma: no cover - defensive logging
+        current_app.logger.exception("rtms.ws.server_error", extra=client_details)
+    finally:
+        hub.unregister(ws)
 # Route to serve baseline capture page
 @app.route('/baseline')
 def baseline_capture_page():

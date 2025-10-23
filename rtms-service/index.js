@@ -3,7 +3,6 @@ import express from "express";
 import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { WebSocketServer } from "ws";
 import rtms from "@zoom/rtms";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -48,31 +47,6 @@ app.get("/rtms", (_req, res) => {
   res.redirect(302, "/rtms/ui");
 });
 
-const wsClients = new Set();
-const wss = new WebSocketServer({ server, path: "/rtms" });
-
-wss.on("connection", (socket) => {
-  wsClients.add(socket);
-  console.log("[ws] Client connected (total:", wsClients.size, ")");
-
-  socket.on("close", () => {
-    wsClients.delete(socket);
-    console.log("[ws] Client disconnected (total:", wsClients.size, ")");
-  });
-});
-
-function broadcast(message) {
-  if (!wsClients.size) {
-    return;
-  }
-  const payload = JSON.stringify(message);
-  for (const client of wsClients) {
-    if (client.readyState === client.OPEN) {
-      client.send(payload);
-    }
-  }
-}
-
 function buildApiUrl(path) {
   if (!CAPTURE_API_BASE_URL) {
     if (!warnedMissingApi) {
@@ -115,6 +89,43 @@ async function postJson(path, body) {
 
   const responseText = await response.text();
   return responseText ? JSON.parse(responseText) : null;
+}
+
+let warnedRealtimeApi = false;
+
+async function sendRealtimeFrame(state, message) {
+  if (!CAPTURE_API_BASE_URL) {
+    if (!warnedRealtimeApi) {
+      console.warn(
+        "[rtms] CAPTURE_API_BASE_URL is not configured; realtime dashboard will not receive frames.",
+      );
+      warnedRealtimeApi = true;
+    }
+    return null;
+  }
+
+  return postJson(`/streams/${state.sessionId}/frames`, {
+    sessionId: state.sessionId,
+    streamId: state.streamId,
+    ...message,
+  });
+}
+
+function relayRealtimeFrame(state, message) {
+  if (!state) {
+    console.warn(
+      "[rtms] Skipping realtime relay without active stream state",
+      message?.type ?? "unknown",
+    );
+    return;
+  }
+
+  sendRealtimeFrame(state, message).catch((error) => {
+    console.error(
+      `[rtms] Failed to relay ${message?.type ?? "unknown"} frame for session ${state.sessionId}`,
+      error.message,
+    );
+  });
 }
 
 function buildObjectKey(sessionId, category, sequence, extension) {
@@ -207,7 +218,7 @@ async function handleAudioFrame(state, buffer, metadata, timestamp) {
   const durationMs = Math.round((buffer.length / 2 / 16000) * 1000);
   const sequenceNo = state.nextSequence++;
 
-  broadcast({
+  relayRealtimeFrame(state, {
     type: "audio",
     streamId: state.streamId,
     sessionId: state.sessionId,
@@ -247,7 +258,7 @@ async function handleVideoFrame(state, buffer, metadata, timestamp) {
   const sequenceNo = state.nextSequence++;
   const durationMs = Math.round(1000 / 15);
 
-  broadcast({
+  relayRealtimeFrame(state, {
     type: "video",
     streamId: state.streamId,
     sessionId: state.sessionId,
@@ -286,7 +297,7 @@ async function handleTranscript(state, buffer, metadata, timestamp) {
   const text = buffer.toString("utf8");
 
   if (text.trim()) {
-    broadcast({
+    relayRealtimeFrame(state, {
       type: "transcript",
       streamId: state.streamId,
       sessionId: state.sessionId,
@@ -386,7 +397,7 @@ async function ensureStream(streamId, payload) {
     nextSequence: 0,
     participants: new Map(),
   };
-  broadcast({ type: "status", streamId, sessionId, state: "starting" });
+  relayRealtimeFrame(streamState, { type: "status", streamId, sessionId, state: "joining" });
   configureClient(client, streamState);
   streams.set(streamId, streamState);
   return streamState;
@@ -400,8 +411,13 @@ function stopStream(streamId) {
   } catch (err) {
     console.error("Error leaving RTMS stream", streamId, err);
   }
+  relayRealtimeFrame(state, {
+    type: "status",
+    streamId,
+    sessionId: state?.sessionId,
+    state: "stopped",
+  });
   streams.delete(streamId);
-  broadcast({ type: "status", streamId, sessionId: state?.sessionId, state: "stopped" });
 }
 
 app.post(WEBHOOK_PATH, async (req, res) => {
@@ -418,6 +434,12 @@ app.post(WEBHOOK_PATH, async (req, res) => {
       const state = await ensureStream(streamId, payload);
       console.log("Joining RTMS stream", streamId, "session", state.sessionId);
       state.client.join(payload);
+      relayRealtimeFrame(state, {
+        type: "status",
+        streamId,
+        sessionId: state.sessionId,
+        state: "active",
+      });
     } catch (error) {
       console.error("Failed to start RTMS stream", streamId, error.message);
     }

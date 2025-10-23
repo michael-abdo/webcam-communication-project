@@ -211,7 +211,41 @@ def record_rtms_chunk(session_id: str):
 @rtms_ingest_api.route("/streams/<session_id>/frames", methods=["POST"])
 def receive_realtime_frame(session_id: str):
     """Broadcast realtime RTMS payloads to websocket clients."""
-    payload = request.get_json(silent=True) or {}
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or not payload:
+        current_app.logger.warning(
+            "rtms.ingest.invalid_payload",
+            extra={"session_id": session_id, "payload_type": type(payload).__name__},
+        )
+        return (
+            jsonify({"error": "invalid_payload", "details": "Expected non-empty JSON object"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
+    if "type" not in payload:
+        current_app.logger.warning(
+            "rtms.ingest.missing_type",
+            extra={"session_id": session_id, "keys": list(payload.keys())},
+        )
+        return (
+            jsonify({"error": "missing_type", "details": "Payload must include a type field"}),
+            HTTPStatus.BAD_REQUEST,
+        )
+
     payload.setdefault("sessionId", session_id)
-    _get_hub().broadcast(payload)
+    if "streamId" not in payload and "stream_id" in payload:
+        payload["streamId"] = payload["stream_id"]
+
+    try:
+        _get_hub().broadcast(payload)
+    except Exception:  # pragma: no cover - hub already logs failures
+        current_app.logger.exception(
+            "rtms.ingest.broadcast_failed",
+            extra={"session_id": session_id, "payload_type": payload.get("type")},
+        )
+        return (
+            jsonify({"error": "broadcast_failed", "details": "Unable to notify RTMS clients"}),
+            HTTPStatus.SERVICE_UNAVAILABLE,
+        )
+
     return jsonify({"status": "ok"}), HTTPStatus.ACCEPTED
