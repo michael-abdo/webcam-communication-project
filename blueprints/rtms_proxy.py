@@ -60,9 +60,9 @@ def _forward(relative_path: str) -> Response:
         params=request.args,
         cookies=request.cookies,
         allow_redirects=False,
-        stream=True,
-    )
-    return _stream_response(upstream)
+    stream=True,
+  )
+  return _stream_response(upstream)
 
 
 @rtms_proxy.route("/ui", methods=["GET"])
@@ -74,7 +74,7 @@ def proxy_ui_root() -> Response:
 def proxy_ui_asset(path: str) -> Response:
     if path in ROOT_ASSETS:
         return send_from_directory(LOCAL_ASSET_DIR, path)
-    return _forward(path)
+    return _forward(f"rtms/{path}")
 
 
 @rtms_proxy.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
