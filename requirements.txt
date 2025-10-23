@@ -1,5 +1,4 @@
 flask==3.1.1
-gunicorn==21.2.0
 boto3==1.37.3
 flask-cors==4.0.0
 python-dotenv==1.0.0
@@ -8,5 +7,5 @@ SQLAlchemy==2.0.36
 psycopg2-binary==2.9.10
 statsd==4.0.1
 flask-sock==0.6.0
-gevent==24.2.1
-gevent-websocket==0.10.1
+uvicorn==0.30.5
+asgiref==3.8.1

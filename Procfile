@@ -1,2 +1,2 @@
-web: gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker app_lightweight:app --bind 0.0.0.0:$PORT --workers 1
+web: uvicorn app_lightweight:asgi_app --host 0.0.0.0 --port $PORT
 rtms: node rtms-service/index.js

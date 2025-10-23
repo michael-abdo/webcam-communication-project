@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 from flask_sock import Sock
+from asgiref.wsgi import WsgiToAsgi
 from streaming.s3_handler import ensure_bucket_exists
 
 # Import utils
@@ -146,6 +147,7 @@ def rtms_websocket(ws):
     """WebSocket bridge for RTMS live updates."""
     hub: RTMSHub = app.config["RTMS_HUB"]
     hub.register(ws)
+    app.logger.info("rtms.websocket.connected")
     try:
         while True:
             message = ws.receive()
@@ -153,6 +155,10 @@ def rtms_websocket(ws):
                 break
     finally:
         hub.unregister(ws)
+        app.logger.info("rtms.websocket.disconnected")
+
+
+asgi_app = WsgiToAsgi(app)
 
 @app.route('/simple-baseline')
 def simple_baseline():
