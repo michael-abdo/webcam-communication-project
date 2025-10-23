@@ -9,9 +9,48 @@ let audioContext;
 let nextAudioTime = 0;
 let audioReady = false;
 const pendingAudio = [];
+let usingFallback = false;
+const RTMS_REMOTE_HOST = "zoom-test-rtms-5898b0134dc2.herokuapp.com";
 
 function updateStatus(message) {
   statusEl.textContent = message;
+}
+
+function openSocket(url, isFallback) {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.close();
+  }
+
+  const ws = new WebSocket(url);
+  socket = ws;
+
+  ws.addEventListener("open", () => {
+    updateStatus("Connected. Waiting for RTMS events…");
+  });
+
+  ws.addEventListener("close", () => {
+    updateStatus("Connection closed. Click start to reconnect.");
+    startButton.disabled = false;
+    usingFallback = false;
+  });
+
+  ws.addEventListener("error", (err) => {
+    console.error(err);
+    if (!isFallback) {
+      usingFallback = true;
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const fallbackUrl = `${protocol}://${RTMS_REMOTE_HOST}/rtms`;
+      console.warn("Primary websocket failed, retrying via", fallbackUrl);
+      openSocket(fallbackUrl, true);
+    } else {
+      updateStatus("WebSocket error. Check console for details.");
+    }
+  });
+
+  ws.addEventListener("message", (event) => {
+    const message = JSON.parse(event.data);
+    handleMessage(message);
+  });
 }
 
 function ensureSocket() {
@@ -20,26 +59,8 @@ function ensureSocket() {
   }
 
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  socket = new WebSocket(`${protocol}://${window.location.host}/rtms`);
-
-  socket.addEventListener("open", () => {
-    updateStatus("Connected. Waiting for RTMS events…");
-  });
-
-  socket.addEventListener("close", () => {
-    updateStatus("Connection closed. Click start to reconnect.");
-    startButton.disabled = false;
-  });
-
-  socket.addEventListener("error", (err) => {
-    console.error(err);
-    updateStatus("WebSocket error. Check console for details.");
-  });
-
-  socket.addEventListener("message", (event) => {
-    const message = JSON.parse(event.data);
-    handleMessage(message);
-  });
+  const primaryUrl = `${protocol}://${window.location.host}/rtms`;
+  openSocket(primaryUrl, false);
 }
 
 function base64ToArrayBuffer(base64) {

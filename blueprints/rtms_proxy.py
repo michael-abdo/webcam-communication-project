@@ -6,19 +6,14 @@ import os
 from typing import Iterable
 
 import requests
-from flask import Blueprint, current_app, request, Response, redirect
+from flask import Blueprint, current_app, request, Response, redirect, send_from_directory
 
 rtms_proxy = Blueprint("rtms_proxy", __name__)
 
 RTMS_PROXY_BASE_URL = os.getenv("RTMS_PROXY_BASE_URL", "https://zoom-test-rtms-5898b0134dc2.herokuapp.com")
 
-ROOT_ASSETS = {
-    "styles.css",
-    "app.js",
-    "favicon.ico",
-    "manifest.json",
-    "robots.txt",
-}
+LOCAL_ASSET_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "rtms-service", "public")
+ROOT_ASSETS = {"styles.css", "app.js", "favicon.ico", "manifest.json", "robots.txt"}
 
 # Headers that should not be forwarded from the upstream response
 HOP_BY_HOP_HEADERS = {
@@ -72,11 +67,13 @@ def _forward(relative_path: str) -> Response:
 
 @rtms_proxy.route("/ui", methods=["GET"])
 def proxy_ui_root() -> Response:
-    return _forward("")
+    return send_from_directory(LOCAL_ASSET_DIR, "index.html")
 
 
 @rtms_proxy.route("/ui/<path:path>", methods=["GET"])
 def proxy_ui_asset(path: str) -> Response:
+    if path in ROOT_ASSETS:
+        return send_from_directory(LOCAL_ASSET_DIR, path)
     return _forward(path)
 
 
@@ -88,7 +85,7 @@ def proxy_http(path: str) -> Response:
         current_app.logger.info("rtms.proxy.redirect", extra={"target": target})
         return redirect(target, code=307)
     if path in ROOT_ASSETS:
-        return _forward(path)
+        return send_from_directory(LOCAL_ASSET_DIR, path)
     if path == "":
         return _forward("rtms")
     return _forward(f"rtms/{path}")
