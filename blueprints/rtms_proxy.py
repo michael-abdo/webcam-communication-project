@@ -43,16 +43,15 @@ def proxy_websocket() -> Response:
     return redirect(target, code=307)
 
 
-@rtms_proxy.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
-@rtms_proxy.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
-def proxy_http(path: str) -> Response:
-    """Forward HTTP requests under /rtms to the remote RTMS service."""
-    target = f"{RTMS_PROXY_BASE_URL}/rtms/{path}".rstrip("/")
-    current_app.logger.debug("rtms.proxy.forward", extra={"target": target, "method": request.method})
-
+def _forward(relative_path: str) -> Response:
+    target = f"{RTMS_PROXY_BASE_URL}/{relative_path}".rstrip("/")
+    current_app.logger.debug(
+        "rtms.proxy.forward",
+        extra={"target": target, "method": request.method},
+    )
     upstream = requests.request(
         method=request.method,
-        url=target,
+        url=target or RTMS_PROXY_BASE_URL,
         headers={key: value for key, value in request.headers.items() if key.lower() not in {"host", "content-length"}},
         data=request.get_data(),
         params=request.args,
@@ -61,3 +60,19 @@ def proxy_http(path: str) -> Response:
         stream=True,
     )
     return _stream_response(upstream)
+
+
+@rtms_proxy.route("/ui", methods=["GET"])
+def proxy_ui_root() -> Response:
+    return _forward("")
+
+
+@rtms_proxy.route("/ui/<path:path>", methods=["GET"])
+def proxy_ui_asset(path: str) -> Response:
+    return _forward(path)
+
+
+@rtms_proxy.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@rtms_proxy.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+def proxy_http(path: str) -> Response:
+    return _forward(f"rtms/{path}")
