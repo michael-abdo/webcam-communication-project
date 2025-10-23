@@ -60,9 +60,9 @@ def _forward(relative_path: str) -> Response:
         params=request.args,
         cookies=request.cookies,
         allow_redirects=False,
-    stream=True,
-  )
-  return _stream_response(upstream)
+        stream=True,
+    )
+    return _stream_response(upstream)
 
 
 @rtms_proxy.route("/ui", methods=["GET"])
