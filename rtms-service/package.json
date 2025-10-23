@@ -10,7 +10,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.637.0",
     "@zoom/rtms": "^0.0.2",
-    "express": "^4.19.2",
-    "ws": "^8.17.0"
+    "express": "^4.19.2"
   }
 }

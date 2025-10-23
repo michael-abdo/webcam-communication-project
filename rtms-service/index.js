@@ -1,9 +1,5 @@
 import crypto from "crypto";
 import express from "express";
-import http from "http";
-import path from "path";
-import { fileURLToPath } from "url";
-import { WebSocketServer } from "ws";
 import rtms from "@zoom/rtms";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -33,45 +29,8 @@ const s3Client = new S3Client({
 const app = express();
 app.use(express.json({ limit: "5mb" }));
 
-const server = http.createServer(app);
 const streams = new Map();
 let warnedMissingApi = false;
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.join(__dirname, "public");
-
-app.use("/rtms/ui", express.static(publicDir));
-app.get("/rtms/ui", (_req, res) => {
-  res.sendFile(path.join(publicDir, "index.html"));
-});
-app.get("/rtms", (_req, res) => {
-  res.redirect(302, "/rtms/ui");
-});
-
-const wsClients = new Set();
-const wss = new WebSocketServer({ server, path: "/rtms" });
-
-wss.on("connection", (socket) => {
-  wsClients.add(socket);
-  console.log("[ws] Client connected (total:", wsClients.size, ")");
-
-  socket.on("close", () => {
-    wsClients.delete(socket);
-    console.log("[ws] Client disconnected (total:", wsClients.size, ")");
-  });
-});
-
-function broadcast(message) {
-  if (!wsClients.size) {
-    return;
-  }
-  const payload = JSON.stringify(message);
-  for (const client of wsClients) {
-    if (client.readyState === client.OPEN) {
-      client.send(payload);
-    }
-  }
-}
 
 function buildApiUrl(path) {
   if (!CAPTURE_API_BASE_URL) {
@@ -200,6 +159,22 @@ async function registerChunk(state, details) {
   }
 }
 
+async function broadcastRealtime(state, message) {
+  if (!CAPTURE_API_BASE_URL) {
+    return;
+  }
+
+  try {
+    await postJson(`/streams/${state.sessionId}/frames`, {
+      ...message,
+      streamId: state.streamId,
+      sessionId: state.sessionId,
+    });
+  } catch (error) {
+    console.error("Realtime broadcast failed", error.message);
+  }
+}
+
 async function handleAudioFrame(state, buffer, metadata, timestamp) {
   const participantId = await ensureParticipant(state, metadata);
   const participantDeviceId = metadata?.userId ?? metadata?.user_id ?? metadata?.userName ?? null;
@@ -207,11 +182,8 @@ async function handleAudioFrame(state, buffer, metadata, timestamp) {
   const durationMs = Math.round((buffer.length / 2 / 16000) * 1000);
   const sequenceNo = state.nextSequence++;
 
-  broadcast({
+  await broadcastRealtime(state, {
     type: "audio",
-    streamId: state.streamId,
-    sessionId: state.sessionId,
-    size: buffer.length,
     timestamp,
     userName: metadata?.userName ?? metadata?.user_id ?? null,
     sampleRate: 16000,
@@ -247,11 +219,8 @@ async function handleVideoFrame(state, buffer, metadata, timestamp) {
   const sequenceNo = state.nextSequence++;
   const durationMs = Math.round(1000 / 15);
 
-  broadcast({
+  await broadcastRealtime(state, {
     type: "video",
-    streamId: state.streamId,
-    sessionId: state.sessionId,
-    size: buffer.length,
     timestamp,
     mimeType: "image/jpeg",
     userName: metadata?.userName ?? null,
@@ -286,10 +255,8 @@ async function handleTranscript(state, buffer, metadata, timestamp) {
   const text = buffer.toString("utf8");
 
   if (text.trim()) {
-    broadcast({
+    await broadcastRealtime(state, {
       type: "transcript",
-      streamId: state.streamId,
-      sessionId: state.sessionId,
       timestamp,
       userName: metadata?.userName ?? null,
       text,
@@ -386,7 +353,11 @@ async function ensureStream(streamId, payload) {
     nextSequence: 0,
     participants: new Map(),
   };
-  broadcast({ type: "status", streamId, sessionId, state: "starting" });
+  await broadcastRealtime(streamState, {
+    type: "status",
+    state: "starting",
+    timestamp: Date.now(),
+  });
   configureClient(client, streamState);
   streams.set(streamId, streamState);
   return streamState;
@@ -401,7 +372,13 @@ function stopStream(streamId) {
     console.error("Error leaving RTMS stream", streamId, err);
   }
   streams.delete(streamId);
-  broadcast({ type: "status", streamId, sessionId: state?.sessionId, state: "stopped" });
+  if (state) {
+    broadcastRealtime(state, {
+      type: "status",
+      state: "stopped",
+      timestamp: Date.now(),
+    }).catch((error) => console.error("Realtime broadcast failed", error.message));
+  }
 }
 
 app.post(WEBHOOK_PATH, async (req, res) => {
@@ -431,11 +408,7 @@ app.post(WEBHOOK_PATH, async (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/healthz", (_req, res) => {
-  res.json({ status: "ok", activeStreams: streams.size });
-});
-
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`RTMS service listening on port ${PORT} (webhook path ${WEBHOOK_PATH})`);
 });
 

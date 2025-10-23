@@ -11,6 +11,7 @@ import random
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
+from flask_sock import Sock
 from streaming.s3_handler import ensure_bucket_exists
 
 # Import utils
@@ -25,9 +26,12 @@ from blueprints.rtms_ingest_api import rtms_ingest_api
 from models import init_engine
 from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
 from services.video_state import video_sessions, test_video_links
+from rtms import RTMSHub
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+sock = Sock(app)
+app.config["RTMS_HUB"] = RTMSHub()
 
 init_engine()
 
@@ -129,6 +133,26 @@ def webcam_analysis():
     print(f"[{datetime.now().isoformat()}] Webcam analysis accessed - User-Agent: {request.headers.get('User-Agent')}")
     
     return render_template('webcam_analysis.html')
+
+
+@app.route('/rtms/ui')
+def rtms_ui():
+    """Serve the RTMS dashboard UI."""
+    return render_template('rtms/dashboard.html')
+
+
+@sock.route('/rtms/ws')
+def rtms_websocket(ws):
+    """WebSocket bridge for RTMS live updates."""
+    hub: RTMSHub = app.config["RTMS_HUB"]
+    hub.register(ws)
+    try:
+        while True:
+            message = ws.receive()
+            if message is None:
+                break
+    finally:
+        hub.unregister(ws)
 
 @app.route('/simple-baseline')
 def simple_baseline():

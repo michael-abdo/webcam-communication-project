@@ -7,7 +7,7 @@ from http import HTTPStatus
 import json
 from typing import Any
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 
 from config import get_capture_api_token
 from models import SessionLocal
@@ -46,6 +46,13 @@ def enforce_authentication():
     maybe_response = _require_api_token()
     if maybe_response:
         return maybe_response
+
+
+def _get_hub():
+    hub = current_app.config.get("RTMS_HUB")
+    if hub is None:
+        raise RuntimeError("RTMS hub not initialised")
+    return hub
 
 
 @rtms_ingest_api.route("/sessions", methods=["POST"])
@@ -199,3 +206,12 @@ def record_rtms_chunk(session_id: str):
         return jsonify({"error": "conflict", "details": str(exc)}), HTTPStatus.CONFLICT
 
     return jsonify({"chunk": chunk}), HTTPStatus.CREATED
+
+
+@rtms_ingest_api.route("/streams/<session_id>/frames", methods=["POST"])
+def receive_realtime_frame(session_id: str):
+    """Broadcast realtime RTMS payloads to websocket clients."""
+    payload = request.get_json(silent=True) or {}
+    payload.setdefault("sessionId", session_id)
+    _get_hub().broadcast(payload)
+    return jsonify({"status": "ok"}), HTTPStatus.ACCEPTED
