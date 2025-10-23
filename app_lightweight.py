@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort
 from flask_cors import CORS
 from flask_sock import Sock
-from asgiref.wsgi import WsgiToAsgi
 from streaming.s3_handler import ensure_bucket_exists
 
 # Import utils
@@ -33,6 +32,9 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 sock = Sock(app)
 app.config["RTMS_HUB"] = RTMSHub()
+
+# Expose ASGI application for websocket support
+asgi_app = app.asgi_app
 
 init_engine()
 
@@ -158,7 +160,7 @@ def rtms_websocket(ws):
         app.logger.info("rtms.websocket.disconnected")
 
 
-asgi_app = WsgiToAsgi(app)
+asgi_app = app.asgi_app
 
 @app.route('/simple-baseline')
 def simple_baseline():
