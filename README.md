@@ -335,3 +335,17 @@ python3 quick_camera_test.py
 [![Camera Health](https://img.shields.io/badge/Foundation-Camera%20Health%20First-critical)](camera_tools/tests/)
 [![Test Driven](https://img.shields.io/badge/Architecture-Test%20Driven-blue)](camera_tools/)
 [![Fatigue Detection](https://img.shields.io/badge/Feature-Fatigue%20Detection-orange)](basic_fatigue_dashboard.py)
+
+## Zoom RTMS Ingestion
+
+A standalone Node service under `rtms-service/` listens for Zoom RTMS webhooks and stores audio/video/transcript artifacts in S3. Run it alongside the Flask app:
+
+```bash
+cd rtms-service
+npm install
+npm start
+```
+
+Configure the Zoom OAuth credentials (`ZM_RTMS_CLIENT`, `ZM_RTMS_SECRET`) and S3 environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `S3_BUCKET`), then point the Zoom webhook at `/rtms/webhook` on this service.  To have chunks recorded in
+the Phase-2 capture database, set `CAPTURE_API_BASE_URL` (typically `https://<app>/api/rtms`) and the
+matching `CAPTURE_API_TOKEN` so the service can call the new ingestion endpoints.

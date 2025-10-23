@@ -54,3 +54,4 @@ test_baseline_demo.html
 heroku_runtime.txt
 
 data/app.db
+rtms-service/node_modules/
