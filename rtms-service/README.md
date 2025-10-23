@@ -26,6 +26,9 @@ AWS credentials are read from the usual environment variables (`AWS_ACCESS_KEY_I
 cd rtms-service
 npm install
 npm start
+
+Open http://localhost:8080/rtms/ui to view the live RTMS dashboard (WebSocket stream and
+auto-play audio/video). The same process also exposes `/rtms/webhook` for Zoom events.
 ```
 
 Expose the webhook (e.g. with `ngrok http 8080`) and register the public URL with Zoom.

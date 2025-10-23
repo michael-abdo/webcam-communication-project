@@ -1,5 +1,9 @@
 import crypto from "crypto";
 import express from "express";
+import http from "http";
+import path from "path";
+import { fileURLToPath } from "url";
+import { WebSocketServer } from "ws";
 import rtms from "@zoom/rtms";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -29,8 +33,45 @@ const s3Client = new S3Client({
 const app = express();
 app.use(express.json({ limit: "5mb" }));
 
+const server = http.createServer(app);
 const streams = new Map();
 let warnedMissingApi = false;
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.join(__dirname, "public");
+
+app.use("/rtms/ui", express.static(publicDir));
+app.get("/rtms/ui", (_req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
+app.get("/rtms", (_req, res) => {
+  res.redirect(302, "/rtms/ui");
+});
+
+const wsClients = new Set();
+const wss = new WebSocketServer({ server, path: "/rtms" });
+
+wss.on("connection", (socket) => {
+  wsClients.add(socket);
+  console.log("[ws] Client connected (total:", wsClients.size, ")");
+
+  socket.on("close", () => {
+    wsClients.delete(socket);
+    console.log("[ws] Client disconnected (total:", wsClients.size, ")");
+  });
+});
+
+function broadcast(message) {
+  if (!wsClients.size) {
+    return;
+  }
+  const payload = JSON.stringify(message);
+  for (const client of wsClients) {
+    if (client.readyState === client.OPEN) {
+      client.send(payload);
+    }
+  }
+}
 
 function buildApiUrl(path) {
   if (!CAPTURE_API_BASE_URL) {
@@ -159,12 +200,25 @@ async function registerChunk(state, details) {
   }
 }
 
-async function handleAudioFrame(state, buffer, metadata) {
+async function handleAudioFrame(state, buffer, metadata, timestamp) {
   const participantId = await ensureParticipant(state, metadata);
   const participantDeviceId = metadata?.userId ?? metadata?.user_id ?? metadata?.userName ?? null;
   const checksum = crypto.createHash("sha256").update(buffer).digest("hex");
   const durationMs = Math.round((buffer.length / 2 / 16000) * 1000);
   const sequenceNo = state.nextSequence++;
+
+  broadcast({
+    type: "audio",
+    streamId: state.streamId,
+    sessionId: state.sessionId,
+    size: buffer.length,
+    timestamp,
+    userName: metadata?.userName ?? metadata?.user_id ?? null,
+    sampleRate: 16000,
+    channels: 1,
+    encoding: "PCM16",
+    data: buffer.toString("base64"),
+  });
 
   try {
     const storageKey = await uploadBuffer(
@@ -188,10 +242,21 @@ async function handleAudioFrame(state, buffer, metadata) {
   }
 }
 
-async function handleVideoFrame(state, buffer) {
+async function handleVideoFrame(state, buffer, metadata, timestamp) {
   const checksum = crypto.createHash("sha256").update(buffer).digest("hex");
   const sequenceNo = state.nextSequence++;
   const durationMs = Math.round(1000 / 15);
+
+  broadcast({
+    type: "video",
+    streamId: state.streamId,
+    sessionId: state.sessionId,
+    size: buffer.length,
+    timestamp,
+    mimeType: "image/jpeg",
+    userName: metadata?.userName ?? null,
+    data: buffer.toString("base64"),
+  });
 
   try {
     const storageKey = await uploadBuffer(
@@ -215,9 +280,21 @@ async function handleVideoFrame(state, buffer) {
   }
 }
 
-async function handleTranscript(state, buffer) {
+async function handleTranscript(state, buffer, metadata, timestamp) {
   const checksum = crypto.createHash("sha256").update(buffer).digest("hex");
   const sequenceNo = state.nextSequence++;
+  const text = buffer.toString("utf8");
+
+  if (text.trim()) {
+    broadcast({
+      type: "transcript",
+      streamId: state.streamId,
+      sessionId: state.sessionId,
+      timestamp,
+      userName: metadata?.userName ?? null,
+      text,
+    });
+  }
 
   try {
     const storageKey = await uploadBuffer(
@@ -265,7 +342,7 @@ function configureClient(client, streamState) {
 
   client.onAudioData(async (data, size, timestamp, metadata) => {
     try {
-      await handleAudioFrame(streamState, Buffer.from(data), metadata);
+      await handleAudioFrame(streamState, Buffer.from(data), metadata, timestamp);
     } catch (error) {
       console.error("Audio callback error", error.message);
     }
@@ -273,7 +350,7 @@ function configureClient(client, streamState) {
 
   client.onVideoData(async (data, size, timestamp, metadata) => {
     try {
-      await handleVideoFrame(streamState, Buffer.from(data));
+      await handleVideoFrame(streamState, Buffer.from(data), metadata, timestamp);
     } catch (error) {
       console.error("Video callback error", error.message);
     }
@@ -281,7 +358,7 @@ function configureClient(client, streamState) {
 
   client.onTranscriptData(async (data, size, timestamp, metadata) => {
     try {
-      await handleTranscript(streamState, Buffer.from(data));
+      await handleTranscript(streamState, Buffer.from(data), metadata, timestamp);
     } catch (error) {
       console.error("Transcript callback error", error.message);
     }
@@ -302,12 +379,14 @@ async function ensureStream(streamId, payload) {
 
   const client = new rtms.Client();
   const streamState = {
+    streamId,
     client,
     sessionId,
     meetingUuid: payload?.meeting_uuid || null,
     nextSequence: 0,
     participants: new Map(),
   };
+  broadcast({ type: "status", streamId, sessionId, state: "starting" });
   configureClient(client, streamState);
   streams.set(streamId, streamState);
   return streamState;
@@ -322,6 +401,7 @@ function stopStream(streamId) {
     console.error("Error leaving RTMS stream", streamId, err);
   }
   streams.delete(streamId);
+  broadcast({ type: "status", streamId, sessionId: state?.sessionId, state: "stopped" });
 }
 
 app.post(WEBHOOK_PATH, async (req, res) => {
@@ -355,7 +435,7 @@ app.get("/healthz", (_req, res) => {
   res.json({ status: "ok", activeStreams: streams.size });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`RTMS service listening on port ${PORT} (webhook path ${WEBHOOK_PATH})`);
 });
 
