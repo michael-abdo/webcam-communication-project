@@ -211,3 +211,9 @@ For complete parameter options and detailed documentation:
 - 📹 **[Video Parameters](https://zoom.github.io/rtms/js/interfaces/VideoParameters.html)** - Complete video configuration options  
 - 🖥️ **[Deskshare Parameters](https://zoom.github.io/rtms/js/interfaces/VideoParameters.html)** - Complete deskshare configuration options
 - 📖 **[Full API Documentation](https://zoom.github.io/rtms/js/)** - Complete SDK reference
+
+## Deployment Notes
+- Heroku app: https://zoom-test-rtms-5898b0134dc2.herokuapp.com/
+- Zoom RTMS webhook endpoint: `https://zoom-test-rtms-5898b0134dc2.herokuapp.com/rtms/webhook`
+- Dashboard UI: `https://zoom-test-rtms-5898b0134dc2.herokuapp.com/`
+- Environment variables are stored in `.env` locally and mirrored to Heroku with `heroku config:set $(cat .env | xargs)`.
