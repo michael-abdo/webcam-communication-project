@@ -12,6 +12,14 @@ rtms_proxy = Blueprint("rtms_proxy", __name__)
 
 RTMS_PROXY_BASE_URL = os.getenv("RTMS_PROXY_BASE_URL", "https://zoom-test-rtms-5898b0134dc2.herokuapp.com")
 
+ROOT_ASSETS = {
+    "styles.css",
+    "app.js",
+    "favicon.ico",
+    "manifest.json",
+    "robots.txt",
+}
+
 # Headers that should not be forwarded from the upstream response
 HOP_BY_HOP_HEADERS = {
     "connection",
@@ -75,4 +83,8 @@ def proxy_ui_asset(path: str) -> Response:
 @rtms_proxy.route("/", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @rtms_proxy.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_http(path: str) -> Response:
+    if path in ROOT_ASSETS:
+        return _forward(path)
+    if path == "":
+        return _forward("rtms")
     return _forward(f"rtms/{path}")
