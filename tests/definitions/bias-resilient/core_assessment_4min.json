@@ -1,0 +1,532 @@
+{
+  "test_id": "bias_resilient_core_4min",
+  "title": "Bias-Resilient Meeting Onboarding - Core 4-Minute Assessment",
+  "description": "Power first-meeting coaching with the smallest set of high-yield signals. Plain language, non-clinical. No diagnostic intent.",
+  "version": "1.0.0",
+  "category": "bias-resilient",
+  "duration_minutes": 4,
+  "instructions": "Answer quickly and honestly. Use confidence sliders where shown. Completion time about 4 minutes.",
+  "settings": {
+    "randomize_questions": false,
+    "show_progress": true,
+    "allow_skip": false,
+    "time_limit_seconds": 240,
+    "passing_score": null
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "text_input",
+      "question": "A tool and a case cost $110 in total. The tool costs $100 more than the case. How much does the case cost?",
+      "description": "Enter the amount in dollars (number only)",
+      "required": true,
+      "points": 1,
+      "tags": ["cognitive-reflection", "numeracy"],
+      "validation": {
+        "min_length": 1,
+        "max_length": 10,
+        "pattern": "^[0-9.]+$"
+      },
+      "scoring": {
+        "method": "exact",
+        "correct_answer": "5"
+      }
+    },
+    {
+      "id": 2,
+      "type": "slider",
+      "question": "Confidence for your answer to the tool and case question",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 3,
+      "type": "text_input",
+      "question": "It takes 5 machines 5 minutes to make 5 widgets. How long would it take 100 machines to make 100 widgets?",
+      "description": "Enter the number of minutes (number only)",
+      "required": true,
+      "points": 1,
+      "tags": ["cognitive-reflection", "logic"],
+      "validation": {
+        "min_length": 1,
+        "max_length": 10,
+        "pattern": "^[0-9]+$"
+      },
+      "scoring": {
+        "method": "exact",
+        "correct_answer": "5"
+      }
+    },
+    {
+      "id": 4,
+      "type": "slider",
+      "question": "Confidence for your answer to the machines and widgets question",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 5,
+      "type": "multiple_choice",
+      "question": "A fair six-sided die will be rolled once. Which is more likely?",
+      "required": true,
+      "points": 1,
+      "tags": ["probability", "numeracy"],
+      "options": [
+        {"value": "greater_than_4", "label": "A number greater than 4", "is_correct": false},
+        {"value": "even_number", "label": "An even number", "is_correct": true}
+      ],
+      "scoring": {
+        "method": "exact",
+        "correct_answer": "even_number"
+      }
+    },
+    {
+      "id": 6,
+      "type": "slider",
+      "question": "Confidence for your answer to the die probability question",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 7,
+      "type": "text_input",
+      "question": "A company's revenue grew from $40 million to $44 million year over year. What is the percentage growth?",
+      "description": "Enter the percentage to the nearest whole number (number only, without % sign)",
+      "required": true,
+      "points": 1,
+      "tags": ["numeracy", "calculation"],
+      "validation": {
+        "min_length": 1,
+        "max_length": 10,
+        "pattern": "^[0-9]+$"
+      },
+      "scoring": {
+        "method": "exact",
+        "correct_answer": "10"
+      }
+    },
+    {
+      "id": 8,
+      "type": "slider",
+      "question": "Confidence for your answer to the revenue growth question",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 9,
+      "type": "text_input",
+      "question": "Give a 90% confidence range for the average height of adult men in your country",
+      "description": "Enter as 'min-max' in your preferred units (e.g., '165-185' for cm or '5.5-6.1' for feet)",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "prediction-interval"],
+      "validation": {
+        "min_length": 3,
+        "max_length": 20,
+        "pattern": "^[0-9.-]+$"
+      }
+    },
+    {
+      "id": 10,
+      "type": "rating",
+      "question": "I look for reasons why I might be wrong",
+      "required": true,
+      "points": 0,
+      "tags": ["actively-open-minded", "self-reflection"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 11,
+      "type": "rating",
+      "question": "I change my mind when new information is strong",
+      "required": true,
+      "points": 0,
+      "tags": ["actively-open-minded", "flexibility"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 12,
+      "type": "rating",
+      "question": "I like to hear the best case for views I disagree with",
+      "required": true,
+      "points": 0,
+      "tags": ["actively-open-minded", "perspective-taking"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 13,
+      "type": "rating",
+      "question": "I consider alternative explanations before I decide",
+      "required": true,
+      "points": 0,
+      "tags": ["actively-open-minded", "decision-making"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 14,
+      "type": "rating",
+      "question": "I ask clarifying questions when I disagree",
+      "required": true,
+      "points": 0,
+      "tags": ["actively-open-minded", "communication"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 15,
+      "type": "rating",
+      "question": "I prefer quick decisions even when some facts are missing",
+      "required": true,
+      "points": 0,
+      "tags": ["need-for-closure", "decision-speed"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 16,
+      "type": "rating",
+      "question": "Unclear instructions make me uncomfortable",
+      "required": true,
+      "points": 0,
+      "tags": ["need-for-closure", "ambiguity-tolerance"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 17,
+      "type": "rating",
+      "question": "I am patient when problems have no single right answer",
+      "required": true,
+      "points": 0,
+      "tags": ["need-for-closure", "ambiguity-tolerance", "reverse-scored"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 18,
+      "type": "rating",
+      "question": "I am fine delaying a choice to gather more evidence",
+      "required": true,
+      "points": 0,
+      "tags": ["need-for-closure", "decision-making", "reverse-scored"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    },
+    {
+      "id": 19,
+      "type": "rating",
+      "question": "Mood right now",
+      "required": true,
+      "points": 0,
+      "tags": ["current-state", "mood"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Very negative"},
+        {"value": "2", "label": "Negative"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Positive"},
+        {"value": "5", "label": "Very positive"}
+      ]
+    },
+    {
+      "id": 20,
+      "type": "rating",
+      "question": "Stress right now",
+      "required": true,
+      "points": 0,
+      "tags": ["current-state", "stress"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Very low"},
+        {"value": "2", "label": "Low"},
+        {"value": "3", "label": "Moderate"},
+        {"value": "4", "label": "High"},
+        {"value": "5", "label": "Very high"}
+      ]
+    },
+    {
+      "id": 21,
+      "type": "rating",
+      "question": "Mental effort available for this meeting",
+      "required": true,
+      "points": 0,
+      "tags": ["current-state", "mental-effort"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Very low"},
+        {"value": "2", "label": "Low"},
+        {"value": "3", "label": "Moderate"},
+        {"value": "4", "label": "High"},
+        {"value": "5", "label": "Very high"}
+      ]
+    },
+    {
+      "id": 22,
+      "type": "multiple_choice",
+      "question": "Attention check: Please select option 2 here",
+      "required": true,
+      "points": 0,
+      "tags": ["attention-check", "validity"],
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2", "is_correct": true},
+        {"value": "3", "label": "3"},
+        {"value": "4", "label": "4"},
+        {"value": "5", "label": "5"}
+      ]
+    },
+    {
+      "id": 23,
+      "type": "multiple_choice",
+      "question": "A teammate shares a document with several comments that question your approach and sends it late at night with no greeting. What is your first interpretation?",
+      "required": true,
+      "points": 0,
+      "tags": ["intent-attribution", "interpretation"],
+      "options": [
+        {"value": "a", "label": "They are trying to help improve the work"},
+        {"value": "b", "label": "They are frustrated with me"},
+        {"value": "c", "label": "They want more context"},
+        {"value": "d", "label": "They do not respect my time"}
+      ]
+    },
+    {
+      "id": 24,
+      "type": "slider",
+      "question": "Confidence for your interpretation of the teammate's message",
+      "description": "0 = Not confident at all, 100 = Completely confident",
+      "required": true,
+      "points": 0,
+      "tags": ["calibration", "confidence"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 100,
+        "step": 5
+      }
+    },
+    {
+      "id": 25,
+      "type": "text_input",
+      "question": "A colleague suggests $400 as a monthly budget ceiling. What is your independent best budget after thinking for 10 seconds?",
+      "description": "Enter the amount in dollars (number only)",
+      "required": true,
+      "points": 0,
+      "tags": ["anchoring", "decision-making"],
+      "validation": {
+        "min_length": 1,
+        "max_length": 10,
+        "pattern": "^[0-9]+$"
+      },
+      "time_limit_seconds": 20
+    },
+    {
+      "id": 26,
+      "type": "multiple_choice",
+      "question": "Attention check: To show you are reading, select option 4 here",
+      "required": true,
+      "points": 0,
+      "tags": ["attention-check", "validity"],
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"},
+        {"value": "3", "label": "3"},
+        {"value": "4", "label": "4", "is_correct": true},
+        {"value": "5", "label": "5"}
+      ]
+    },
+    {
+      "id": 27,
+      "type": "rating",
+      "question": "I always treat people with complete respect, even when I am very stressed",
+      "required": true,
+      "points": 0,
+      "tags": ["impression-management", "validity"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Strongly Disagree"},
+        {"value": "2", "label": "Disagree"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Agree"},
+        {"value": "5", "label": "Strongly Agree"}
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "custom",
+    "description": "Scoring is used to generate personalized nudge rules and coaching insights",
+    "categories": [
+      {
+        "name": "calibration_numeracy",
+        "question_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        "weight": 0.25
+      },
+      {
+        "name": "actively_open_minded",
+        "question_ids": [10, 11, 12, 13, 14],
+        "weight": 0.25
+      },
+      {
+        "name": "need_for_closure",
+        "question_ids": [15, 16, 17, 18],
+        "weight": 0.20
+      },
+      {
+        "name": "current_state",
+        "question_ids": [19, 20, 21],
+        "weight": 0.15
+      },
+      {
+        "name": "intent_attribution",
+        "question_ids": [23, 24, 25],
+        "weight": 0.15
+      }
+    ]
+  },
+  "feedback": {
+    "show_correct_answers": false,
+    "immediate": false,
+    "final_message": {
+      "default": {
+        "min_score": 0,
+        "message": "Thank you for completing the assessment. Your responses will help personalize your meeting coaching experience."
+      }
+    }
+  }
+}

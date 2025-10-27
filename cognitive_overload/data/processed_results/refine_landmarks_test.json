@@ -1,0 +1,18 @@
+{
+  "with_refine": {
+    "refine_landmarks": true,
+    "frames_processed": 4,
+    "faces_detected": 4,
+    "detection_rate": 1.0,
+    "processing_time": 0.6742303371429443,
+    "landmarks_per_frame": 468
+  },
+  "without_refine": {
+    "refine_landmarks": false,
+    "frames_processed": 4,
+    "faces_detected": 4,
+    "detection_rate": 1.0,
+    "processing_time": 0.668389081954956,
+    "landmarks_per_frame": 468
+  }
+}

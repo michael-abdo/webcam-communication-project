@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-06-21T09:14:32.319203",
+  "camera_index": 0,
+  "tests": {
+    "resolution_support": [
+      {
+        "resolution": "640x480",
+        "name": "VGA",
+        "supported": true
+      },
+      {
+        "resolution": "1280x720",
+        "name": "HD",
+        "supported": true
+      }
+    ],
+    "fps_consistency": {
+      "average_fps": 24.94,
+      "std_deviation": 57.51,
+      "consistency_score": -130.55,
+      "frame_count": 125
+    },
+    "image_quality": {
+      "brightness": 7.54,
+      "contrast": 5.88,
+      "sharpness": 12.66,
+      "noise": 0.0031,
+      "quality_score": 40
+    },
+    "low_light_performance": {
+      "detected": true,
+      "avg_brightness": 7.75,
+      "avg_snr": 0.97
+    },
+    "autofocus": {
+      "available": false,
+      "stability": 47.08
+    }
+  }
+}

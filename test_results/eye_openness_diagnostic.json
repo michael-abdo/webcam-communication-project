@@ -1,0 +1,53 @@
+{
+  "analysis": {
+    "Real Face": {
+      "min": 0.15,
+      "max": 0.15,
+      "mean": 0.15,
+      "std": 0.0,
+      "percentiles": {
+        "10": 0.15,
+        "25": 0.15,
+        "50": 0.15,
+        "75": 0.15,
+        "90": 0.15
+      }
+    },
+    "Synthetic Neutral": {
+      "min": 0.15,
+      "max": 0.15,
+      "mean": 0.15,
+      "std": 0.0,
+      "percentiles": {
+        "10": 0.15,
+        "25": 0.15,
+        "50": 0.15,
+        "75": 0.15,
+        "90": 0.15
+      }
+    },
+    "Synthetic Tired": {
+      "min": 0.15,
+      "max": 0.15,
+      "mean": 0.15,
+      "std": 0.0,
+      "percentiles": {
+        "10": 0.15,
+        "25": 0.15,
+        "50": 0.15,
+        "75": 0.15,
+        "90": 0.15
+      }
+    }
+  },
+  "recommendations": {
+    "real_faces": {
+      "eye_closed_threshold": 0.12,
+      "perclos_threshold": 0.15
+    },
+    "synthetic_faces": {
+      "eye_closed_threshold": 0.12,
+      "perclos_threshold": 0.15
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "timestamp": "20250620_231554",
+  "demo_type": "production_system_demo",
+  "session_metrics": {
+    "duration_seconds": 54.875038146972656,
+    "frames_processed": 545,
+    "processing_fps": 9.931655966057248
+  },
+  "fatigue_results": {
+    "session_duration_seconds": 18.166666666666668,
+    "overall_perclos": 0.9174311926605505,
+    "total_blinks": 3,
+    "total_microsleeps": 0,
+    "calibration_mode": "real",
+    "min_blink_duration_ms": 33.333333333333215,
+    "max_blink_duration_ms": 99.99999999999964,
+    "avg_blink_duration_ms": 55.55555555555595
+  },
+  "alert_results": {
+    "status": "No alerts generated this session",
+    "session_duration_minutes": 1.0372799396514893,
+    "total_alert_events": 0,
+    "alert_frequency_per_hour": 0.0,
+    "current_alert_level": "alert",
+    "last_alert_time": 18.133333333333333
+  },
+  "perclos_statistics": {
+    "samples": 545,
+    "average": 0.8595299403901621,
+    "maximum": 2.2222222222222223
+  },
+  "alert_events": [],
+  "production_status": "ready",
+  "validation_accuracy": "100%"
+}

@@ -1,0 +1,26 @@
+{
+  "0.3": {
+    "frames_processed": 5,
+    "faces_detected": 5,
+    "detection_rate": 1.0,
+    "processing_time": 0.8522071838378906
+  },
+  "0.5": {
+    "frames_processed": 5,
+    "faces_detected": 5,
+    "detection_rate": 1.0,
+    "processing_time": 0.9936437606811523
+  },
+  "0.7": {
+    "frames_processed": 5,
+    "faces_detected": 5,
+    "detection_rate": 1.0,
+    "processing_time": 0.8736989498138428
+  },
+  "0.9": {
+    "frames_processed": 5,
+    "faces_detected": 5,
+    "detection_rate": 1.0,
+    "processing_time": 1.0238466262817383
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "test_id": "user_feedback_survey",
+  "title": "User Experience Survey",
+  "description": "Quick survey to gather feedback about the fatigue detection system",
+  "version": "1.0.0",
+  "category": "custom",
+  "duration_minutes": 3,
+  "instructions": "Please share your experience using the fatigue detection system. Your feedback helps us improve!",
+  "settings": {
+    "randomize_questions": false,
+    "show_progress": true,
+    "allow_skip": true,
+    "passing_score": null
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "rating",
+      "question": "How easy was it to use the fatigue detection system?",
+      "required": true,
+      "points": 0,
+      "tags": ["usability"],
+      "validation": {
+        "min_value": 1,
+        "max_value": 5,
+        "step": 1
+      },
+      "options": [
+        {"value": "1", "label": "Very Difficult"},
+        {"value": "2", "label": "Difficult"},
+        {"value": "3", "label": "Neutral"},
+        {"value": "4", "label": "Easy"},
+        {"value": "5", "label": "Very Easy"}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "multiple_choice",
+      "question": "Which feature did you find most useful?",
+      "required": false,
+      "points": 0,
+      "tags": ["features"],
+      "options": [
+        {"value": "real_time_alerts", "label": "Real-time fatigue alerts"},
+        {"value": "perclos_tracking", "label": "Eye closure tracking"},
+        {"value": "metrics_dashboard", "label": "Metrics dashboard"},
+        {"value": "video_analysis", "label": "Video analysis"},
+        {"value": "other", "label": "Other"}
+      ]
+    },
+    {
+      "id": 3,
+      "type": "text_input",
+      "question": "What improvements would you suggest?",
+      "description": "Please share any ideas or concerns",
+      "required": false,
+      "points": 0,
+      "tags": ["feedback", "improvements"],
+      "validation": {
+        "min_length": 0,
+        "max_length": 1000
+      }
+    },
+    {
+      "id": 4,
+      "type": "true_false",
+      "question": "Would you recommend this system to others?",
+      "required": true,
+      "points": 0,
+      "tags": ["recommendation"]
+    },
+    {
+      "id": 5,
+      "type": "slider",
+      "question": "How accurate did you find the fatigue detection?",
+      "description": "0 = Not accurate at all, 10 = Extremely accurate",
+      "required": true,
+      "points": 0,
+      "tags": ["accuracy"],
+      "validation": {
+        "min_value": 0,
+        "max_value": 10,
+        "step": 1
+      }
+    }
+  ],
+  "scoring": {
+    "type": "none",
+    "description": "This is a feedback survey with no scoring"
+  },
+  "feedback": {
+    "show_correct_answers": false,
+    "immediate": false,
+    "final_message": {
+      "excellent": {
+        "min_score": 0,
+        "message": "Thank you for your feedback! Your responses have been recorded and will help us improve the system."
+      }
+    }
+  }
+}

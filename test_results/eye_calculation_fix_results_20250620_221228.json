@@ -1,0 +1,231 @@
+{
+  "timestamp": "20250620_221228",
+  "test_type": "eye_calculation_fix",
+  "results": [
+    {
+      "video": "Real Human Face",
+      "path": "./cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/1/3.mp4",
+      "frames_analyzed": 10,
+      "statistics": {
+        "min": 0.09581287506819422,
+        "max": 0.10526315789473684,
+        "mean": 0.10048320998737736,
+        "std": 0.0031366424437063232,
+        "range": 0.009450282826542616
+      },
+      "sample_values": [
+        {
+          "frame": 0,
+          "left_eye": 0.10037878787878789,
+          "right_eye": 0.10256410256410256,
+          "average": 0.10147144522144522
+        },
+        {
+          "frame": 1,
+          "left_eye": 0.09074074074074073,
+          "right_eye": 0.11666666666666667,
+          "average": 0.1037037037037037
+        },
+        {
+          "frame": 2,
+          "left_eye": 0.08514492753623189,
+          "right_eye": 0.11752136752136752,
+          "average": 0.10133314752879971
+        },
+        {
+          "frame": 3,
+          "left_eye": 0.08514492753623189,
+          "right_eye": 0.11752136752136752,
+          "average": 0.10133314752879971
+        },
+        {
+          "frame": 4,
+          "left_eye": 0.08518518518518518,
+          "right_eye": 0.10897435897435898,
+          "average": 0.09707977207977209
+        },
+        {
+          "frame": 5,
+          "left_eye": 0.08514492753623189,
+          "right_eye": 0.11458333333333333,
+          "average": 0.09986413043478261
+        },
+        {
+          "frame": 6,
+          "left_eye": 0.07624113475177305,
+          "right_eye": 0.11538461538461539,
+          "average": 0.09581287506819422
+        },
+        {
+          "frame": 7,
+          "left_eye": 0.07624113475177305,
+          "right_eye": 0.11538461538461539,
+          "average": 0.09581287506819422
+        },
+        {
+          "frame": 8,
+          "left_eye": 0.08333333333333333,
+          "right_eye": 0.12719298245614033,
+          "average": 0.10526315789473684
+        },
+        {
+          "frame": 9,
+          "left_eye": 0.07118055555555555,
+          "right_eye": 0.13513513513513514,
+          "average": 0.10315784534534535
+        }
+      ],
+      "status": "success"
+    },
+    {
+      "video": "Synthetic Neutral",
+      "path": "./cognitive_overload/validation/real_face_datasets/synthetic_realistic/synthetic_neutral.mp4",
+      "frames_analyzed": 10,
+      "statistics": {
+        "min": 0.17708333333333331,
+        "max": 0.1911300505050505,
+        "mean": 0.18580573769912004,
+        "std": 0.004117264119958388,
+        "range": 0.014046717171717182
+      },
+      "sample_values": [
+        {
+          "frame": 0,
+          "left_eye": 0.18434343434343434,
+          "right_eye": 0.19791666666666666,
+          "average": 0.1911300505050505
+        },
+        {
+          "frame": 1,
+          "left_eye": 0.1880952380952381,
+          "right_eye": 0.18872549019607843,
+          "average": 0.18841036414565826
+        },
+        {
+          "frame": 2,
+          "left_eye": 0.18571428571428572,
+          "right_eye": 0.18137254901960786,
+          "average": 0.1835434173669468
+        },
+        {
+          "frame": 3,
+          "left_eye": 0.17857142857142858,
+          "right_eye": 0.18333333333333335,
+          "average": 0.18095238095238098
+        },
+        {
+          "frame": 4,
+          "left_eye": 0.19761904761904764,
+          "right_eye": 0.18287037037037035,
+          "average": 0.190244708994709
+        },
+        {
+          "frame": 5,
+          "left_eye": 0.19285714285714287,
+          "right_eye": 0.17824074074074076,
+          "average": 0.18554894179894182
+        },
+        {
+          "frame": 6,
+          "left_eye": 0.18287037037037035,
+          "right_eye": 0.1712962962962963,
+          "average": 0.17708333333333331
+        },
+        {
+          "frame": 7,
+          "left_eye": 0.19285714285714287,
+          "right_eye": 0.18287037037037035,
+          "average": 0.1878637566137566
+        },
+        {
+          "frame": 8,
+          "left_eye": 0.1875,
+          "right_eye": 0.18287037037037035,
+          "average": 0.18518518518518517
+        },
+        {
+          "frame": 9,
+          "left_eye": 0.19285714285714287,
+          "right_eye": 0.18333333333333335,
+          "average": 0.1880952380952381
+        }
+      ],
+      "status": "success"
+    },
+    {
+      "video": "Synthetic Tired",
+      "path": "./cognitive_overload/validation/real_face_datasets/synthetic_realistic/synthetic_tired.mp4",
+      "frames_analyzed": 10,
+      "statistics": {
+        "min": 0.1962826797385621,
+        "max": 0.22181372549019607,
+        "mean": 0.20450980392156864,
+        "std": 0.006575244545351622,
+        "range": 0.02553104575163398
+      },
+      "sample_values": [
+        {
+          "frame": 0,
+          "left_eye": 0.18872549019607843,
+          "right_eye": 0.22058823529411764,
+          "average": 0.20465686274509803
+        },
+        {
+          "frame": 1,
+          "left_eye": 0.20098039215686272,
+          "right_eye": 0.2426470588235294,
+          "average": 0.22181372549019607
+        },
+        {
+          "frame": 2,
+          "left_eye": 0.19117647058823528,
+          "right_eye": 0.22142857142857142,
+          "average": 0.20630252100840335
+        },
+        {
+          "frame": 3,
+          "left_eye": 0.19444444444444445,
+          "right_eye": 0.2013888888888889,
+          "average": 0.19791666666666669
+        },
+        {
+          "frame": 4,
+          "left_eye": 0.20098039215686272,
+          "right_eye": 0.20601851851851852,
+          "average": 0.20349945533769062
+        },
+        {
+          "frame": 5,
+          "left_eye": 0.20098039215686272,
+          "right_eye": 0.20601851851851852,
+          "average": 0.20349945533769062
+        },
+        {
+          "frame": 6,
+          "left_eye": 0.19117647058823528,
+          "right_eye": 0.2013888888888889,
+          "average": 0.1962826797385621
+        },
+        {
+          "frame": 7,
+          "left_eye": 0.19607843137254902,
+          "right_eye": 0.20601851851851852,
+          "average": 0.20104847494553377
+        },
+        {
+          "frame": 8,
+          "left_eye": 0.20588235294117646,
+          "right_eye": 0.2013888888888889,
+          "average": 0.20363562091503268
+        },
+        {
+          "frame": 9,
+          "left_eye": 0.20098039215686272,
+          "right_eye": 0.2119047619047619,
+          "average": 0.2064425770308123
+        }
+      ],
+      "status": "success"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "processing_time": 0.6157524585723877,
+      "frames_processed": 5,
+      "faces_detected": 5,
+      "detection_rate": 1.0,
+      "landmarks_per_frame": 468
+    },
+    {
+      "run": 2,
+      "processing_time": 0.6354305744171143,
+      "frames_processed": 5,
+      "faces_detected": 5,
+      "detection_rate": 1.0,
+      "landmarks_per_frame": 468
+    },
+    {
+      "run": 3,
+      "processing_time": 0.6277532577514648,
+      "frames_processed": 5,
+      "faces_detected": 5,
+      "detection_rate": 1.0,
+      "landmarks_per_frame": 468
+    }
+  ],
+  "average_processing_time": 0.6263120969136556,
+  "processing_time_std": 0.008097932625880343,
+  "detection_rate_consistent": true,
+  "landmarks_count_consistent": true,
+  "overall_consistent": true
+}

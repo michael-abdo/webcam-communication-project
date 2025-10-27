@@ -1,0 +1,158 @@
+- Deploy Fatigue Detection System for ChatGPT Agent Access
+  - Platform Setup and Account Creation
+    - Create Railway Account
+      - Sign up at railway.app using GitHub
+      - Verify email address
+      - Connect GitHub account for repository access
+    - Create Render Account
+      - Sign up at render.com using GitHub
+      - Verify email address and phone number
+      - Connect GitHub account for automatic deployments
+    - Create Fly.io Account (Optional)
+      - Sign up at fly.io
+      - Install flyctl CLI tool
+      - Authenticate flyctl with account
+  - Repository Preparation
+    - Fork Repository to Personal GitHub
+      - Fork webcam-communication-project repository
+      - Ensure deploy branch is available
+      - Verify all deployment files are present
+    - Verify Deployment Files
+      - Check app.py exists and is functional
+      - Verify requirements.txt has all dependencies
+      - Confirm Procfile has correct gunicorn configuration
+      - Validate railway.json configuration
+      - Check render.yaml configuration
+      - Ensure runtime.txt specifies correct Python version
+    - Test Local Deployment
+      - Install dependencies with pip install -r requirements.txt
+      - Run python3 app.py locally
+      - Test all endpoints with curl commands
+      - Verify JSON responses and CORS headers
+      - Run validation script python3 validate_deployment.py
+  - Railway Deployment Process
+    - Connect Repository to Railway
+      - Log into Railway dashboard
+      - Click "New Project" button
+      - Select "Deploy from GitHub repo"
+      - Choose forked repository
+      - Select deploy branch
+    - Configure Railway Settings
+      - Verify railway.json is detected automatically
+      - Check environment variables are set correctly
+      - Confirm PORT environment variable is configured
+      - Verify health check path is set to /health
+    - Deploy and Monitor
+      - Click deploy button and wait for build
+      - Monitor build logs for any errors
+      - Wait for deployment to complete successfully
+      - Note the assigned railway.app URL
+    - Validate Railway Deployment
+      - Test assigned URL in browser
+      - Verify HTTPS is working automatically
+      - Test all API endpoints with curl
+      - Run validation script against live URL
+      - Check health endpoint returns 200 OK
+  - Render Deployment Process
+    - Connect Repository to Render
+      - Log into Render dashboard
+      - Click "New Web Service"
+      - Connect GitHub account if not already connected
+      - Select forked repository
+      - Choose deploy branch
+    - Configure Render Settings
+      - Verify render.yaml is detected
+      - Set build command to pip install -r requirements.txt
+      - Set start command to gunicorn app:app
+      - Configure environment variables
+      - Set health check path to /health
+    - Deploy and Monitor
+      - Click "Create Web Service"
+      - Monitor build process in real-time
+      - Wait for first deployment to complete
+      - Note assigned onrender.com URL
+    - Validate Render Deployment
+      - Access deployment URL in browser
+      - Verify automatic HTTPS is enabled
+      - Test all endpoints for functionality
+      - Run comprehensive validation script
+      - Verify CORS headers are present
+  - Post-Deployment Validation
+    - Comprehensive Endpoint Testing
+      - Test GET /health endpoint
+        - Verify 200 status code response
+        - Check JSON response format
+        - Validate uptime and system info
+      - Test GET /api/info endpoint
+        - Verify system capabilities are listed
+        - Check deployment info is accurate
+        - Validate JSON structure
+      - Test GET /api/metrics endpoint
+        - Verify performance metrics are returned
+        - Check system status indicators
+        - Validate metric values are reasonable
+      - Test POST /api/analyze endpoint
+        - Send test PERCLOS data
+        - Verify fatigue analysis response
+        - Check alert system functionality
+        - Validate JSON response structure
+    - ChatGPT Agent Compatibility Testing
+      - Test CORS headers are present
+        - Verify Access-Control-Allow-Origin is set to *
+        - Check preflight requests work correctly
+        - Test cross-origin requests function
+      - Verify JSON Response Format
+        - All endpoints return valid JSON
+        - Error responses are properly formatted
+        - Status codes are appropriate
+      - Test Agent-Friendly Features
+        - No authentication barriers present
+        - No rate limiting blocking automated requests
+        - Proper timeout handling (120 seconds)
+        - Health checks respond quickly
+    - Performance and Reliability Testing
+      - Load Testing
+        - Send multiple concurrent requests
+        - Verify system handles traffic spikes
+        - Check response times remain acceptable
+        - Monitor memory and CPU usage
+      - Error Handling Testing
+        - Test with invalid input data
+        - Verify graceful error responses
+        - Check system recovery from failures
+        - Test timeout scenarios
+      - Availability Monitoring
+        - Set up uptime monitoring if available
+        - Configure alert notifications
+        - Test auto-restart functionality
+        - Verify health check responsiveness
+  - Documentation and Handoff
+    - Create Deployment Summary
+      - Document final deployment URLs
+      - List all functional endpoints
+      - Provide validation commands
+      - Include troubleshooting guide
+    - ChatGPT Agent Access Guide
+      - Document exact API endpoints for agent use
+      - Provide example requests and responses
+      - List CORS configuration details
+      - Include error handling information
+    - Monitoring and Maintenance
+      - Set up platform monitoring dashboards
+      - Configure automatic deployment notifications
+      - Document scaling procedures if needed
+      - Create incident response procedures
+  - Backup Deployment Strategy
+    - Alternative Platform Setup
+      - Prepare Fly.io deployment as backup
+      - Configure Heroku deployment option
+      - Test Docker container deployment locally
+    - Multi-Platform Verification
+      - Deploy to secondary platform for redundancy
+      - Verify both deployments function identically
+      - Test load balancing between platforms if needed
+    - Disaster Recovery Planning
+      - Document rollback procedures
+      - Create deployment restoration steps
+      - Test recovery from platform outages
+      - Maintain local development environment

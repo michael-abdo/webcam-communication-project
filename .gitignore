@@ -1,0 +1,57 @@
+# Credentials
+greg-credentials.json
+greg-credentials-backup.json
+greg-credentials-final.json
+*-credentials.json
+credentials/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Flask
+instance/
+.webassets-cache
+flask_app.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+baseline_capture/
+cognitive_overload/
+worktrees/
+data/files/
+docs/temp/
+deployment/
+
+# Project specific
+assessments/baseline_data/
+assessments/results/
+test_baseline_demo.html
+
+# Misc
+*.log
+.env
+.env.local
+
+# Heroku
+heroku_runtime.txt
+
+data/app.db
+rtms-service/node_modules/

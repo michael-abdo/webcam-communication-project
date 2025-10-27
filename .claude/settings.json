@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "tmux-claude": {
+      "command": "node",
+      "args": [
+        "/Users/Mike/.claude/user/tmux-claude-mcp-server/src/simple_mcp_server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "PHASE": "3",
+        "ALLOWED_TOOLS": "[\"spawn\",\"send\",\"read\",\"list\",\"terminate\"]"
+      }
+    }
+  }
+}

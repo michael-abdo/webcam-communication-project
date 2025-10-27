@@ -1,0 +1,157 @@
+{
+  "timestamp": "20250620_225517",
+  "test_type": "ground_truth_validation",
+  "total_videos": 5,
+  "results": [
+    {
+      "video_name": "Real Human Face 1",
+      "video_path": "./cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/1/3.mp4",
+      "video_type": "real",
+      "ground_truth": {
+        "expected_fatigue": "alert",
+        "expected_perclos_range": [
+          0,
+          10
+        ],
+        "description": "Young person looking at camera, appears alert and engaged"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.9174311926605505,
+        "fatigue_level": "ALERT",
+        "blink_count": 3,
+        "session_duration": 18.166666666666668,
+        "eye_openness_mean": 0.11304131280733606,
+        "eye_openness_std": 0.013463070143813788
+      },
+      "validation": {
+        "perclos_accurate": true,
+        "fatigue_level_accurate": true,
+        "overall_accurate": true,
+        "perclos_error": -4.08256880733945,
+        "notes": [
+          "\u2705 All validation criteria met"
+        ]
+      }
+    },
+    {
+      "video_name": "Real Human Face 2",
+      "video_path": "./cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/1/4.mp4",
+      "video_type": "real",
+      "ground_truth": {
+        "expected_fatigue": "alert",
+        "expected_perclos_range": [
+          0,
+          10
+        ],
+        "description": "Another person appearing alert"
+      },
+      "measured_results": {
+        "perclos_percentage": 1.1627906976744187,
+        "fatigue_level": "ALERT",
+        "blink_count": 1,
+        "session_duration": 2.8666666666666667,
+        "eye_openness_mean": 0.1284825837293085,
+        "eye_openness_std": 0.015453676070995856
+      },
+      "validation": {
+        "perclos_accurate": true,
+        "fatigue_level_accurate": true,
+        "overall_accurate": true,
+        "perclos_error": -3.837209302325581,
+        "notes": [
+          "\u2705 All validation criteria met"
+        ]
+      }
+    },
+    {
+      "video_name": "Real Human Face 3",
+      "video_path": "./cognitive_overload/validation/live_face_datasets/selfies_videos_kaggle/files/2/3.mp4",
+      "video_type": "real",
+      "ground_truth": {
+        "expected_fatigue": "alert",
+        "expected_perclos_range": [
+          0,
+          10
+        ],
+        "description": "Third person appearing alert"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.8333333333333334,
+        "fatigue_level": "ALERT",
+        "blink_count": 6,
+        "session_duration": 60.0,
+        "eye_openness_mean": 0.1324819875083162,
+        "eye_openness_std": 0.00893838602251
+      },
+      "validation": {
+        "perclos_accurate": true,
+        "fatigue_level_accurate": true,
+        "overall_accurate": true,
+        "perclos_error": -4.166666666666667,
+        "notes": [
+          "\u2705 All validation criteria met"
+        ]
+      }
+    },
+    {
+      "video_name": "Synthetic Neutral Baseline",
+      "video_path": "./cognitive_overload/validation/real_face_datasets/synthetic_realistic/synthetic_neutral.mp4",
+      "video_type": "synthetic",
+      "ground_truth": {
+        "expected_fatigue": "alert",
+        "expected_perclos_range": [
+          0,
+          5
+        ],
+        "description": "Synthetic face in neutral state, should show minimal fatigue"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.0,
+        "fatigue_level": "ALERT",
+        "blink_count": 0,
+        "session_duration": 5.0,
+        "eye_openness_mean": 0.18400088418954502,
+        "eye_openness_std": 0.005393990994127159
+      },
+      "validation": {
+        "perclos_accurate": true,
+        "fatigue_level_accurate": true,
+        "overall_accurate": true,
+        "perclos_error": -2.5,
+        "notes": [
+          "\u2705 All validation criteria met"
+        ]
+      }
+    },
+    {
+      "video_name": "Synthetic Tired State",
+      "video_path": "./cognitive_overload/validation/real_face_datasets/synthetic_realistic/synthetic_tired.mp4",
+      "video_type": "synthetic",
+      "ground_truth": {
+        "expected_fatigue": "mild_fatigue",
+        "expected_perclos_range": [
+          10,
+          30
+        ],
+        "description": "Synthetic face showing tired expressions, should show elevated fatigue"
+      },
+      "measured_results": {
+        "perclos_percentage": 0.0,
+        "fatigue_level": "ALERT",
+        "blink_count": 0,
+        "session_duration": 5.0,
+        "eye_openness_mean": 0.19914894073137107,
+        "eye_openness_std": 0.0045006215115645275
+      },
+      "validation": {
+        "perclos_accurate": false,
+        "fatigue_level_accurate": true,
+        "overall_accurate": false,
+        "perclos_error": -20.0,
+        "notes": [
+          "PERCLOS 0.0% outside expected range 10-30%"
+        ]
+      }
+    }
+  ]
+}

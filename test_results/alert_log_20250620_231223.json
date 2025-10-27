@@ -1,0 +1,26 @@
+{
+  "session_info": {
+    "start_time": "2025-06-20T23:12:16.881238",
+    "end_time": "2025-06-20T23:12:23.737990",
+    "duration_minutes": 0.12896655400594076
+  },
+  "alert_configuration": {
+    "thresholds": {
+      "alert": 8.0,
+      "warning": 15.0,
+      "critical": 25.0,
+      "emergency": 40.0
+    },
+    "hysteresis_buffer": 2.0,
+    "escalation_time": 30.0
+  },
+  "session_summary": {
+    "status": "No alerts generated this session",
+    "session_duration_minutes": 0.12896668513615925,
+    "total_alert_events": 0,
+    "alert_frequency_per_hour": 0.0,
+    "current_alert_level": "alert",
+    "last_alert_time": 18.133333333333333
+  },
+  "alert_events": []
+}

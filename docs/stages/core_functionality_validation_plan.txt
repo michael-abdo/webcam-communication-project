@@ -1,0 +1,99 @@
+- Core Functionality Validation - CRITICAL TESTING PHASE
+  - Phase 0: Stop and Validate Foundation
+    - Create real face video for testing (not synthetic patterns)
+      - Record 30-second video with clear human face
+      - Ensure good lighting and direct face view
+      - Save as MP4 format in test_videos directory
+      - Validate video file can be opened by OpenCV
+    - Test face detection with real human video
+      - Run LandmarkProcessor on real face video
+      - Verify face_detected=True consistently
+      - Check detection confidence scores are reasonable
+      - Validate face detection rate >70% for clear video
+    - Validate landmark extraction accuracy
+      - Verify 468 landmarks extracted when face detected
+      - Check landmark coordinates are reasonable (within frame bounds)
+      - Test landmark stability across consecutive frames
+      - Validate key landmarks align with facial features
+  - Critical MediaPipe Configuration Testing
+    - Test detection confidence thresholds
+      - Try confidence levels: 0.5, 0.7, 0.9
+      - Document which works best for clear face videos
+      - Adjust settings based on actual performance
+      - Record optimal configuration for cognitive overload detection
+    - Validate MediaPipe Face Mesh settings
+      - Test static_image_mode vs video mode performance
+      - Verify refine_landmarks improves eye/mouth accuracy
+      - Check max_num_faces=1 works correctly
+      - Test tracking confidence impacts on stability
+  - Landmark Quality Validation
+    - Visual landmark verification
+      - Create visualization function to draw landmarks on frames
+      - Manually verify landmarks track eyes, nose, mouth correctly
+      - Check landmark consistency across frames
+      - Identify any landmark drift or jumping issues
+    - Landmark coordinate validation
+      - Verify x,y coordinates are within frame dimensions
+      - Check z-depth values are reasonable
+      - Test normalized vs pixel coordinate accuracy
+      - Validate landmark numbering matches MediaPipe standard
+  - Cognitive Overload Indicator Foundation Testing
+    - Identify key landmark indices for cognitive overload
+      - Research MediaPipe Face Mesh landmark map
+      - Map specific indices for eyebrows, eyes, mouth
+      - Document landmark numbers for brow furrow detection
+      - Identify eye strain and mouth tension landmark groups
+    - Test basic geometric calculations
+      - Calculate distances between eyebrow landmarks
+      - Measure eyelid openness using eye landmarks
+      - Compute mouth width/compression metrics
+      - Validate calculations produce reasonable values
+  - End-to-End Pipeline Validation
+    - Full system test with real face video
+      - Process complete video file frame by frame
+      - Save all landmark data to JSON
+      - Verify JSON contains meaningful landmark coordinates
+      - Check processing speed and memory usage
+    - Error handling validation
+      - Test with video containing no faces
+      - Test with corrupted or invalid video files
+      - Verify graceful failure and error messages
+      - Test resource cleanup on failures
+  - Data Quality Assessment
+    - Landmark data consistency analysis
+      - Compare landmarks across similar frames
+      - Check for outliers or impossible coordinates
+      - Measure landmark jitter/noise levels
+      - Document data quality metrics
+    - JSON output validation
+      - Verify complete metadata is saved
+      - Check landmark data structure is correct
+      - Test JSON file can be loaded and parsed
+      - Validate timestamp and frame number accuracy
+  - Performance and Reliability Testing
+    - Processing speed benchmarks
+      - Time processing of 30-second video
+      - Measure frames per second processing rate
+      - Check memory usage during processing
+      - Test with different video resolutions
+    - Reliability stress testing
+      - Process multiple videos in sequence
+      - Test with various video formats (MP4, AVI, MOV)
+      - Check handling of different frame rates
+      - Validate consistent results across runs
+  - Critical Go/No-Go Decision Point
+    - Core functionality validation checklist
+      - Face detection works reliably with real faces
+      - 468 landmarks extracted accurately
+      - Landmark coordinates are meaningful and stable
+      - JSON output contains complete valid data
+    - Performance acceptance criteria
+      - Processing speed acceptable for real-time future use
+      - Memory usage within reasonable limits
+      - Error handling works correctly
+      - Data quality meets cognitive overload detection needs
+    - Documentation of validation results
+      - Record all test results and metrics
+      - Document any issues found and solutions
+      - Create validation report with pass/fail status
+      - Only proceed to Phase 2 if ALL tests pass

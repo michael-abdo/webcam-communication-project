@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zoom RTMS Live Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Zoom RTMS Live Preview</h1>
+    <p class="hint">
+      Click start to enable audio playback and open a live connection to the RTMS stream.
+    </p>
+    <button id="startButton" type="button">Start Stream</button>
+    <div id="status" class="status">Waiting for connection…</div>
+
+    <section class="preview">
+      <div class="video-frame">
+        <img id="videoFrame" alt="Video stream preview" />
+        <div class="placeholder" id="videoPlaceholder">No video frames received yet</div>
+      </div>
+      <div class="transcript">
+        <h2>Transcript</h2>
+        <ul id="transcriptList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

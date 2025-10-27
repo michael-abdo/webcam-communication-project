@@ -1,0 +1,18 @@
+{
+  "video_mode": {
+    "static_image_mode": false,
+    "frames_processed": 10,
+    "faces_detected": 10,
+    "detection_rate": 1.0,
+    "processing_time": 1.4758503437042236,
+    "landmarks_per_frame": 468
+  },
+  "static_mode": {
+    "static_image_mode": true,
+    "frames_processed": 10,
+    "faces_detected": 10,
+    "detection_rate": 1.0,
+    "processing_time": 1.1007957458496094,
+    "landmarks_per_frame": 468
+  }
+}

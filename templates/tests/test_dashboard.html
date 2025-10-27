@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tests - Fatigue Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .test-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+        
+        .category-cognitive {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .category-fatigue {
+            background-color: #fce7f3;
+            color: #be185d;
+        }
+        
+        .category-custom {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+        
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        
+        .test-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .test-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .test-duration {
+            display: flex;
+            align-items: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .test-duration svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.25rem;
+        }
+        
+        .test-questions {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .start-button {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .start-button:hover {
+            opacity: 0.9;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #2563eb;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.25rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Interactive Tests</h1>
+            <p>Assess cognitive performance and fatigue levels through interactive assessments</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <a href="/" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Dashboard
+        </a>
+        
+        <div id="testsContainer" class="loading">
+            Loading available tests...
+        </div>
+    </div>
+    
+    <script>
+        // Test manager object
+        const TestManager = {
+            tests: [],
+            
+            async loadTests() {
+                try {
+                    const response = await fetch('/api/tests/list');
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        this.tests = data.tests;
+                        this.renderTests();
+                    } else {
+                        this.showError('Failed to load tests');
+                    }
+                } catch (error) {
+                    console.error('Error loading tests:', error);
+                    this.showError('Failed to connect to server');
+                }
+            },
+            
+            renderTests() {
+                const container = document.getElementById('testsContainer');
+                
+                if (this.tests.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <h3>No tests available</h3>
+                            <p>Check back later for new assessments</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const grid = document.createElement('div');
+                grid.className = 'test-grid';
+                
+                this.tests.forEach(test => {
+                    const card = this.createTestCard(test);
+                    grid.appendChild(card);
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(grid);
+            },
+            
+            createTestCard(test) {
+                const card = document.createElement('div');
+                card.className = 'test-card';
+                
+                card.innerHTML = `
+                    <span class="test-category category-${test.category}">${this.formatCategory(test.category)}</span>
+                    <h3 class="test-title">${test.title}</h3>
+                    <p class="test-description">${test.description}</p>
+                    <div class="test-meta">
+                        <div class="test-info">
+                            <div class="test-duration">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                ${test.duration_minutes} min
+                            </div>
+                            <div class="test-questions">${test.question_count} questions</div>
+                        </div>
+                        <div class="test-actions">
+                            <button class="start-button" onclick="TestManager.startTest('${test.test_id}')">
+                                Start Test
+                            </button>
+                            <button class="start-button video-button" onclick="TestManager.startTestWithVideo('${test.test_id}')" style="background: linear-gradient(135deg, #dc2626 0%, #7c2d12 100%); margin-top: 0.5rem;">
+                                🎥 With Video Recording
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            },
+            
+            formatCategory(category) {
+                return category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ');
+            },
+            
+            async startTest(testId) {
+                try {
+                    // Start a new test session
+                    const response = await fetch('/api/tests/session/start', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ test_id: testId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Store session info and navigate to test page
+                        sessionStorage.setItem('test_session_id', data.session_id);
+                        sessionStorage.setItem('test_data', JSON.stringify(data.test));
+                        window.location.href = `/tests/session?id=${data.session_id}`;
+                    } else {
+                        this.showError(data.message || 'Failed to start test');
+                    }
+                } catch (error) {
+                    console.error('Error starting test:', error);
+                    this.showError('Failed to start test');
+                }
+            },
+            
+            async startTestWithVideo(testId) {
+                try {
+                    // Start a new test session
+                    const response = await fetch('/api/tests/session/start', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ test_id: testId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Store session info and navigate to combined test page
+                        sessionStorage.setItem('test_session_id', data.session_id);
+                        sessionStorage.setItem('test_data', JSON.stringify(data.test));
+                        window.location.href = `/tests/session/combined?id=${data.session_id}`;
+                    } else {
+                        this.showError(data.message || 'Failed to start test');
+                    }
+                } catch (error) {
+                    console.error('Error starting test with video:', error);
+                    this.showError('Failed to start test with video recording');
+                }
+            },
+            
+            showError(message) {
+                const container = document.getElementById('testsContainer');
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${message}
+                    </div>
+                    <button onclick="location.reload()" style="margin-top: 1rem;">Retry</button>
+                `;
+            }
+        };
+        
+        // Load tests on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            TestManager.loadTests();
+        });
+    </script>
+</body>
+</html>

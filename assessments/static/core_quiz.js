@@ -53,6 +53,11 @@ const CoreAssessment = {
         completed: false
     },
     timerInterval: null,
+    
+    // Submission state
+    submissionAttempts: 0,
+    maxRetries: 3,
+    isSubmitting: false,
 
     // Initialization
     init() {
@@ -488,7 +493,69 @@ const CoreAssessment = {
         this.completeAssessment();
     },
 
+    // Error display helper
+    showSubmissionError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.id = 'submission-error';
+        errorDiv.style.cssText = `
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #ff4444; color: white; padding: 15px 20px;
+            border-radius: 5px; z-index: 10000; max-width: 500px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        errorDiv.innerHTML = `
+            <strong>Submission Error:</strong> ${message}
+            <br><small>Retrying automatically...</small>
+        `;
+        
+        // Remove existing error if present
+        const existing = document.getElementById('submission-error');
+        if (existing) existing.remove();
+        
+        document.body.appendChild(errorDiv);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (errorDiv.parentNode) errorDiv.remove();
+        }, 5000);
+    },
+
+    // Loading indicator
+    showLoadingIndicator(show = true) {
+        const indicator = document.getElementById('submission-loading');
+        if (show) {
+            if (!indicator) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.id = 'submission-loading';
+                loadingDiv.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.8); color: white; padding: 20px;
+                    border-radius: 10px; z-index: 10001; text-align: center;
+                `;
+                loadingDiv.innerHTML = `
+                    <div style="margin-bottom: 10px;">Saving your assessment...</div>
+                    <div style="font-size: 12px;">Please wait</div>
+                `;
+                document.body.appendChild(loadingDiv);
+            }
+        } else {
+            if (indicator) indicator.remove();
+        }
+    },
+
     submitAssessment() {
+        // Prevent multiple simultaneous submissions
+        if (this.isSubmitting) {
+            console.log('Submission already in progress');
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.submissionAttempts++;
+        
+        // Show loading indicator
+        this.showLoadingIndicator(true);
+
         const assessmentData = {
             ...this.sessionData,
             assessmentType: 'core',
@@ -504,20 +571,73 @@ const CoreAssessment = {
             },
             body: JSON.stringify(assessmentData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            console.log('Assessment submitted successfully:', data);
-            // Redirect to results page after successful submission
-            setTimeout(() => {
-                window.location.href = '/results/core/' + this.sessionData.userId;
-            }, 2000); // 2 second delay to show completion message
+            console.log('Assessment submission response:', data);
+            
+            this.showLoadingIndicator(false);
+
+            // Check if submission was actually successful
+            if (data.success === true) {
+                console.log('Assessment saved successfully');
+                
+                // Clear localStorage since we confirmed save
+                localStorage.removeItem('coreAssessment_' + this.sessionData.userId);
+                
+                // Redirect to results page
+                setTimeout(() => {
+                    window.location.href = '/results/core/' + this.sessionData.userId;
+                }, 1500);
+                
+            } else {
+                // Server responded but save failed
+                throw new Error(data.message || data.error || 'Save failed on server');
+            }
         })
         .catch(error => {
-            console.error('Error submitting assessment:', error);
-            // Even if submission fails, still redirect to results page
-            setTimeout(() => {
-                window.location.href = '/results/core/' + this.sessionData.userId;
-            }, 3000);
+            console.error('Submission error (attempt ' + this.submissionAttempts + '):', error);
+            
+            this.showLoadingIndicator(false);
+            this.isSubmitting = false;
+
+            // Show user-friendly error
+            this.showSubmissionError(error.message || 'Network error during submission');
+
+            // Retry logic with exponential backoff
+            if (this.submissionAttempts < this.maxRetries) {
+                const retryDelay = Math.pow(2, this.submissionAttempts) * 1000; // 2s, 4s, 8s
+                console.log(`Retrying in ${retryDelay/1000} seconds...`);
+                
+                setTimeout(() => {
+                    this.submitAssessment();
+                }, retryDelay);
+                
+            } else {
+                // Max retries reached - still redirect but keep localStorage
+                console.warn('Max retries reached. Redirecting with localStorage backup.');
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: #ff9900; color: white; padding: 20px; border-radius: 10px;
+                    z-index: 10002; text-align: center; max-width: 400px;
+                `;
+                errorDiv.innerHTML = `
+                    <h3>Submission Issue</h3>
+                    <p>Your responses are saved locally and we'll try to recover them on the results page.</p>
+                    <p>Redirecting in 3 seconds...</p>
+                `;
+                document.body.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    window.location.href = '/results/core/' + this.sessionData.userId;
+                }, 3000);
+            }
         });
     },
 

@@ -119,7 +119,7 @@ Located in `performance_monitoring/`, this system tracks:
 1. Install dependencies: `pip install -r requirements.txt`
 2. Set up FastAPI routes in main application
 3. Configure behavioral signals API credentials
-4. Launch development server: `uvicorn main:app --reload`
+4. Launch development server: `python app_lightweight.py`
 5. Access assessments at `/assessments/core` or `/assessments/advanced`
 
 ## Future Enhancements
