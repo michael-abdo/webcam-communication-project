@@ -14,6 +14,10 @@ const CAPTURE_API_BASE_URL = process.env.CAPTURE_API_BASE_URL
   ? process.env.CAPTURE_API_BASE_URL.replace(/\/$/, "")
   : null;
 const CAPTURE_API_TOKEN = process.env.CAPTURE_API_TOKEN;
+const MAIN_APP_URL = process.env.MAIN_APP_URL || 'https://xcellerate-eq-4f2dd61b4bbd-57798fc61cb7.herokuapp.com';
+
+// Track processed webhooks to avoid duplicates
+const processedWebhooks = new Set();
 
 if (!process.env.ZM_RTMS_CLIENT || !process.env.ZM_RTMS_SECRET) {
   console.error("Missing Zoom RTMS credentials (ZM_RTMS_CLIENT / ZM_RTMS_SECRET)");
@@ -420,13 +424,13 @@ function stopStream(streamId) {
   streams.delete(streamId);
 }
 
-app.post(WEBHOOK_PATH, async (req, res) => {
-  const { event, payload } = req.body || {};
+async function processWebhook(body) {
+  const { event, payload } = body || {};
   const streamId = payload?.rtms_stream_id;
 
   if (!streamId) {
     console.warn("Webhook without stream id", event);
-    return res.status(200).json({ status: "ignored" });
+    return { status: "ignored" };
   }
 
   if (event === "meeting.rtms_started") {
@@ -450,7 +454,34 @@ app.post(WEBHOOK_PATH, async (req, res) => {
     console.log("Unhandled RTMS event", event);
   }
 
-  res.json({ status: "ok" });
+  return { status: "ok" };
+}
+
+// Simple polling - check for a list of pending webhooks
+async function pollForWebhooks() {
+  try {
+    const response = await fetch(`${MAIN_APP_URL}/api/rtms/pending-webhooks`, {
+      headers: CAPTURE_API_TOKEN ? { 'Authorization': `Bearer ${CAPTURE_API_TOKEN}` } : {}
+    });
+    
+    if (response.ok) {
+      const webhooks = await response.json();
+      if (webhooks && webhooks.length > 0) {
+        console.log(`Found ${webhooks.length} pending webhooks`);
+        for (const item of webhooks) {
+          console.log(`Processing webhook for stream ${item.stream_id}`);
+          await processWebhook(item.webhook);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error polling for webhooks:", error.message);
+  }
+}
+
+app.post(WEBHOOK_PATH, async (req, res) => {
+  const result = await processWebhook(req.body);
+  res.json(result);
 });
 
 app.get("/healthz", (_req, res) => {
@@ -459,6 +490,11 @@ app.get("/healthz", (_req, res) => {
 
 server.listen(PORT, () => {
   console.log(`RTMS service listening on port ${PORT} (webhook path ${WEBHOOK_PATH})`);
+  console.log(`Main app URL: ${MAIN_APP_URL}`);
+  
+  // Start polling for webhooks every 5 seconds
+  // This is a workaround for Heroku's dyno isolation
+  setInterval(pollForWebhooks, 5000);
 });
 
 process.on("SIGTERM", () => {

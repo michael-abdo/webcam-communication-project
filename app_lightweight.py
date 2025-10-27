@@ -37,6 +37,10 @@ sock = Sock(app)
 rtms_hub = RTMSHub()
 app.config["RTMS_HUB"] = rtms_hub
 
+# In-memory storage for RTMS webhooks
+# In production, use Redis or database
+app.rtms_webhooks = {}
+
 init_engine()
 
 # Register capture API blueprint
@@ -112,12 +116,49 @@ def zoom_webhook():
                 # Broadcast to all connected WebSocket clients
                 hub.broadcast(ws_message)
                 print(f"Broadcasted RTMS event to {hub.connection_count()} WebSocket clients")
+            
+            # Store the webhook data for the RTMS service to retrieve
+            stream_id = data.get('payload', {}).get('rtms_stream_id')
+            if stream_id:
+                app.rtms_webhooks[stream_id] = {
+                    'data': data,
+                    'timestamp': datetime.now(timezone.utc).isoformat()
+                }
+                print(f"Stored RTMS webhook for stream_id: {stream_id}")
         
         return jsonify({"status": "ok"}), 200
     except Exception as e:
         current_app.logger.error(f"Error processing Zoom webhook: {str(e)}")
         print(f"ERROR in webhook handler: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/rtms/webhooks/<stream_id>', methods=['GET'])
+def get_rtms_webhook(stream_id):
+    """Internal endpoint for RTMS service to retrieve webhook data."""
+    webhook_data = app.rtms_webhooks.get(stream_id)
+    if webhook_data:
+        # Return and remove the webhook data (one-time retrieval)
+        del app.rtms_webhooks[stream_id]
+        return jsonify(webhook_data)
+    else:
+        return jsonify({"error": "Webhook not found"}), 404
+
+@app.route('/api/rtms/pending-webhooks', methods=['GET'])
+def get_pending_webhooks():
+    """Get list of all pending RTMS webhooks."""
+    # Return all stored webhooks
+    webhooks = []
+    for stream_id, data in list(app.rtms_webhooks.items()):
+        webhooks.append({
+            'stream_id': stream_id,
+            'webhook': data['data'],
+            'timestamp': data['timestamp']
+        })
+        # Remove after retrieval
+        del app.rtms_webhooks[stream_id]
+    
+    return jsonify(webhooks)
+
 # Route to serve baseline capture page
 @app.route('/baseline')
 def baseline_capture_page():
