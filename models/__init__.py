@@ -7,6 +7,7 @@ from .entities import (  # noqa: F401
     Participant,
     RTMSHealthStatus,
     Session,
+    SessionEvent,
     SessionLog,
     SessionTranscript,
     TranscriptionSegment,

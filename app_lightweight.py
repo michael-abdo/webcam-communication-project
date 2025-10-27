@@ -27,6 +27,7 @@ from blueprints.capture_api import capture_api
 from blueprints.meetings_api import meetings_api
 from blueprints.rtms_ingest_api import rtms_ingest_api
 from blueprints.rtms_ui import rtms_ui
+from blueprints.zoom_api import zoom_api
 from models import init_engine
 from services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
 from services.video_state import video_sessions, test_video_links
@@ -55,6 +56,7 @@ app.register_blueprint(rtms_ingest_api)
 app.register_blueprint(rtms_ui, url_prefix="/rtms")
 app.register_blueprint(meetings_api)
 app.register_blueprint(analytics_api)
+app.register_blueprint(zoom_api)
 
 
 @sock.route("/rtms/ws")
@@ -84,6 +86,79 @@ def rtms_websocket(ws):
         current_app.logger.exception("rtms.ws.server_error", extra=client_details)
     finally:
         hub.unregister(ws)
+
+
+@sock.route("/ws/sessions/<session_id>")
+def session_websocket(ws, session_id):
+    """WebSocket endpoint for live session updates (transcript and analytics)."""
+    # Verify session exists
+    try:
+        session_data = get_session_record(session_id)
+        if not session_data:
+            ws.close(code=1008, message="Session not found")
+            return
+    except Exception:
+        ws.close(code=1011, message="Server error")
+        return
+
+    # Register this WebSocket for session-specific updates
+    session_key = f"session:{session_id}"
+    if not hasattr(current_app, 'session_websockets'):
+        current_app.session_websockets = {}
+    
+    if session_key not in current_app.session_websockets:
+        current_app.session_websockets[session_key] = []
+    
+    current_app.session_websockets[session_key].append(ws)
+    
+    client_details = {
+        "session_id": session_id,
+        "remote_addr": ws.environ.get("REMOTE_ADDR"),
+        "path": ws.environ.get("PATH_INFO"),
+    }
+    current_app.logger.info("session.ws.connected", extra=client_details)
+    
+    try:
+        # Keep connection alive and handle any incoming messages
+        while True:
+            message = ws.receive()
+            if message is None:
+                continue
+            # For now, we don't process incoming messages
+            # In a full implementation, we might handle subscription requests
+            current_app.logger.debug(
+                "session.ws.message", 
+                extra={"session_id": session_id, "message": message}
+            )
+    except ConnectionClosed:
+        current_app.logger.info("session.ws.disconnected", extra=client_details)
+    except Exception:
+        current_app.logger.exception("session.ws.error", extra=client_details)
+    finally:
+        # Unregister this WebSocket
+        if session_key in current_app.session_websockets:
+            current_app.session_websockets[session_key].remove(ws)
+            if not current_app.session_websockets[session_key]:
+                del current_app.session_websockets[session_key]
+
+def broadcast_to_session(session_id: str, message: dict):
+    """Broadcast a message to all WebSocket clients watching a specific session."""
+    session_key = f"session:{session_id}"
+    if hasattr(current_app, 'session_websockets') and session_key in current_app.session_websockets:
+        dead_clients = []
+        for ws in current_app.session_websockets[session_key]:
+            try:
+                ws.send(json.dumps(message))
+            except Exception:
+                dead_clients.append(ws)
+        
+        # Clean up dead clients
+        for ws in dead_clients:
+            current_app.session_websockets[session_key].remove(ws)
+        
+        if not current_app.session_websockets[session_key]:
+            del current_app.session_websockets[session_key]
+
 
 @app.route('/zoom-webhook', methods=['POST'])
 @app.route('/rtms/webhook', methods=['POST'])

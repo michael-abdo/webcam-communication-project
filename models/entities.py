@@ -85,6 +85,12 @@ class Session(Base):
         cascade="all, delete-orphan",
         order_by="TranscriptionSegment.start_time",
     )
+    events: Mapped[list["SessionEvent"]] = relationship(
+        "SessionEvent",
+        back_populates="session",
+        cascade="all, delete-orphan",
+        order_by="SessionEvent.occurred_at",
+    )
 
     def to_dict(self) -> dict:
         return {
@@ -285,6 +291,10 @@ class ZoomMeeting(Base):
     end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     rtms_stream_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     recording_status: Mapped[str] = mapped_column(String(50), nullable=False, default="none")
+    vault_credential_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    capture_worker_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    capture_status: Mapped[str] = mapped_column(String(50), nullable=False, default="idle")
+    capture_last_heartbeat: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
     )
@@ -326,6 +336,10 @@ class ZoomMeeting(Base):
             "end_time": self.end_time.isoformat() if self.end_time else None,
             "rtms_stream_id": self.rtms_stream_id,
             "recording_status": self.recording_status,
+            "vault_credential_ref": self.vault_credential_ref,
+            "capture_worker_id": self.capture_worker_id,
+            "capture_status": self.capture_status,
+            "capture_last_heartbeat": self.capture_last_heartbeat.isoformat() if self.capture_last_heartbeat else None,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "participants": [p.to_dict() for p in self.zoom_participants],
@@ -349,12 +363,14 @@ class ZoomParticipant(Base):
     join_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     leave_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     role: Mapped[str] = mapped_column(String(50), nullable=False, default="participant")
+    consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
     )
 
     # Relationships
     meeting: Mapped["ZoomMeeting"] = relationship("ZoomMeeting", back_populates="zoom_participants")
+    events: Mapped[list["SessionEvent"]] = relationship("SessionEvent", back_populates="participant")
 
     def to_dict(self) -> dict:
         return {
@@ -366,6 +382,7 @@ class ZoomParticipant(Base):
             "join_time": self.join_time.isoformat(),
             "leave_time": self.leave_time.isoformat() if self.leave_time else None,
             "role": self.role,
+            "consent_at": self.consent_at.isoformat() if self.consent_at else None,
             "created_at": self.created_at.isoformat(),
         }
 
@@ -443,6 +460,41 @@ class MeetingAnalytics(Base):
             "interruption_count": self.interruption_count,
             "avg_speech_pace": self.avg_speech_pace,
             "computed_at": self.computed_at.isoformat(),
+            "created_at": self.created_at.isoformat(),
+        }
+
+
+class SessionEvent(Base):
+    """Track session lifecycle events (join, leave, flag)."""
+
+    __tablename__ = "session_events"
+
+    id: Mapped[str] = mapped_column(CHAR(36), primary_key=True, default=_uuid)
+    session_id: Mapped[str] = mapped_column(
+        CHAR(36), ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False
+    )
+    participant_id: Mapped[str | None] = mapped_column(
+        CHAR(36), ForeignKey("zoom_participants.id", ondelete="SET NULL"), nullable=True
+    )
+    event_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+    # Relationships
+    session: Mapped["Session"] = relationship("Session", back_populates="events")
+    participant: Mapped["ZoomParticipant | None"] = relationship("ZoomParticipant", back_populates="events")
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "session_id": self.session_id,
+            "participant_id": self.participant_id,
+            "event_type": self.event_type,
+            "payload": self.payload,
+            "occurred_at": self.occurred_at.isoformat(),
             "created_at": self.created_at.isoformat(),
         }
 

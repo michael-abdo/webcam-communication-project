@@ -16,6 +16,7 @@ from models.entities import (
     Participant,
     RTMSHealthStatus,
     Session,
+    SessionEvent,
     SessionLog,
     SessionTranscript,
     TranscriptionSegment,
@@ -353,6 +354,26 @@ def get_zoom_meeting(meeting_id: str) -> dict:
         return meeting.to_dict()
 
 
+def update_zoom_meeting(
+    meeting_id: str,
+    **kwargs,
+) -> dict:
+    """Update any zoom meeting fields."""
+    with SessionLocal() as session:
+        meeting = session.query(ZoomMeeting).filter_by(id=meeting_id).first()
+        if not meeting:
+            raise CaptureNotFoundError(f"ZoomMeeting {meeting_id} not found")
+
+        # Update any provided fields
+        for key, value in kwargs.items():
+            if hasattr(meeting, key):
+                setattr(meeting, key, value)
+
+        session.flush()
+        session.refresh(meeting)
+        return meeting.to_dict()
+
+
 def update_zoom_meeting_end_time(meeting_id: str, end_time: datetime) -> dict:
     """Update the end time of a Zoom meeting."""
     end_ts = _utc_datetime(end_time)
@@ -568,3 +589,52 @@ def get_rtms_health_status(
             .all()
         )
         return [check.to_dict() for check in health_checks]
+
+
+def create_session_event(
+    session_id: str,
+    event_type: str,
+    payload: dict,
+    occurred_at: datetime,
+    participant_id: str | None = None,
+) -> dict:
+    """Record a session event (join, leave, flag)."""
+    with SessionLocal() as session:
+        # Verify session exists
+        db_session = session.query(Session).filter_by(id=session_id).first()
+        if not db_session:
+            raise CaptureNotFoundError(f"Session {session_id} not found")
+
+        # Verify participant exists if provided
+        if participant_id:
+            participant = session.query(ZoomParticipant).filter_by(id=participant_id).first()
+            if not participant:
+                raise CaptureNotFoundError(f"Participant {participant_id} not found")
+
+        event = SessionEvent(
+            session_id=session_id,
+            participant_id=participant_id,
+            event_type=event_type,
+            payload=payload,
+            occurred_at=occurred_at,
+        )
+        session.add(event)
+        session.flush()
+        session.refresh(event)
+        return event.to_dict()
+
+
+def get_session_events(
+    session_id: str,
+    event_type: str | None = None,
+    limit: int = 100,
+) -> list[dict]:
+    """Get events for a session, optionally filtered by type."""
+    with SessionLocal() as session:
+        query = session.query(SessionEvent).filter_by(session_id=session_id)
+        
+        if event_type:
+            query = query.filter_by(event_type=event_type)
+            
+        events = query.order_by(SessionEvent.occurred_at.desc()).limit(limit).all()
+        return [event.to_dict() for event in events]
