@@ -420,7 +420,8 @@ function stopStream(streamId) {
   streams.delete(streamId);
 }
 
-app.post(WEBHOOK_PATH, async (req, res) => {
+// Support both /rtms/webhook and /zoom-webhook paths
+app.post([WEBHOOK_PATH, '/zoom-webhook'], async (req, res) => {
   const { event, payload } = req.body || {};
   const streamId = payload?.rtms_stream_id;
 

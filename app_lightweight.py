@@ -76,6 +76,23 @@ def rtms_websocket(ws):
         current_app.logger.exception("rtms.ws.server_error", extra=client_details)
     finally:
         hub.unregister(ws)
+
+@app.route('/zoom-webhook', methods=['POST'])
+def zoom_webhook():
+    """Handle Zoom RTMS webhooks - just acknowledge them for now."""
+    try:
+        # Get the webhook data
+        data = request.get_json()
+        
+        # Log the incoming webhook
+        current_app.logger.info(f"Received Zoom webhook: {json.dumps(data)}")
+        
+        # For now, just acknowledge the webhook
+        # The actual RTMS handling should be done by configuring Zoom to send to the RTMS service directly
+        return jsonify({"status": "ok"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error processing Zoom webhook: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 # Route to serve baseline capture page
 @app.route('/baseline')
 def baseline_capture_page():
