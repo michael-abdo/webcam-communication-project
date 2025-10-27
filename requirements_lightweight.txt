@@ -9,4 +9,3 @@ statsd==4.0.1
 flask-sock==0.7.0
 simple-websocket==1.0.0
 gevent==24.2.1
-gevent-websocket==0.10.1
