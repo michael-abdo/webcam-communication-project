@@ -10,7 +10,18 @@ from sqlalchemy.orm import selectinload
 
 from models import SessionLocal
 from models.database import db_session
-from models.entities import MediaChunk, Participant, Session, SessionLog, SessionTranscript
+from models.entities import (
+    MediaChunk,
+    MeetingAnalytics,
+    Participant,
+    RTMSHealthStatus,
+    Session,
+    SessionLog,
+    SessionTranscript,
+    TranscriptionSegment,
+    ZoomMeeting,
+    ZoomParticipant,
+)
 
 
 class CaptureNotFoundError(Exception):
@@ -290,3 +301,270 @@ def list_session_logs(session_id: str) -> list[dict]:
             raise CaptureNotFoundError(f"Session {session_id} not found")
         capture.logs  # trigger load
         return [log.to_dict() for log in capture.logs]
+
+
+def create_zoom_meeting(
+    meeting_uuid: str,
+    session_id: str,
+    host_id: str,
+    topic: Optional[str] = None,
+    start_time: Optional[datetime] = None,
+    rtms_stream_id: Optional[str] = None,
+) -> dict:
+    """Create a new Zoom meeting record linked to a session."""
+    start_ts = _utc_datetime(start_time) if start_time else datetime.now(timezone.utc)
+    
+    with db_session() as session:
+        # Verify session exists
+        capture = session.get(Session, session_id)
+        if capture is None:
+            raise CaptureNotFoundError(f"Session {session_id} not found")
+        
+        # Check if meeting already exists
+        existing = session.query(ZoomMeeting).filter_by(meeting_uuid=meeting_uuid).one_or_none()
+        if existing:
+            raise CaptureConflictError(f"Zoom meeting {meeting_uuid} already exists")
+        
+        meeting = ZoomMeeting(
+            meeting_uuid=meeting_uuid,
+            session_id=session_id,
+            host_id=host_id,
+            topic=topic,
+            start_time=start_ts,
+            rtms_stream_id=rtms_stream_id,
+        )
+        session.add(meeting)
+        session.flush()
+        session.refresh(meeting)
+        return meeting.to_dict()
+
+
+def get_zoom_meeting(meeting_id: str) -> dict:
+    """Get a Zoom meeting by ID."""
+    with SessionLocal() as session:
+        meeting = session.get(ZoomMeeting, meeting_id)
+        if meeting is None:
+            raise CaptureNotFoundError(f"Zoom meeting {meeting_id} not found")
+        # Eagerly load relationships
+        meeting.zoom_participants  # noqa: B018
+        if meeting.analytics:
+            meeting.analytics
+        meeting.health_checks  # noqa: B018
+        return meeting.to_dict()
+
+
+def update_zoom_meeting_end_time(meeting_id: str, end_time: datetime) -> dict:
+    """Update the end time of a Zoom meeting."""
+    end_ts = _utc_datetime(end_time)
+    
+    with db_session() as session:
+        meeting = session.get(ZoomMeeting, meeting_id)
+        if meeting is None:
+            raise CaptureNotFoundError(f"Zoom meeting {meeting_id} not found")
+        
+        meeting.end_time = end_ts
+        session.flush()
+        session.refresh(meeting)
+        return meeting.to_dict()
+
+
+def create_zoom_participant(
+    meeting_id: str,
+    zoom_user_id: str,
+    join_time: datetime,
+    display_name: Optional[str] = None,
+    email: Optional[str] = None,
+    role: str = "participant",
+) -> dict:
+    """Create a new Zoom participant record."""
+    join_ts = _utc_datetime(join_time)
+    
+    with db_session() as session:
+        meeting = session.get(ZoomMeeting, meeting_id)
+        if meeting is None:
+            raise CaptureNotFoundError(f"Zoom meeting {meeting_id} not found")
+        
+        participant = ZoomParticipant(
+            meeting_id=meeting_id,
+            zoom_user_id=zoom_user_id,
+            display_name=display_name,
+            email=email,
+            join_time=join_ts,
+            role=role,
+        )
+        session.add(participant)
+        session.flush()
+        session.refresh(participant)
+        return participant.to_dict()
+
+
+def update_participant_leave_time(participant_id: str, leave_time: datetime) -> dict:
+    """Update the leave time of a Zoom participant."""
+    leave_ts = _utc_datetime(leave_time)
+    
+    with db_session() as session:
+        participant = session.get(ZoomParticipant, participant_id)
+        if participant is None:
+            raise CaptureNotFoundError(f"Zoom participant {participant_id} not found")
+        
+        participant.leave_time = leave_ts
+        session.flush()
+        session.refresh(participant)
+        return participant.to_dict()
+
+
+def create_transcription_segment(
+    session_id: str,
+    text: str,
+    start_time: float,
+    end_time: float,
+    participant_id: Optional[str] = None,
+    confidence: Optional[float] = None,
+    language: Optional[str] = None,
+) -> dict:
+    """Create a new transcription segment."""
+    with db_session() as session:
+        capture = session.get(Session, session_id)
+        if capture is None:
+            raise CaptureNotFoundError(f"Session {session_id} not found")
+        
+        if participant_id:
+            participant = session.get(Participant, participant_id)
+            if participant is None:
+                raise CaptureNotFoundError(f"Participant {participant_id} not found")
+        
+        segment = TranscriptionSegment(
+            session_id=session_id,
+            text=text,
+            start_time=start_time,
+            end_time=end_time,
+            participant_id=participant_id,
+            confidence=confidence,
+            language=language,
+        )
+        session.add(segment)
+        session.flush()
+        session.refresh(segment)
+        return segment.to_dict()
+
+
+def get_session_transcription(session_id: str, limit: Optional[int] = None) -> list[dict]:
+    """Get all transcription segments for a session, ordered by start time."""
+    with SessionLocal() as session:
+        capture = session.get(Session, session_id)
+        if capture is None:
+            raise CaptureNotFoundError(f"Session {session_id} not found")
+        
+        query = (
+            session.query(TranscriptionSegment)
+            .filter_by(session_id=session_id)
+            .order_by(TranscriptionSegment.start_time)
+        )
+        
+        if limit:
+            query = query.limit(limit)
+        
+        segments = query.all()
+        return [segment.to_dict() for segment in segments]
+
+
+def create_meeting_analytics(
+    meeting_id: str,
+    total_duration_seconds: int,
+    participant_count: int,
+    computed_at: datetime,
+    talk_time_distribution: Optional[dict] = None,
+    interruption_count: int = 0,
+    avg_speech_pace: Optional[float] = None,
+) -> dict:
+    """Create or update meeting analytics."""
+    computed_ts = _utc_datetime(computed_at)
+    
+    with db_session() as session:
+        meeting = session.get(ZoomMeeting, meeting_id)
+        if meeting is None:
+            raise CaptureNotFoundError(f"Zoom meeting {meeting_id} not found")
+        
+        # Check if analytics already exist
+        analytics = session.query(MeetingAnalytics).filter_by(meeting_id=meeting_id).one_or_none()
+        
+        if analytics is None:
+            analytics = MeetingAnalytics(
+                meeting_id=meeting_id,
+                total_duration_seconds=total_duration_seconds,
+                participant_count=participant_count,
+                talk_time_distribution=talk_time_distribution,
+                interruption_count=interruption_count,
+                avg_speech_pace=avg_speech_pace,
+                computed_at=computed_ts,
+            )
+            session.add(analytics)
+        else:
+            # Update existing analytics
+            analytics.total_duration_seconds = total_duration_seconds
+            analytics.participant_count = participant_count
+            analytics.talk_time_distribution = talk_time_distribution
+            analytics.interruption_count = interruption_count
+            analytics.avg_speech_pace = avg_speech_pace
+            analytics.computed_at = computed_ts
+        
+        session.flush()
+        session.refresh(analytics)
+        return analytics.to_dict()
+
+
+def get_meeting_analytics(meeting_id: str) -> dict:
+    """Get analytics for a meeting."""
+    with SessionLocal() as session:
+        analytics = session.query(MeetingAnalytics).filter_by(meeting_id=meeting_id).one_or_none()
+        if analytics is None:
+            raise CaptureNotFoundError(f"Analytics for meeting {meeting_id} not found")
+        return analytics.to_dict()
+
+
+def record_rtms_health_check(
+    meeting_id: str,
+    stream_id: str,
+    status: str,
+    checked_at: datetime,
+    latency_ms: Optional[int] = None,
+    frames_processed: int = 0,
+    errors: Optional[dict] = None,
+) -> dict:
+    """Record an RTMS health check."""
+    checked_ts = _utc_datetime(checked_at)
+    
+    with db_session() as session:
+        meeting = session.get(ZoomMeeting, meeting_id)
+        if meeting is None:
+            raise CaptureNotFoundError(f"Zoom meeting {meeting_id} not found")
+        
+        health_check = RTMSHealthStatus(
+            meeting_id=meeting_id,
+            stream_id=stream_id,
+            status=status,
+            latency_ms=latency_ms,
+            frames_processed=frames_processed,
+            errors=errors,
+            checked_at=checked_ts,
+        )
+        session.add(health_check)
+        session.flush()
+        session.refresh(health_check)
+        return health_check.to_dict()
+
+
+def get_rtms_health_status(
+    stream_id: str,
+    limit: int = 10,
+) -> list[dict]:
+    """Get recent health status records for an RTMS stream."""
+    with SessionLocal() as session:
+        health_checks = (
+            session.query(RTMSHealthStatus)
+            .filter_by(stream_id=stream_id)
+            .order_by(RTMSHealthStatus.checked_at.desc())
+            .limit(limit)
+            .all()
+        )
+        return [check.to_dict() for check in health_checks]

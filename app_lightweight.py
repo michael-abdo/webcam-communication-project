@@ -22,7 +22,9 @@ from utils.assessment_transformer import transform_flask_to_assessment, generate
 from blueprints.baseline_blueprint import baseline_bp
 # Import assessments blueprint
 from blueprints.assessments_blueprint import assessment_bp
+from blueprints.analytics_api import analytics_api
 from blueprints.capture_api import capture_api
+from blueprints.meetings_api import meetings_api
 from blueprints.rtms_ingest_api import rtms_ingest_api
 from blueprints.rtms_ui import rtms_ui
 from models import init_engine
@@ -51,6 +53,8 @@ app.register_blueprint(baseline_bp)
 app.register_blueprint(assessment_bp)
 app.register_blueprint(rtms_ingest_api)
 app.register_blueprint(rtms_ui, url_prefix="/rtms")
+app.register_blueprint(meetings_api)
+app.register_blueprint(analytics_api)
 
 
 @sock.route("/rtms/ws")
