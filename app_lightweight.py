@@ -80,7 +80,7 @@ def rtms_websocket(ws):
 @app.route('/zoom-webhook', methods=['POST'])
 @app.route('/rtms/webhook', methods=['POST'])
 def zoom_webhook():
-    """Handle Zoom RTMS webhooks - log them for debugging."""
+    """Handle Zoom RTMS webhooks - broadcast to WebSocket clients."""
     try:
         # Get the webhook data
         data = request.get_json()
@@ -94,8 +94,25 @@ def zoom_webhook():
         # Also log to the app logger
         current_app.logger.info(f"Zoom webhook - Event: {data.get('event', 'unknown')}, Payload: {json.dumps(data)}")
         
-        # For now, just acknowledge the webhook
-        # The RTMS service should be handling these directly
+        # Check if this is an RTMS event
+        if data and data.get('event') in ['meeting.rtms_started', 'meeting.rtms_stopped']:
+            # Get the RTMS hub and broadcast the event
+            hub = current_app.config.get("RTMS_HUB")
+            if hub:
+                # Format the message for WebSocket clients
+                ws_message = {
+                    "type": "rtms_event",
+                    "event": data.get('event'),
+                    "streamId": data.get('payload', {}).get('rtms_stream_id'),
+                    "meetingUuid": data.get('payload', {}).get('meeting_uuid'),
+                    "timestamp": data.get('event_ts'),
+                    "payload": data.get('payload', {})
+                }
+                
+                # Broadcast to all connected WebSocket clients
+                hub.broadcast(ws_message)
+                print(f"Broadcasted RTMS event to {hub.connection_count()} WebSocket clients")
+        
         return jsonify({"status": "ok"}), 200
     except Exception as e:
         current_app.logger.error(f"Error processing Zoom webhook: {str(e)}")
