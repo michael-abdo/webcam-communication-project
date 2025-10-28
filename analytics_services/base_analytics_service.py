@@ -85,11 +85,10 @@ class BaseAnalyticsService(ABC):
         # Connect to Redis
         # Handle Heroku Redis URL with SSL
         if self.redis_url.startswith("rediss://"):
-            # Heroku Redis requires SSL
-            import ssl
+            # Heroku Redis requires SSL with specific settings
             self.redis_client = await redis.from_url(
                 self.redis_url,
-                ssl_cert_reqs=ssl.CERT_NONE,
+                ssl_cert_reqs="none",  # Use string value for SSL cert requirement
                 decode_responses=True
             )
         else:
