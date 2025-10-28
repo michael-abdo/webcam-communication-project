@@ -25,6 +25,33 @@
         <ul id="transcriptList"></ul>
       </div>
     </section>
+    
+    <section class="analytics">
+      <h2>Talk Time Analytics</h2>
+      <div id="talkTimeContainer" class="talk-time-container">
+        <div id="talkTimeLoading" class="loading">Loading analytics...</div>
+        <div id="talkTimeChart" class="talk-time-chart" style="display: none;">
+          <div id="talkTimeBars" class="talk-time-bars"></div>
+          <div id="talkTimeStats" class="talk-time-stats">
+            <div class="stat">
+              <span class="stat-label">Total Talk Time:</span>
+              <span id="totalTalkTime" class="stat-value">0s</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Participants:</span>
+              <span id="participantCount" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Equality Score:</span>
+              <span id="equalityScore" class="stat-value">0%</span>
+            </div>
+          </div>
+        </div>
+        <div id="noAnalyticsData" class="no-data" style="display: none;">
+          No analytics data available yet
+        </div>
+      </div>
+    </section>
   </main>
 
   <script type="module" src="app.js"></script>

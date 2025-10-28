@@ -8,6 +8,8 @@ import os
 import json
 import time
 import random
+import threading
+import redis
 from datetime import datetime, timezone
 from flask import Flask, jsonify, request, render_template, send_file, abort, current_app
 from flask_cors import CORS
@@ -43,6 +45,59 @@ app.config["RTMS_HUB"] = rtms_hub
 # In-memory storage for RTMS webhooks
 # In production, use Redis or database
 app.rtms_webhooks = {}
+
+# Analytics Redis subscription setup
+analytics_thread = None
+
+def start_analytics_subscription():
+    """Start background thread to subscribe to analytics events from Redis."""
+    global analytics_thread
+    
+    def analytics_subscriber():
+        """Subscribe to analytics events and broadcast to WebSocket clients."""
+        try:
+            redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+            pubsub = redis.from_url(redis_url).pubsub()
+            
+            # Subscribe to analytics metrics channel
+            pubsub.subscribe('analytics:metrics')
+            
+            app.logger.info("Started analytics Redis subscription")
+            
+            for message in pubsub.listen():
+                if message['type'] == 'message':
+                    try:
+                        # Parse the metrics event
+                        event = json.loads(message['data'])
+                        
+                        # Extract session ID from the event
+                        session_id = event.get('session_id')
+                        if not session_id:
+                            continue
+                        
+                        # Format analytics update for WebSocket
+                        ws_message = {
+                            "type": "analytics",
+                            "metric": event.get('metric'),
+                            "value": event.get('value'),
+                            "participant_id": event.get('participant_id'),
+                            "timestamp": event.get('timestamp'),
+                            "tags": event.get('tags', {})
+                        }
+                        
+                        # Broadcast to session-specific WebSocket clients
+                        with app.app_context():
+                            broadcast_to_session(session_id, ws_message)
+                            
+                    except Exception as e:
+                        app.logger.error(f"Error processing analytics event: {e}")
+                        
+        except Exception as e:
+            app.logger.error(f"Analytics subscription error: {e}")
+    
+    # Start the subscriber thread
+    analytics_thread = threading.Thread(target=analytics_subscriber, daemon=True)
+    analytics_thread.start()
 
 init_engine()
 
@@ -1575,6 +1630,13 @@ if __name__ == '__main__':
     print(f"🚀 Starting Fatigue Detection System on 0.0.0.0:{port}")
     print(f"📊 Mode: {system_state['mode']}")
     print(f"🌐 Access: http://localhost:{port}")
+    
+    # Start analytics subscription
+    try:
+        start_analytics_subscription()
+        print("📈 Started analytics Redis subscription")
+    except Exception as e:
+        print(f"⚠️  Failed to start analytics subscription: {e}")
     
     app.run(
         host='0.0.0.0',

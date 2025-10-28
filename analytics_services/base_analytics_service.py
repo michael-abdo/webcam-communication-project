@@ -205,6 +205,9 @@ class BaseAnalyticsService(ABC):
             metric_channel = f"metrics:{self.service_name}:{metric_name}"
             await self.redis_client.publish(metric_channel, cache_value)
             
+            # Also publish to general analytics channel for UI consumers
+            await self.redis_client.publish("analytics:metrics", cache_value)
+            
             self.metrics_published += 1
             
         except Exception as e:
