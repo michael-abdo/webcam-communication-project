@@ -1523,11 +1523,42 @@ def not_found(error):
     return jsonify({
         'error': 'Endpoint not found',
         'available_endpoints': [
+            # Core endpoints
             'GET /',
             'GET /health',
             'GET /api/info',
             'GET /api/metrics',
-            'POST /api/analyze'
+            'POST /api/analyze',
+            
+            # Phase 1 - Session management
+            'POST /api/sessions - Create session',
+            'GET /api/sessions - List sessions',
+            'GET /api/sessions/{id} - Get session details',
+            'POST /api/sessions/{id}/participants - Register participant',
+            'POST /api/sessions/{id}/chunks - Upload chunk',
+            'POST /api/sessions/{id}/transcript - Upload transcript',
+            'GET /api/sessions/{id}/transcript - Get rolling transcript',
+            
+            # Phase 2 - Zoom integration
+            'POST /api/meetings - Create Zoom meeting',
+            'GET /api/meetings - List meetings', 
+            'GET /api/meetings/{id} - Get meeting details',
+            'POST /api/meetings/{id}/participants - Create Zoom participant',
+            'POST /api/sessions/{id}/zoom - Register Zoom credentials',
+            'POST /api/sessions/{id}/zoom/heartbeat - Update capture heartbeat',
+            'POST /api/zoom-participants/{id}/events - Record participant event',
+            'GET /api/sessions/{id}/analytics - Get session analytics',
+            
+            # Analytics
+            'POST /api/analytics/compute/{meeting_id} - Compute analytics',
+            'GET /api/analytics/meetings/{meeting_id} - Get meeting analytics',
+            
+            # RTMS
+            'POST /api/rtms/transcription/segments - Add transcription segment',
+            'GET /api/rtms/sessions/{id}/transcription - Get transcription',
+            
+            # WebSocket
+            'WS /ws/sessions/{id} - Live session updates'
         ]
     }), 404
 
