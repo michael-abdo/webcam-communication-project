@@ -15,15 +15,15 @@ CREATE TABLE IF NOT EXISTS analytics_metrics (
     participant_id CHAR(36),
     tags JSONB DEFAULT '{}',
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
-    -- Indexes for common queries
-    INDEX idx_metrics_session_timestamp (session_id, timestamp DESC),
-    INDEX idx_metrics_participant_timestamp (participant_id, timestamp DESC),
-    INDEX idx_metrics_service_metric (service_name, metric_name),
-    INDEX idx_metrics_timestamp (timestamp DESC),
-    INDEX idx_metrics_tags (tags) USING GIN
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Create indexes for common queries
+CREATE INDEX IF NOT EXISTS idx_metrics_session_timestamp ON analytics_metrics (session_id, timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_metrics_participant_timestamp ON analytics_metrics (participant_id, timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_metrics_service_metric ON analytics_metrics (service_name, metric_name);
+CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON analytics_metrics (timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_metrics_tags ON analytics_metrics USING GIN (tags);
 
 -- Convert to TimescaleDB hypertable if extension is available
 -- This provides automatic time-based partitioning
@@ -61,12 +61,12 @@ CREATE TABLE IF NOT EXISTS analytics_aggregates (
         aggregation_type, 
         time_window, 
         window_start
-    ),
-    
-    -- Indexes
-    INDEX idx_aggregates_session_window (session_id, window_start DESC),
-    INDEX idx_aggregates_metric_type (metric_name, aggregation_type)
+    )
 );
+
+-- Create indexes for analytics_aggregates
+CREATE INDEX IF NOT EXISTS idx_aggregates_session_window ON analytics_aggregates (session_id, window_start DESC);
+CREATE INDEX IF NOT EXISTS idx_aggregates_metric_type ON analytics_aggregates (metric_name, aggregation_type);
 
 -- Session analytics summary table
 CREATE TABLE IF NOT EXISTS analytics_session_summary (
@@ -98,11 +98,12 @@ CREATE TABLE IF NOT EXISTS analytics_realtime_snapshots (
     CONSTRAINT unique_snapshot UNIQUE (
         session_id, 
         COALESCE(participant_id, '00000000-0000-0000-0000-000000000000')
-    ),
-    
-    INDEX idx_snapshots_session (session_id),
-    INDEX idx_snapshots_ttl (ttl)
+    )
 );
+
+-- Create indexes for analytics_realtime_snapshots
+CREATE INDEX IF NOT EXISTS idx_snapshots_session ON analytics_realtime_snapshots (session_id);
+CREATE INDEX IF NOT EXISTS idx_snapshots_ttl ON analytics_realtime_snapshots (ttl);
 
 -- Analytics events log for debugging
 CREATE TABLE IF NOT EXISTS analytics_events_log (
@@ -114,11 +115,12 @@ CREATE TABLE IF NOT EXISTS analytics_events_log (
     processing_time_ms INTEGER,
     success BOOLEAN NOT NULL DEFAULT TRUE,
     error_message TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
-    INDEX idx_events_session_created (session_id, created_at DESC),
-    INDEX idx_events_service (service_name, created_at DESC)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Create indexes for analytics_events_log
+CREATE INDEX IF NOT EXISTS idx_events_session_created ON analytics_events_log (session_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_events_service ON analytics_events_log (service_name, created_at DESC);
 
 -- Materialized view for common queries (refresh periodically)
 CREATE MATERIALIZED VIEW IF NOT EXISTS analytics_session_overview AS
