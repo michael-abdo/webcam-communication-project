@@ -88,6 +88,8 @@ def start_analytics_subscription():
                         # Broadcast to session-specific WebSocket clients
                         with app.app_context():
                             broadcast_to_session(session_id, ws_message)
+                            # Also broadcast to RTMS dashboard clients
+                            rtms_hub.broadcast(ws_message)
                             
                     except Exception as e:
                         app.logger.error(f"Error processing analytics event: {e}")
