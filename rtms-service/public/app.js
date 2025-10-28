@@ -131,15 +131,38 @@ function formatTime(timestamp) {
   return date.toLocaleTimeString();
 }
 
-function appendTranscript({ userName, text, timestamp }) {
+// Map to store speaker colors
+const speakerColors = new Map();
+const colorPalette = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+  '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
+];
+
+function getSpeakerColor(speakerId) {
+  if (!speakerId) return '#6b7280'; // Gray for unknown
+  
+  if (!speakerColors.has(speakerId)) {
+    const colorIndex = speakerColors.size % colorPalette.length;
+    speakerColors.set(speakerId, colorPalette[colorIndex]);
+  }
+  
+  return speakerColors.get(speakerId);
+}
+
+function appendTranscript({ userName, userId, participantId, text, timestamp }) {
   if (!text) {
     return;
   }
 
+  const speakerId = participantId || userId || userName || 'unknown';
+  const speakerName = userName || 'Unknown speaker';
+  const color = getSpeakerColor(speakerId);
+
   const item = document.createElement("li");
   const speaker = document.createElement("span");
   speaker.className = "speaker";
-  speaker.textContent = userName || "Unknown speaker";
+  speaker.textContent = speakerName;
+  speaker.style.color = color;
 
   const time = document.createElement("span");
   time.className = "time";
@@ -151,6 +174,7 @@ function appendTranscript({ userName, text, timestamp }) {
   item.appendChild(speaker);
   item.appendChild(time);
   item.appendChild(content);
+  item.style.borderLeftColor = color;
 
   transcriptList.appendChild(item);
   transcriptList.scrollTop = transcriptList.scrollHeight;

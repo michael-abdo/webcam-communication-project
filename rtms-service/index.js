@@ -192,6 +192,11 @@ async function ensureParticipant(state, metadata) {
     });
     const participantId = response?.participant?.id ?? null;
     state.participants.set(deviceKey, participantId);
+    
+    if (participantId) {
+      console.log(`Registered participant: ${metadata?.userName} (${deviceKey}) -> ${participantId}`);
+    }
+    
     return participantId;
   } catch (error) {
     console.error("Failed to register participant", deviceKey, error.message);
@@ -301,12 +306,42 @@ async function handleTranscript(state, buffer, metadata, timestamp) {
   const text = buffer.toString("utf8");
 
   if (text.trim()) {
+    // Get or create participant for speaker attribution
+    const participantId = await ensureParticipant(state, metadata);
+    
+    // Calculate approximate segment duration based on text length
+    const wordsPerMinute = 150;
+    const words = text.trim().split(/\s+/).length;
+    const durationSeconds = (words / wordsPerMinute) * 60;
+    const startTime = timestamp / 1000; // Convert to seconds
+    const endTime = startTime + durationSeconds;
+    
+    // Create transcription segment with speaker attribution
+    if (participantId && CAPTURE_API_BASE_URL) {
+      try {
+        await postJson("/rtms/transcription/segments", {
+          session_id: state.sessionId,
+          text: text.trim(),
+          start_time: startTime,
+          end_time: endTime,
+          participant_id: participantId,
+          confidence: 0.95, // RTMS transcripts are high quality
+          language: "en", // TODO: Could be extracted from meeting locale
+        });
+      } catch (error) {
+        console.error("Failed to create transcription segment", error.message);
+      }
+    }
+    
+    // Relay real-time frame with speaker information
     relayRealtimeFrame(state, {
       type: "transcript",
       streamId: state.streamId,
       sessionId: state.sessionId,
       timestamp,
       userName: metadata?.userName ?? null,
+      userId: metadata?.userId ?? null,
+      participantId: participantId,
       text,
     });
   }
