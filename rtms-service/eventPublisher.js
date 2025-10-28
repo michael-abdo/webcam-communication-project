@@ -9,14 +9,29 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 class EventPublisher {
   constructor(redisConfig = {}, s3Config = {}) {
     // Initialize Redis client
-    this.redis = new Redis({
-      host: redisConfig.host || process.env.REDIS_HOST || "localhost",
-      port: redisConfig.port || process.env.REDIS_PORT || 6379,
-      password: redisConfig.password || process.env.REDIS_PASSWORD,
-      retryStrategy: (times) => Math.min(times * 50, 2000),
-      enableOfflineQueue: true,
-      maxRetriesPerRequest: 3,
-    });
+    const redisUrl = process.env.REDIS_URL || process.env.REDIS_TLS_URL;
+    
+    if (redisUrl) {
+      // Use Heroku Redis URL if available
+      this.redis = new Redis(redisUrl, {
+        tls: redisUrl.startsWith('rediss://') ? {
+          rejectUnauthorized: false
+        } : undefined,
+        retryStrategy: (times) => Math.min(times * 50, 2000),
+        enableOfflineQueue: true,
+        maxRetriesPerRequest: 3,
+      });
+    } else {
+      // Fall back to individual config parameters
+      this.redis = new Redis({
+        host: redisConfig.host || process.env.REDIS_HOST || "localhost",
+        port: redisConfig.port || process.env.REDIS_PORT || 6379,
+        password: redisConfig.password || process.env.REDIS_PASSWORD,
+        retryStrategy: (times) => Math.min(times * 50, 2000),
+        enableOfflineQueue: true,
+        maxRetriesPerRequest: 3,
+      });
+    }
 
     // S3 client for event store (optional)
     if (s3Config.bucket || process.env.EVENT_STORE_BUCKET) {
