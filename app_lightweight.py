@@ -125,13 +125,6 @@ app.register_blueprint(analytics_api)
 app.register_blueprint(zoom_api)
 
 
-@app.route('/rtms/ui')
-@app.route('/rtms/')
-def rtms_ui():
-    """Serve RTMS dashboard with analytics."""
-    # Use the analytics-enabled template
-    return render_template('rtms/dashboard_analytics.html')
-
 @app.route('/static/rtms/<path:filename>')
 def serve_rtms_static(filename):
     """Serve RTMS static files (CSS, JS)."""

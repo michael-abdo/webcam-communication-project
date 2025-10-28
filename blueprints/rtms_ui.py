@@ -17,8 +17,8 @@ def rtms_root():
 
 @rtms_ui.route("/ui", methods=["GET"])
 def rtms_dashboard():
-    """Render the native RTMS dashboard."""
-    return render_template("rtms/dashboard.html")
+    """Render the native RTMS dashboard with analytics."""
+    return render_template("rtms/dashboard_analytics.html")
 
 
 @rtms_ui.route("/healthz", methods=["GET"])
