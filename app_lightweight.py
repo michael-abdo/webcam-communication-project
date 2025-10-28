@@ -11,7 +11,7 @@ import random
 import threading
 import redis
 from datetime import datetime, timezone
-from flask import Flask, jsonify, request, render_template, send_file, abort, current_app
+from flask import Flask, jsonify, request, render_template, send_file, abort, current_app, send_from_directory
 from flask_cors import CORS
 from flask_sock import Sock
 from simple_websocket import ConnectionClosed
@@ -124,6 +124,24 @@ app.register_blueprint(meetings_api)
 app.register_blueprint(analytics_api)
 app.register_blueprint(zoom_api)
 
+
+@app.route('/rtms/ui')
+@app.route('/rtms/')
+def rtms_ui():
+    """Serve RTMS dashboard with analytics."""
+    # Serve the RTMS service's index.html which includes analytics
+    rtms_html_path = os.path.join(os.path.dirname(__file__), 'rtms-service', 'public', 'index.html')
+    if os.path.exists(rtms_html_path):
+        return send_file(rtms_html_path)
+    else:
+        # Fallback to template
+        return render_template('rtms/dashboard.html')
+
+@app.route('/static/rtms/<path:filename>')
+def serve_rtms_static(filename):
+    """Serve RTMS static files (CSS, JS)."""
+    rtms_static_dir = os.path.join(os.path.dirname(__file__), 'rtms-service', 'public')
+    return send_from_directory(rtms_static_dir, filename)
 
 @sock.route("/rtms/ws")
 def rtms_websocket(ws):
