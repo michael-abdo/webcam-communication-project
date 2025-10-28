@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import rtms from "@zoom/rtms";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { eventPublisher } from "./eventPublisher.js";
 
 const PORT = Number(process.env.RTMS_SERVICE_PORT || process.env.PORT || 8080);
 const WEBHOOK_PATH = process.env.RTMS_WEBHOOK_PATH || "/rtms/webhook";
@@ -194,6 +195,17 @@ async function ensureParticipant(state, metadata) {
     state.participants.set(deviceKey, participantId);
     
     if (participantId) {
+      // Publish participant join event
+      try {
+        await eventPublisher.publishParticipantEvent(state, {
+          participantId,
+          userId: deviceKey,
+          userName: metadata?.userName,
+          joinTime: new Date().toISOString(),
+        }, "join");
+      } catch (err) {
+        console.error("Failed to publish participant join event", err.message);
+      }
       console.log(`Registered participant: ${metadata?.userName} (${deviceKey}) -> ${participantId}`);
     }
     
@@ -257,6 +269,19 @@ async function handleAudioFrame(state, buffer, metadata, timestamp) {
       sequenceNo,
       participantDeviceId: participantDeviceId ? String(participantDeviceId) : null,
     });
+    
+    // Publish audio event to Redis
+    await eventPublisher.publishAudioEvent(state, {
+      participantId,
+      userId: metadata?.userId ?? metadata?.user_id,
+      userName: metadata?.userName,
+      duration: durationMs,
+      s3Key: storageKey,
+      size: buffer.length,
+      sampleRate: 16000,
+      channels: 1,
+      sequenceNo,
+    });
   } catch (error) {
     console.error("Audio processing failed", error.message);
   }
@@ -294,6 +319,22 @@ async function handleVideoFrame(state, buffer, metadata, timestamp) {
       durationMs,
       sequenceNo,
       participantDeviceId: null,
+    });
+    
+    // Publish video event to Redis
+    const participantId = await ensureParticipant(state, metadata);
+    await eventPublisher.publishVideoEvent(state, {
+      participantId,
+      userId: metadata?.userId ?? metadata?.user_id,
+      userName: metadata?.userName,
+      s3Key: storageKey,
+      size: buffer.length,
+      mimeType: "image/jpeg",
+      sequenceNo,
+      resolution: {
+        width: 640,  // SD resolution as configured
+        height: 480
+      }
     });
   } catch (error) {
     console.error("Video processing failed", error.message);
@@ -363,6 +404,27 @@ async function handleTranscript(state, buffer, metadata, timestamp) {
       sequenceNo,
       participantDeviceId: null,
     });
+    
+    // Publish transcript event to Redis if there's text content
+    if (text.trim()) {
+      const participantId = await ensureParticipant(state, metadata);
+      const wordsPerMinute = 150;
+      const words = text.trim().split(/\s+/).length;
+      const durationSeconds = (words / wordsPerMinute) * 60;
+      const startTime = timestamp / 1000; // Convert to seconds
+      const endTime = startTime + durationSeconds;
+      
+      await eventPublisher.publishTranscriptEvent(state, {
+        participantId,
+        userId: metadata?.userId ?? metadata?.user_id,
+        userName: metadata?.userName,
+        text: text.trim(),
+        startTime,
+        endTime,
+        confidence: 0.95,
+        language: "en",
+      });
+    }
   } catch (error) {
     console.error("Transcript processing failed", error.message);
   }
@@ -435,16 +497,49 @@ async function ensureStream(streamId, payload) {
     meetingUuid: payload?.meeting_uuid || null,
     nextSequence: 0,
     participants: new Map(),
+    startTime: Date.now(),
+    eventCount: 0,
   };
   relayRealtimeFrame(streamState, { type: "status", streamId, sessionId, state: "joining" });
   configureClient(client, streamState);
   streams.set(streamId, streamState);
+  
+  // Publish session start event
+  try {
+    await eventPublisher.publishSessionEvent(streamState, "start", {
+      participantCount: 0,
+      meetingId: payload?.meeting_uuid || streamId,
+      hostId: payload?.host_id || null,
+      topic: payload?.topic || "RTMS Session",
+      startTime: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Failed to publish session start event", error.message);
+  }
+  
   return streamState;
 }
 
-function stopStream(streamId) {
+async function stopStream(streamId) {
   const state = streams.get(streamId);
   if (!state) return;
+  
+  // Publish session end event
+  try {
+    const sessionDuration = state.startTime 
+      ? Math.round((Date.now() - state.startTime) / 1000)
+      : 0;
+      
+    await eventPublisher.publishSessionEvent(state, "end", {
+      participantCount: state.participants.size,
+      duration: sessionDuration,
+      endTime: new Date().toISOString(),
+      totalEvents: state.eventCount || 0,
+    });
+  } catch (error) {
+    console.error("Failed to publish session end event", error.message);
+  }
+  
   try {
     state.client.leave();
   } catch (err) {

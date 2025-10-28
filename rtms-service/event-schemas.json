@@ -1,0 +1,311 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "baseEvent": {
+      "type": "object",
+      "required": ["eventId", "eventType", "sessionId", "timestamp", "metadata"],
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this event"
+        },
+        "eventType": {
+          "type": "string",
+          "enum": ["audio", "video", "transcript", "session", "participant"],
+          "description": "Type of event"
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Session this event belongs to"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp in milliseconds"
+        },
+        "metadata": {
+          "type": "object",
+          "required": ["rtmsStreamId", "processingTime", "version"],
+          "properties": {
+            "rtmsStreamId": {
+              "type": "string",
+              "description": "RTMS stream identifier"
+            },
+            "processingTime": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the event was processed"
+            },
+            "version": {
+              "type": "string",
+              "description": "Event schema version"
+            }
+          }
+        }
+      }
+    },
+    "participantInfo": {
+      "type": "object",
+      "properties": {
+        "participantId": {
+          "type": "string",
+          "description": "Internal participant UUID"
+        },
+        "userId": {
+          "type": ["string", "number"],
+          "description": "Zoom user ID"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Display name"
+        }
+      }
+    }
+  },
+  "events": {
+    "audioEvent": {
+      "allOf": [
+        { "$ref": "#/definitions/baseEvent" },
+        {
+          "type": "object",
+          "properties": {
+            "eventType": { "const": "audio" },
+            "data": {
+              "type": "object",
+              "required": ["chunkId", "duration", "s3Key", "size", "sampleRate", "channels"],
+              "allOf": [
+                { "$ref": "#/definitions/participantInfo" },
+                {
+                  "properties": {
+                    "chunkId": {
+                      "type": "string",
+                      "description": "Unique chunk identifier"
+                    },
+                    "duration": {
+                      "type": "number",
+                      "description": "Duration in milliseconds"
+                    },
+                    "s3Key": {
+                      "type": "string",
+                      "description": "S3 storage key"
+                    },
+                    "size": {
+                      "type": "integer",
+                      "description": "Size in bytes"
+                    },
+                    "sampleRate": {
+                      "type": "integer",
+                      "description": "Audio sample rate (Hz)"
+                    },
+                    "channels": {
+                      "type": "integer",
+                      "description": "Number of audio channels"
+                    },
+                    "sequenceNo": {
+                      "type": "integer",
+                      "description": "Sequence number for ordering"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "videoEvent": {
+      "allOf": [
+        { "$ref": "#/definitions/baseEvent" },
+        {
+          "type": "object",
+          "properties": {
+            "eventType": { "const": "video" },
+            "data": {
+              "type": "object",
+              "required": ["frameId", "s3Key", "size", "mimeType", "sequenceNo"],
+              "allOf": [
+                { "$ref": "#/definitions/participantInfo" },
+                {
+                  "properties": {
+                    "frameId": {
+                      "type": "string",
+                      "description": "Unique frame identifier"
+                    },
+                    "s3Key": {
+                      "type": "string",
+                      "description": "S3 storage key"
+                    },
+                    "size": {
+                      "type": "integer",
+                      "description": "Size in bytes"
+                    },
+                    "mimeType": {
+                      "type": "string",
+                      "description": "MIME type (e.g., image/jpeg)"
+                    },
+                    "sequenceNo": {
+                      "type": "integer",
+                      "description": "Frame sequence number"
+                    },
+                    "resolution": {
+                      "type": "object",
+                      "properties": {
+                        "width": { "type": "integer" },
+                        "height": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "transcriptEvent": {
+      "allOf": [
+        { "$ref": "#/definitions/baseEvent" },
+        {
+          "type": "object",
+          "properties": {
+            "eventType": { "const": "transcript" },
+            "data": {
+              "type": "object",
+              "required": ["text", "startTime", "endTime"],
+              "allOf": [
+                { "$ref": "#/definitions/participantInfo" },
+                {
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Transcript text"
+                    },
+                    "startTime": {
+                      "type": "number",
+                      "description": "Start time in seconds"
+                    },
+                    "endTime": {
+                      "type": "number",
+                      "description": "End time in seconds"
+                    },
+                    "confidence": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "description": "Confidence score"
+                    },
+                    "language": {
+                      "type": "string",
+                      "description": "Language code (e.g., 'en')"
+                    },
+                    "words": {
+                      "type": "array",
+                      "description": "Word-level timing (if available)",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "word": { "type": "string" },
+                          "start": { "type": "number" },
+                          "end": { "type": "number" },
+                          "confidence": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "sessionEvent": {
+      "allOf": [
+        { "$ref": "#/definitions/baseEvent" },
+        {
+          "type": "object",
+          "properties": {
+            "eventType": { "const": "session" },
+            "data": {
+              "type": "object",
+              "required": ["action"],
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "enum": ["start", "stop", "pause", "resume"],
+                  "description": "Session action"
+                },
+                "meetingUuid": {
+                  "type": "string",
+                  "description": "Zoom meeting UUID"
+                },
+                "topic": {
+                  "type": "string",
+                  "description": "Meeting topic"
+                },
+                "hostId": {
+                  "type": "string",
+                  "description": "Host identifier"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "participantEvent": {
+      "allOf": [
+        { "$ref": "#/definitions/baseEvent" },
+        {
+          "type": "object",
+          "properties": {
+            "eventType": { "const": "participant" },
+            "data": {
+              "type": "object",
+              "required": ["action"],
+              "allOf": [
+                { "$ref": "#/definitions/participantInfo" },
+                {
+                  "properties": {
+                    "action": {
+                      "type": "string",
+                      "enum": ["join", "leave", "mute", "unmute", "video_on", "video_off"],
+                      "description": "Participant action"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": ["host", "co-host", "participant"],
+                      "description": "Participant role"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "channels": {
+    "rtms:events:audio": {
+      "description": "Audio chunk events",
+      "schema": { "$ref": "#/events/audioEvent" }
+    },
+    "rtms:events:video": {
+      "description": "Video frame events",
+      "schema": { "$ref": "#/events/videoEvent" }
+    },
+    "rtms:events:transcript": {
+      "description": "Transcript segment events",
+      "schema": { "$ref": "#/events/transcriptEvent" }
+    },
+    "rtms:events:session": {
+      "description": "Session lifecycle events",
+      "schema": { "$ref": "#/events/sessionEvent" }
+    },
+    "rtms:events:participant": {
+      "description": "Participant action events",
+      "schema": { "$ref": "#/events/participantEvent" }
+    }
+  }
+}
