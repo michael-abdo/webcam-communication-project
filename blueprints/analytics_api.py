@@ -30,7 +30,16 @@ REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
 redis_client = None
 
 try:
-    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    # Handle Heroku Redis SSL requirements
+    if REDIS_URL.startswith('rediss://'):
+        import ssl
+        redis_client = redis.from_url(
+            REDIS_URL, 
+            decode_responses=True,
+            ssl_cert_reqs=ssl.CERT_NONE
+        )
+    else:
+        redis_client = redis.from_url(REDIS_URL, decode_responses=True)
     redis_client.ping()
 except Exception as e:
     logger.warning(f"Redis not available for real-time analytics: {e}")

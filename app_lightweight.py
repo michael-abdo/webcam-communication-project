@@ -57,7 +57,16 @@ def start_analytics_subscription():
         """Subscribe to analytics events and broadcast to WebSocket clients."""
         try:
             redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
-            pubsub = redis.from_url(redis_url).pubsub()
+            
+            # Handle Heroku Redis SSL requirements
+            if redis_url.startswith('rediss://'):
+                import ssl
+                pubsub = redis.from_url(
+                    redis_url,
+                    ssl_cert_reqs=ssl.CERT_NONE
+                ).pubsub()
+            else:
+                pubsub = redis.from_url(redis_url).pubsub()
             
             # Subscribe to analytics metrics channel
             pubsub.subscribe('analytics:metrics')
