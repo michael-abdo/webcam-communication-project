@@ -38,6 +38,7 @@ function ensureSocket() {
 
   socket.addEventListener("message", (event) => {
     const message = JSON.parse(event.data);
+    console.log('WebSocket received message:', message.type, message);
     handleMessage(message);
   });
 }
@@ -212,7 +213,17 @@ function handleMessage(message) {
       appendTranscript(message);
       break;
     case "analytics":
+      console.log('Processing analytics message:', message);
       updateAnalyticsData(message);
+      break;
+    case "rtms_event":
+      // Handle RTMS events (meeting started, stopped, etc)
+      updateStatus(`RTMS Event: ${message.event}`);
+      if (message.event === "meeting.rtms_started") {
+        startAnalyticsUpdates();
+      } else if (message.event === "meeting.rtms_stopped") {
+        stopAnalyticsUpdates();
+      }
       break;
     default:
       console.log("Unknown message", message);
@@ -222,6 +233,7 @@ function handleMessage(message) {
 // Analytics functions
 function updateAnalyticsData(message) {
   const { metric, value, participant_id, tags } = message;
+  console.log('updateAnalyticsData:', { metric, value, participant_id, tags });
   
   if (metric === 'talk_time_seconds' && participant_id) {
     if (!analyticsData.talkTime[participant_id]) {
@@ -248,13 +260,14 @@ function updateAnalyticsData(message) {
   }
   
   renderTalkTimeChart();
+  console.log('Analytics data updated:', analyticsData);
 }
 
 function renderTalkTimeChart() {
   const container = document.getElementById('talkTimeContainer');
   const loading = document.getElementById('talkTimeLoading');
   const chart = document.getElementById('talkTimeChart');
-  const noData = document.getElementById('noAnalyticsData');
+  const noData = document.getElementById('talkTimeEmpty');
   const barsContainer = document.getElementById('talkTimeBars');
   
   const participants = Object.values(analyticsData.talkTime);
