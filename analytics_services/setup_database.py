@@ -101,7 +101,10 @@ def setup_database():
             )
         
         # Read and execute the schema file
-        schema_path = Path(__file__).parent / 'analytics_schema.sql'
+        # Use simpler schema for Heroku compatibility
+        schema_path = Path(__file__).parent / 'analytics_schema_simple.sql'
+        if not schema_path.exists():
+            schema_path = Path(__file__).parent / 'analytics_schema.sql'
         if not schema_path.exists():
             logger.error(f"Schema file not found: {schema_path}")
             return False
