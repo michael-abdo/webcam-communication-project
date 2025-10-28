@@ -275,8 +275,8 @@ class BaseAnalyticsService(ABC):
         counter_name: str,
         session_id: str,
         participant_id: Optional[str] = None,
-        amount: int = 1,
-    ) -> int:
+        amount: float = 1,
+    ) -> float:
         """
         Increment a counter metric.
         
@@ -290,12 +290,12 @@ class BaseAnalyticsService(ABC):
             New counter value
         """
         key = f"counter:{counter_name}:{session_id}:{participant_id or 'all'}"
-        new_value = await self.redis_client.incrby(key, amount)
+        new_value = await self.redis_client.incrbyfloat(key, amount)
         
         # Set expiry to 24 hours
         await self.redis_client.expire(key, 86400)
         
-        return new_value
+        return float(new_value)
     
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get service metrics summary."""

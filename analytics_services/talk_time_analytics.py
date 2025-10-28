@@ -63,7 +63,7 @@ class TalkTimeAnalyticsService(BaseAnalyticsService):
             "talk_time_seconds",
             session_id,
             participant_id,
-            int(duration_seconds)
+            duration_seconds
         )
         
         # Track in memory for percentage calculation
