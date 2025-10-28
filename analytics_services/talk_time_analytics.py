@@ -1,9 +1,14 @@
 """Talk Time Analytics Service - tracks speaking time per participant."""
 
+import os
+import sys
+# Add parent directory to Python path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from typing import Dict, Any, List
 from datetime import datetime, timezone
 
-from base_analytics_service import BaseAnalyticsService, run_service
+from analytics_services.base_analytics_service import BaseAnalyticsService, run_service
 
 
 class TalkTimeAnalyticsService(BaseAnalyticsService):
@@ -199,5 +204,16 @@ class TalkTimeAnalyticsService(BaseAnalyticsService):
 
 
 if __name__ == "__main__":
-    # Run the service
-    run_service(TalkTimeAnalyticsService)
+    # Run the service with Heroku environment variables
+    redis_url = os.environ.get('REDIS_URL')
+    if redis_url and redis_url.startswith('redis://'):
+        # Heroku Redis uses redis:// but redis-py 5.x requires rediss:// for TLS
+        # Check if this is a Heroku Redis instance (they use TLS on port 6380)
+        if ':6380' in redis_url or 'amazonaws.com' in redis_url:
+            redis_url = redis_url.replace('redis://', 'rediss://', 1)
+    
+    run_service(
+        TalkTimeAnalyticsService,
+        redis_url=redis_url,
+        log_level=os.environ.get('LOG_LEVEL', 'INFO')
+    )

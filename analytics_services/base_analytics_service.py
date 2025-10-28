@@ -12,7 +12,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import NullPool
 
-from config import DATABASE_URL
+import os
+import sys
+# Add parent directory to Python path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import get_database_url
 from models import SessionLocal
 from models.entities import Base
 
@@ -51,7 +56,14 @@ class BaseAnalyticsService(ABC):
         self.pubsub = None
         
         # Database connection for metrics
-        self.database_url = database_url or DATABASE_URL
+        # For Heroku, prioritize environment variable
+        db_url = database_url or os.environ.get('DATABASE_URL') or get_database_url()
+        
+        # Heroku uses postgres:// but SQLAlchemy requires postgresql://
+        if db_url and db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql://", 1)
+            
+        self.database_url = db_url
         self.engine = create_engine(
             self.database_url,
             poolclass=NullPool,  # Disable connection pooling for async
