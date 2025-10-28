@@ -83,7 +83,7 @@ class EventPublisher {
       },
     };
 
-    const result = await this.publish("analytics:audio", event);
+    const result = await this.publish("rtms:events:audio", event);
     if (result.success && state.eventCount !== undefined) {
       state.eventCount++;
     }
@@ -109,7 +109,7 @@ class EventPublisher {
       },
     };
 
-    const result = await this.publish("analytics:video", event);
+    const result = await this.publish("rtms:events:video", event);
     if (result.success && state.eventCount !== undefined) {
       state.eventCount++;
     }
@@ -135,7 +135,7 @@ class EventPublisher {
       },
     };
 
-    const result = await this.publish("analytics:transcript", event);
+    const result = await this.publish("rtms:events:transcript", event);
     if (result.success && state.eventCount !== undefined) {
       state.eventCount++;
     }
@@ -155,7 +155,7 @@ class EventPublisher {
       },
     };
 
-    const result = await this.publish("analytics:session", event);
+    const result = await this.publish("rtms:events:session", event);
     if (result.success && state.eventCount !== undefined) {
       state.eventCount++;
     }
@@ -177,7 +177,7 @@ class EventPublisher {
       },
     };
 
-    const result = await this.publish("analytics:participant", event);
+    const result = await this.publish("rtms:events:participant", event);
     if (result.success && state.eventCount !== undefined) {
       state.eventCount++;
     }
