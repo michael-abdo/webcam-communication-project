@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import ssl
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
@@ -82,7 +83,17 @@ class BaseAnalyticsService(ABC):
         self.logger.info(f"Starting {self.service_name}")
         
         # Connect to Redis
-        self.redis_client = await redis.from_url(self.redis_url, decode_responses=True)
+        # Handle Heroku Redis URL with SSL
+        if self.redis_url.startswith("rediss://"):
+            # Heroku Redis requires SSL
+            import ssl
+            self.redis_client = await redis.from_url(
+                self.redis_url,
+                ssl_cert_reqs=ssl.CERT_NONE,
+                decode_responses=True
+            )
+        else:
+            self.redis_client = await redis.from_url(self.redis_url, decode_responses=True)
         self.pubsub = self.redis_client.pubsub()
         
         # Subscribe to event channels
