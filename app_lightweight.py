@@ -131,10 +131,20 @@ def rtms_ui():
     """Serve RTMS dashboard with analytics."""
     # Serve the RTMS service's index.html which includes analytics
     rtms_html_path = os.path.join(os.path.dirname(__file__), 'rtms-service', 'public', 'index.html')
+    app.logger.info(f"Looking for RTMS HTML at: {rtms_html_path}")
+    app.logger.info(f"File exists: {os.path.exists(rtms_html_path)}")
+    
     if os.path.exists(rtms_html_path):
+        app.logger.info("Serving RTMS service index.html with analytics")
+        with open(rtms_html_path, 'r') as f:
+            content = f.read()
+        # Check if analytics section exists
+        if 'analytics' in content:
+            app.logger.info("Analytics section found in HTML")
         return send_file(rtms_html_path)
     else:
         # Fallback to template
+        app.logger.warning("RTMS service HTML not found, using fallback template")
         return render_template('rtms/dashboard.html')
 
 @app.route('/static/rtms/<path:filename>')
