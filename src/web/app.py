@@ -40,9 +40,16 @@ from src.services.video_state import video_sessions, test_video_links
 from src.rtms import RTMSHub
 
 import os as _os
+
 app = Flask(__name__, 
             static_folder=_os.path.join(_os.path.dirname(__file__), 'static'),
             template_folder=_os.path.join(_os.path.dirname(__file__), 'templates'))
+
+# Manual static file serving route for production
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    """Serve static files manually."""
+    return send_from_directory(app.static_folder, filename)
 CORS(app)  # Enable CORS for all routes
 sock = Sock(app)
 
