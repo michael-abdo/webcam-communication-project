@@ -23,18 +23,7 @@ def get_database_url() -> str:
     return f"sqlite:///{sqlite_path}"
 
 
-@lru_cache(maxsize=1)
-def get_capture_api_token() -> str | None:
-    """
-    Return the shared capture API token required by Phase 1 endpoints.
-
-    Stays optional so local development can opt-in; production should set
-    CAPTURE_API_TOKEN to a facilitator credential per the Phase 1 auth spec.
-    """
-    token = os.getenv("CAPTURE_API_TOKEN")
-    if token:
-        return token.strip()
-    return None
+# Removed get_capture_api_token - legacy Phase-1 function
 
 
 @lru_cache(maxsize=1)

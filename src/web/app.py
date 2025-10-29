@@ -23,7 +23,7 @@ from src.streaming.s3_handler import ensure_bucket_exists
 
 # RTMS-only imports - removed legacy assessment and baseline components
 from src.api.blueprints.analytics_api import analytics_api
-from src.api.blueprints.capture_api import capture_api
+# Removed capture_api - legacy Phase-1 component
 from src.api.blueprints.meetings_api import meetings_api
 from src.api.blueprints.rtms_ingest_api import rtms_ingest_api
 from src.api.blueprints.rtms_ui import rtms_ui
