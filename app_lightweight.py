@@ -71,11 +71,17 @@ def start_analytics_subscription():
             # Subscribe to analytics metrics channel
             pubsub.subscribe('analytics:metrics')
             
-            app.logger.info("Started analytics Redis subscription")
+            app.logger.info("Started analytics Redis subscription to channel: analytics:metrics")
+            
+            # Test Redis connection
+            pubsub.ping()
+            app.logger.info("Redis pubsub connection verified")
             
             for message in pubsub.listen():
                 if message['type'] == 'message':
                     try:
+                        app.logger.info(f"Received analytics message: {message['data'][:100]}...")
+                        
                         # Parse the metrics event
                         event = json.loads(message['data'])
                         
@@ -98,6 +104,7 @@ def start_analytics_subscription():
                         with app.app_context():
                             broadcast_to_session(session_id, ws_message)
                             # Also broadcast to RTMS dashboard clients
+                            app.logger.info(f"Broadcasting analytics to {rtms_hub.connection_count()} RTMS clients")
                             rtms_hub.broadcast(ws_message)
                             
                     except Exception as e:
