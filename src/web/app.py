@@ -39,9 +39,10 @@ from src.services.capture_service import CaptureNotFoundError, get_session_recor
 from src.services.video_state import video_sessions, test_video_links
 from src.rtms import RTMSHub
 
+import os as _os
 app = Flask(__name__, 
-            static_folder='static',
-            template_folder='templates')
+            static_folder=_os.path.join(_os.path.dirname(__file__), 'static'),
+            template_folder=_os.path.join(_os.path.dirname(__file__), 'templates'))
 CORS(app)  # Enable CORS for all routes
 sock = Sock(app)
 
