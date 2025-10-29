@@ -53,6 +53,10 @@ def start_analytics_subscription():
     """Start background thread to subscribe to analytics events from Redis."""
     global analytics_thread
     
+    # Don't start duplicate threads
+    if analytics_thread and analytics_thread.is_alive():
+        return
+    
     def analytics_subscriber():
         """Subscribe to analytics events and broadcast to WebSocket clients."""
         try:
@@ -131,6 +135,50 @@ app.register_blueprint(meetings_api)
 app.register_blueprint(analytics_api)
 app.register_blueprint(zoom_api)
 
+# Create a flag to track initialization
+analytics_initialized = False
+
+def ensure_analytics_subscription():
+    """Ensure analytics subscription is started."""
+    global analytics_initialized
+    if not analytics_initialized:
+        try:
+            start_analytics_subscription()
+            app.logger.info("Started analytics Redis subscription")
+            analytics_initialized = True
+        except Exception as e:
+            app.logger.error(f"Failed to start analytics subscription: {e}", exc_info=True)
+
+@app.before_request
+def before_request():
+    """Initialize analytics on first request."""
+    ensure_analytics_subscription()
+
+
+@app.route('/test-analytics')
+def test_analytics():
+    """Test endpoint to manually trigger analytics broadcast."""
+    test_message = {
+        "type": "analytics",
+        "metric": "talk_time_seconds", 
+        "value": 999.99,
+        "participant_id": "test-participant",
+        "timestamp": datetime.now().isoformat(),
+        "tags": {"user_name": "Test User"}
+    }
+    
+    # Check subscription status
+    status = {
+        "analytics_initialized": analytics_initialized,
+        "analytics_thread": analytics_thread.is_alive() if analytics_thread else None,
+        "rtms_connections": rtms_hub.connection_count(),
+        "test_broadcast": "sending"
+    }
+    
+    # Broadcast test message
+    rtms_hub.broadcast(test_message)
+    
+    return jsonify(status)
 
 @app.route('/static/rtms/<path:filename>')
 def serve_rtms_static(filename):
