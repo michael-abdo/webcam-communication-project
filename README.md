@@ -1,6 +1,20 @@
-# 🎥 Webcam Communication System
+# RTMS Analytics Platform
 
-**Built on Solid Foundations • Test-Driven Architecture • Camera Health First**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-green.svg)](https://nodejs.org/)
+[![Heroku](https://img.shields.io/badge/deploy-heroku-purple.svg)](https://heroku.com)
+
+> Real-time Media Stream Analytics Platform with live talk-time tracking, participant equality metrics, and WebSocket-based dashboards.
+
+## 🚀 Features
+
+- **Real-time Analytics** - Live talk time and participation tracking
+- **WebSocket Dashboard** - Real-time data visualization
+- **Zoom RTMS Integration** - Direct media stream processing
+- **Redis Pub/Sub** - Scalable event streaming
+- **Microservices Architecture** - Modular analytics services
+- **Production Ready** - Deployed and tested on Heroku
 
 ## 🏗️ Foundation-First Architecture
 
@@ -18,36 +32,66 @@ This system is built on a **test-driven, foundation-first approach**. Every feat
 
 ## 📁 Directory Structure
 
-### Organized Project Layout
+### Organized Project Layout (CLEANED)
 ```
-📦 webcam/
+📦 RTMS Analytics Platform/
 ├── 📄 README.md              # Project documentation (you are here)
 ├── 📄 requirements.txt       # Python dependencies
+├── 📄 runtime.txt           # Python version for Heroku
+├── 📄 package.json          # Node.js dependencies (RTMS service)
 ├── 📄 Procfile              # Heroku deployment config
-├── 🐍 app_lightweight.py    # Main Flask application
+├── 📄 .env.example          # Environment variables template
+├── 📄 .gitignore            # Git ignore rules
+├── 📄 .slugignore           # Heroku ignore rules
 │
-├── 📁 deployment/           # Deployment scripts and tools
-│   ├── deploy.sh
-│   ├── deploy_heroku.sh
-│   └── ... (other deployment files)
+├── 🐍 app_lightweight.py    # Main Flask application
+├── 🐍 config.py             # Application configuration
+├── 🐍 core_pipeline.py      # Core system pipeline
+├── 🐍 start_system.py       # System startup script
+│
+├── 📁 analytics_services/   # Analytics microservices
+│   ├── talk_time_analytics.py # Real-time talk time tracking
+│   ├── base_analytics_service.py
+│   └── ... (analytics modules)
+│
+├── 📁 blueprints/           # Flask blueprints
+│   ├── analytics_api.py     # Analytics API endpoints
+│   ├── rtms_ingest_api.py   # RTMS ingestion API
+│   ├── rtms_ui.py           # RTMS dashboard UI
+│   └── ... (other blueprints)
+│
+├── 📁 rtms-service/         # Real-time Media Service (Node.js)
+│   ├── index.js             # RTMS WebSocket service
+│   ├── eventPublisher.js    # Redis event publisher
+│   ├── package.json         # Node.js dependencies
+│   └── public/              # RTMS dashboard frontend
+│
+├── 📁 deployment/           # Deployment configurations
+│   ├── 📁 configs/          # Platform-specific configs
+│   │   ├── docker-compose.yml
+│   │   ├── fly.toml, netlify.toml, etc.
+│   └── 📁 scripts/          # Deployment scripts
+│       ├── deploy_analytics_heroku.sh
+│       └── ... (deployment scripts)
 │
 ├── 📁 docs/                 # Documentation
-│   ├── 📁 deployment/       # Deployment-specific docs
-│   ├── BACKEND_TRUTH.md
-│   ├── CHANGELOG.md
+│   ├── 📁 planning/         # Planning documents
+│   │   ├── DATABASE_SCHEMA_PLAN.md
+│   │   └── ... (planning docs)
+│   ├── 📁 deployment/       # Deployment guides
 │   └── ... (other documentation)
 │
-├── 📁 scripts/              # Standalone utility scripts
-│   ├── validate_deployment.py
-│   ├── performance_profiler.py
-│   └── ... (other scripts)
+├── 📁 tests/                # Test files
+│   ├── 📁 integration/      # Integration tests
+│   │   ├── test_*.py, test_*.js, test_*.sh
+│   └── 📁 definitions/      # Test definitions
 │
-├── 📁 tests/                # Test files and utilities
-│   ├── 📁 definitions/      # Test definitions (JSON)
-│   ├── 📁 utils/           # Test utilities
-│   ├── test_integration.py
-│   └── ... (other test files)
-│
+├── 📁 models/               # Database models
+├── 📁 services/             # Core services
+├── 📁 static/               # Static assets
+├── 📁 templates/            # HTML templates
+└── 📁 credentials/          # Credential files (gitignored)
+```
 ├── 📁 camera_tools/         # Camera foundation & health
 ├── 📁 cognitive_overload/   # Fatigue detection core
 ├── 📁 assessments/          # Psychological assessments
@@ -109,6 +153,59 @@ python3 basic_fatigue_dashboard.py
 python3 demo_dashboard.py
 # Access: http://localhost:5000
 ```
+
+## 📦 Data Persistence
+
+- The service now persists capture sessions, participants, and chunk manifests in a SQL database.
+- In production (Heroku, AWS), point `DATABASE_URL` at a managed PostgreSQL instance (e.g. Heroku Postgres, Amazon RDS).
+- For local development the app automatically falls back to a SQLite database stored under `data/app.db`.
+- When provisioning Postgres make sure the role has privileges to create tables; tables are auto-created on boot via SQLAlchemy.
+
+## 🌐 Phase 1 Capture API
+
+These endpoints back the facilitator capture flow and mirror the Phase 1 spec.
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/sessions` | `POST` | Create capture session with facilitator metadata + consent timestamp |
+| `/api/sessions/<id>/participants` | `POST` | Register facilitator device readiness for the session |
+| `/api/sessions/<id>/chunks` | `POST` | Persist chunk manifest (sequence, checksum, S3 key) after upload |
+| `/api/sessions/<id>` | `GET` | Retrieve a session with participants and uploaded chunk manifest |
+
+Example session creation payload:
+
+```json
+{
+  "facilitator_id": "fac-123",
+  "consent_at": "2024-01-15T18:42:00Z",
+  "device_kind": "macbook-pro",
+  "locale": "en-US"
+}
+```
+
+> **Auth:** Set `CAPTURE_API_TOKEN` in the environment to enforce facilitator authentication. The capture UI now prompts for this value and injects it into all Phase 1 API requests per the spec’s “Auth & Data” requirement.
+
+### Telemetry & Alerts
+
+- Enable `METRICS_ENABLED=true` to activate StatsD metrics.
+- Configure `METRICS_STATSD_HOST`, `METRICS_STATSD_PORT`, and optional `METRICS_PREFIX` to point at your metrics backend.
+- Successful chunk uploads emit `phase1.chunk.uploaded`; failures emit `phase1.chunk.failed`/`phase1.chunk.conflict`, with latency timings under `phase1.chunk.upload_latency_ms`.
+- Build alerts on sustained failures to match the Phase 1 telemetry requirement.
+- `DATABASE_URL` is automatically rewritten from `postgres://` to `postgresql+psycopg2://` at runtime for SQLAlchemy compatibility.
+
+### Reviewer Dashboard
+
+- Visit `/phase1/sessions` to open the Phase 1 validation UI.
+- Provide the same capture API token to enumerate recent sessions (limit configurable in the UI).
+- Select a session to review facilitator metadata, participant readiness, chunk manifest, transcript/log statuses, and grab time-limited download links for raw media or artifacts.
+- This replaces the in-memory `/tests/results` view and reflects the persisted capture data in Postgres.
+
+### Transcript & Log APIs
+
+- `POST /api/sessions/<id>/transcript` – ingest transcript metadata and optional file upload (`status`, optional `storage_key`, `mime_type`, `generated_at`).
+- `POST /api/sessions/<id>/logs` – record processing logs with status/message and optional upload payload.
+- `GET /api/sessions/<id>/transcript/download` – retrieve signed URL for the latest transcript artifact.
+- `GET /api/sessions/<id>/logs/<log_id>/download` – retrieve signed URL for a stored log artifact.
 
 ## 🔍 Test-Driven Validation
 
@@ -282,3 +379,17 @@ python3 quick_camera_test.py
 [![Camera Health](https://img.shields.io/badge/Foundation-Camera%20Health%20First-critical)](camera_tools/tests/)
 [![Test Driven](https://img.shields.io/badge/Architecture-Test%20Driven-blue)](camera_tools/)
 [![Fatigue Detection](https://img.shields.io/badge/Feature-Fatigue%20Detection-orange)](basic_fatigue_dashboard.py)
+
+## Zoom RTMS Ingestion
+
+A standalone Node service under `rtms-service/` listens for Zoom RTMS webhooks and stores audio/video/transcript artifacts in S3. Run it alongside the Flask app:
+
+```bash
+cd rtms-service
+npm install
+npm start
+```
+
+Configure the Zoom OAuth credentials (`ZM_RTMS_CLIENT`, `ZM_RTMS_SECRET`) and S3 environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `S3_BUCKET`), then point the Zoom webhook at `/rtms/webhook` on this service.  To have chunks recorded in
+the Phase-2 capture database, set `CAPTURE_API_BASE_URL` (typically `https://<app>/api/rtms`) and the
+matching `CAPTURE_API_TOKEN` so the service can call the new ingestion endpoints.

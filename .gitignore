@@ -36,6 +36,9 @@ Thumbs.db
 baseline_capture/
 cognitive_overload/
 worktrees/
+data/files/
+docs/temp/
+deployment/
 
 # Project specific
 assessments/baseline_data/
@@ -49,3 +52,9 @@ test_baseline_demo.html
 
 # Heroku
 heroku_runtime.txt
+
+data/app.db
+rtms-service/node_modules/
+node_modules/
+**/node_modules/
+src/rtms-service/node_modules/

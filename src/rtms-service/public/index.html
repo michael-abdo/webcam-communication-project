@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zoom RTMS Live Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Zoom RTMS Live Preview</h1>
+    <p class="hint">
+      Click start to enable audio playback and open a live connection to the RTMS stream.
+    </p>
+    <button id="startButton" type="button">Start Stream</button>
+    <div id="status" class="status">Waiting for connection…</div>
+
+    <section class="preview">
+      <div class="video-frame">
+        <img id="videoFrame" alt="Video stream preview" />
+        <div class="placeholder" id="videoPlaceholder">No video frames received yet</div>
+      </div>
+      <div class="transcript">
+        <h2>Transcript</h2>
+        <ul id="transcriptList"></ul>
+      </div>
+    </section>
+    
+    <section class="analytics">
+      <h2>Talk Time Analytics</h2>
+      <div id="talkTimeContainer" class="talk-time-container">
+        <div id="talkTimeLoading" class="loading">Loading analytics...</div>
+        <div id="talkTimeChart" class="talk-time-chart" style="display: none;">
+          <div id="talkTimeBars" class="talk-time-bars"></div>
+          <div id="talkTimeStats" class="talk-time-stats">
+            <div class="stat">
+              <span class="stat-label">Total Talk Time:</span>
+              <span id="totalTalkTime" class="stat-value">0s</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Participants:</span>
+              <span id="participantCount" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Equality Score:</span>
+              <span id="equalityScore" class="stat-value">0%</span>
+            </div>
+          </div>
+        </div>
+        <div id="noAnalyticsData" class="no-data" style="display: none;">
+          No analytics data available yet
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

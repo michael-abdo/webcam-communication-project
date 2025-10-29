@@ -119,3 +119,6 @@ git checkout eee43f6 -- static/js/stream_recorder.js
 2. Test pure S3 uploads work correctly
 3. Implement test integration as a separate layer
 4. Ensure both systems work independently
+# S3 Streaming Breaking Changes Report
+
+> **Update (2025-07):** The presigned browser upload flow described here has been superseded by direct multipart uploads to `/api/sessions/<id>/chunks`. The legacy `/api/presigned-url` route is no longer used.

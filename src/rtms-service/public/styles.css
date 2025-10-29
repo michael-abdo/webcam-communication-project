@@ -1,0 +1,274 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fa;
+  color: #1a1f36;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+
+.hint {
+  margin: 0.5rem 0 1rem;
+  color: #4a4f63;
+}
+
+button {
+  padding: 0.65rem 1.75rem;
+  font-size: 1rem;
+  border-radius: 999px;
+  border: none;
+  background: #0b5cff;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.status {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.preview {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.video-frame {
+  position: relative;
+  background: #101321;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-frame img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(16, 19, 33, 0.5);
+}
+
+.placeholder.hidden {
+  display: none;
+}
+
+.transcript {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.transcript h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.transcript ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.transcript li {
+  padding: 0.75rem 0 0.75rem 1rem;
+  border-bottom: 1px solid #e1e5ec;
+  border-left: 3px solid transparent;
+  margin-left: -0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.transcript li:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.transcript li:last-child {
+  border-bottom: none;
+}
+
+.transcript .speaker {
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.transcript .time {
+  font-size: 0.75rem;
+  color: #6b7280;
+  float: right;
+}
+
+.transcript p {
+  margin: 0.35rem 0 0;
+  line-height: 1.5;
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  .preview {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Analytics Section */
+.analytics {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 12px;
+}
+
+.analytics h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.talk-time-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.loading {
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem;
+}
+
+.no-data {
+  text-align: center;
+  color: #9ca3af;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Talk Time Chart */
+.talk-time-bars {
+  margin-bottom: 1.5rem;
+}
+
+.participant-bar {
+  margin-bottom: 1rem;
+}
+
+.participant-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.participant-name {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.speaker-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.participant-stats {
+  color: #6b7280;
+}
+
+.bar-container {
+  background: #f3f4f6;
+  border-radius: 4px;
+  height: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: fit-content;
+}
+
+/* Talk Time Stats */
+.talk-time-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}

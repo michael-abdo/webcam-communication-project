@@ -1,0 +1,8 @@
+{
+  "name": "phase-2-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "heroku-postbuild": "npm install --prefix src/rtms-service"
+  }
+}
