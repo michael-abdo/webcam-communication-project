@@ -21,13 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from src.streaming.s3_handler import ensure_bucket_exists
 
-# Import utils
-from src.utils.assessment_transformer import transform_flask_to_assessment, generate_assessment_data
-
-# Import baseline blueprint
-from src.api.blueprints.baseline_blueprint import baseline_bp
-# Import assessments blueprint
-from src.api.blueprints.assessments_blueprint import assessment_bp
+# RTMS-only imports - removed legacy assessment and baseline components
 from src.api.blueprints.analytics_api import analytics_api
 from src.api.blueprints.capture_api import capture_api
 from src.api.blueprints.meetings_api import meetings_api
@@ -36,7 +30,11 @@ from src.api.blueprints.rtms_ui import rtms_ui
 from src.api.blueprints.zoom_api import zoom_api
 from src.models import init_engine
 from src.services.capture_service import CaptureNotFoundError, get_session_record, list_session_chunks
-from src.services.video_state import video_sessions, test_video_links
+# Removed video_state import - legacy Phase-1 component
+# Define dummy objects for legacy video session references
+video_sessions = {}
+test_video_links = {}
+
 from src.rtms import RTMSHub
 
 import os as _os
@@ -137,12 +135,8 @@ def start_analytics_subscription():
 
 init_engine()
 
-# Register capture API blueprint
+# Register RTMS-related blueprints only
 app.register_blueprint(capture_api)
-# Register baseline blueprint
-app.register_blueprint(baseline_bp)
-# Register assessments blueprint
-app.register_blueprint(assessment_bp)
 app.register_blueprint(rtms_ingest_api)
 app.register_blueprint(rtms_ui, url_prefix="/rtms")
 app.register_blueprint(meetings_api)

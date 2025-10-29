@@ -30,7 +30,10 @@ from src.services.capture_service import (
 from src.config import get_capture_api_token
 from src.streaming.s3_handler import upload_chunk_file, upload_artifact_file, generate_download_url
 from src.telemetry import metrics
-from src.services.video_state import video_sessions, test_video_links
+# Removed video_state import - legacy Phase-1 component
+# Define dummy objects for legacy video session references
+video_sessions = {}
+test_video_links = {}
 
 capture_api = Blueprint("capture_api", __name__, url_prefix="/api")
 
