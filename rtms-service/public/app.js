@@ -289,7 +289,7 @@ function renderTalkTimeChart() {
   
   // Update stats
   document.getElementById('totalTalkTime').textContent = formatDuration(analyticsData.totalTalkTime);
-  document.getElementById('participantCount').textContent = analyticsData.participantCount;
+  document.getElementById('activeSpeakers').textContent = analyticsData.participantCount;
   document.getElementById('equalityScore').textContent = Math.round((analyticsData.equalityScore || 0) * 100) + '%';
   
   // Clear and rebuild bars
