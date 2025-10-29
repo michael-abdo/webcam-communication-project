@@ -55,3 +55,6 @@ heroku_runtime.txt
 
 data/app.db
 rtms-service/node_modules/
+node_modules/
+**/node_modules/
+src/rtms-service/node_modules/

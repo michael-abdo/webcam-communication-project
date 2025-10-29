@@ -1,6 +1,20 @@
-# 🎥 Webcam Communication System
+# RTMS Analytics Platform
 
-**Built on Solid Foundations • Test-Driven Architecture • Camera Health First**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-green.svg)](https://nodejs.org/)
+[![Heroku](https://img.shields.io/badge/deploy-heroku-purple.svg)](https://heroku.com)
+
+> Real-time Media Stream Analytics Platform with live talk-time tracking, participant equality metrics, and WebSocket-based dashboards.
+
+## 🚀 Features
+
+- **Real-time Analytics** - Live talk time and participation tracking
+- **WebSocket Dashboard** - Real-time data visualization
+- **Zoom RTMS Integration** - Direct media stream processing
+- **Redis Pub/Sub** - Scalable event streaming
+- **Microservices Architecture** - Modular analytics services
+- **Production Ready** - Deployed and tested on Heroku
 
 ## 🏗️ Foundation-First Architecture
 
@@ -18,36 +32,66 @@ This system is built on a **test-driven, foundation-first approach**. Every feat
 
 ## 📁 Directory Structure
 
-### Organized Project Layout
+### Organized Project Layout (CLEANED)
 ```
-📦 webcam/
+📦 RTMS Analytics Platform/
 ├── 📄 README.md              # Project documentation (you are here)
 ├── 📄 requirements.txt       # Python dependencies
+├── 📄 runtime.txt           # Python version for Heroku
+├── 📄 package.json          # Node.js dependencies (RTMS service)
 ├── 📄 Procfile              # Heroku deployment config
-├── 🐍 app_lightweight.py    # Main Flask application
+├── 📄 .env.example          # Environment variables template
+├── 📄 .gitignore            # Git ignore rules
+├── 📄 .slugignore           # Heroku ignore rules
 │
-├── 📁 deployment/           # Deployment scripts and tools
-│   ├── deploy.sh
-│   ├── deploy_heroku.sh
-│   └── ... (other deployment files)
+├── 🐍 app_lightweight.py    # Main Flask application
+├── 🐍 config.py             # Application configuration
+├── 🐍 core_pipeline.py      # Core system pipeline
+├── 🐍 start_system.py       # System startup script
+│
+├── 📁 analytics_services/   # Analytics microservices
+│   ├── talk_time_analytics.py # Real-time talk time tracking
+│   ├── base_analytics_service.py
+│   └── ... (analytics modules)
+│
+├── 📁 blueprints/           # Flask blueprints
+│   ├── analytics_api.py     # Analytics API endpoints
+│   ├── rtms_ingest_api.py   # RTMS ingestion API
+│   ├── rtms_ui.py           # RTMS dashboard UI
+│   └── ... (other blueprints)
+│
+├── 📁 rtms-service/         # Real-time Media Service (Node.js)
+│   ├── index.js             # RTMS WebSocket service
+│   ├── eventPublisher.js    # Redis event publisher
+│   ├── package.json         # Node.js dependencies
+│   └── public/              # RTMS dashboard frontend
+│
+├── 📁 deployment/           # Deployment configurations
+│   ├── 📁 configs/          # Platform-specific configs
+│   │   ├── docker-compose.yml
+│   │   ├── fly.toml, netlify.toml, etc.
+│   └── 📁 scripts/          # Deployment scripts
+│       ├── deploy_analytics_heroku.sh
+│       └── ... (deployment scripts)
 │
 ├── 📁 docs/                 # Documentation
-│   ├── 📁 deployment/       # Deployment-specific docs
-│   ├── BACKEND_TRUTH.md
-│   ├── CHANGELOG.md
+│   ├── 📁 planning/         # Planning documents
+│   │   ├── DATABASE_SCHEMA_PLAN.md
+│   │   └── ... (planning docs)
+│   ├── 📁 deployment/       # Deployment guides
 │   └── ... (other documentation)
 │
-├── 📁 scripts/              # Standalone utility scripts
-│   ├── validate_deployment.py
-│   ├── performance_profiler.py
-│   └── ... (other scripts)
+├── 📁 tests/                # Test files
+│   ├── 📁 integration/      # Integration tests
+│   │   ├── test_*.py, test_*.js, test_*.sh
+│   └── 📁 definitions/      # Test definitions
 │
-├── 📁 tests/                # Test files and utilities
-│   ├── 📁 definitions/      # Test definitions (JSON)
-│   ├── 📁 utils/           # Test utilities
-│   ├── test_integration.py
-│   └── ... (other test files)
-│
+├── 📁 models/               # Database models
+├── 📁 services/             # Core services
+├── 📁 static/               # Static assets
+├── 📁 templates/            # HTML templates
+└── 📁 credentials/          # Credential files (gitignored)
+```
 ├── 📁 camera_tools/         # Camera foundation & health
 ├── 📁 cognitive_overload/   # Fatigue detection core
 ├── 📁 assessments/          # Psychological assessments
